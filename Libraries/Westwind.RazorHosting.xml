@@ -4,6 +4,26 @@
         <name>Westwind.RazorHosting</name>
     </assembly>
     <members>
+        <member name="T:Westwind.RazorHosting.AnonymousDynamicType">
+            <summary>
+            This class handles special non-public types - anonymous types
+            and allows returning property values from them.
+            
+            Requires Reflection permissions for internal,private properties
+            </summary>
+        </member>
+        <member name="F:Westwind.RazorHosting.AnonymousDynamicType.Instance">
+            <summary>
+            Internally stored instance on which to look up properties
+            via Reflection
+            </summary>
+        </member>
+        <member name="M:Westwind.RazorHosting.AnonymousDynamicType.#ctor(System.Object)">
+            <summary>
+            Require passing in off an instance
+            </summary>
+            <param name="instance"></param>
+        </member>
         <member name="T:Westwind.RazorHosting.RazorEngine`1">
             <summary>
             Razor Hosting Engine that allows execution of Razor templates outside of
