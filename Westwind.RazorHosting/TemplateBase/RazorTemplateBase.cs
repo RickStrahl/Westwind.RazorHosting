@@ -305,38 +305,7 @@ namespace Westwind.RazorHosting
         public virtual string HtmlEncode(string input)
         {
             return WebUtility.HtmlEncode(input);
-        }
-
-        // TODO
-
-        ///// <summary>
-        ///// Render a partial view based on a Web relative path
-        ///// </summary>
-        ///// <param name="relativePath"></param>        
-        ///// <returns></returns>
-        //public string RenderPartial(string template, object model)
-        //{
-        //    if (this.HostContainer == null)
-        //        return null;
-
-        //    // we don't know the exact type since it can be generic so make dynamic
-        //    // execution possible with dynamic type
-        //    dynamic hostContainer = HostContainer;
-
-        //    // We need another configuration object in order to create 
-        //    RazorFolderHostTemplateConfiguration config = new RazorFolderHostTemplateConfiguration()
-        //    {                
-        //        ConfigData = model
-        //    };
-
-        //    // now execute the child request to a string
-        //    string output = hostContainer.RenderTemplateToString(relativePath, context, config);
-
-        //    if (output == null)
-        //        output = "!@ Error: " + hostContainer.ErrorMessage + " @!";
-
-        //    return output;
-        //}
+        }   
 
         /// <summary>
         /// Razor Parser overrides this method

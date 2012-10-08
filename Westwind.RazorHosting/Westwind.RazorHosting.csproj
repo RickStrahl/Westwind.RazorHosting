@@ -43,6 +43,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\AnonymousDynamicType.cs" />
     <Compile Include="Core\RazorEngine.cs" />
     <Compile Include="Core\RazorEngineConfiguration.cs" />
     <Compile Include="Core\RazorEngineFactory.cs" />

@@ -245,6 +245,10 @@ namespace Westwind.RazorHosting
         {
             this.SetError();
 
+            // Handle anonymous and other non-public types
+            if (model != null && model.GetType().IsNotPublic)
+                model = new AnonymousDynamicType(model);
+
             Assembly generatedAssembly = AssemblyCache[assemblyId];
             if (generatedAssembly == null)
             {
