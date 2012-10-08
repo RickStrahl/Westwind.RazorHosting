@@ -73,11 +73,11 @@ namespace RazorHostingTests
             host.AddAssemblyFromType(typeof(Person));
 
             host.UseAppDomain = true;
-            host.Configuration.CompileToMemory = false;
-            host.Configuration.TempAssemblyPath = Environment.CurrentDirectory;
+            //host.Configuration.CompileToMemory = true;
+            //host.Configuration.TempAssemblyPath = Environment.CurrentDirectory;
 
             host.Start();
-              
+
             Person person = new Person()
             {
                 Name = "Rick",
@@ -89,20 +89,64 @@ namespace RazorHostingTests
                     City = "Paia"
                 }
             };
-            
-            string result = host.RenderTemplate("~/HelloWorld.cshtml",person);
-            
+
+            string result = host.RenderTemplate("~/HelloWorld.cshtml", person);
+
+            Console.WriteLine(result);
+            Console.WriteLine("---");
+            Console.WriteLine(host.Engine.LastGeneratedCode);
+
+            host.Stop();
+
+
+            if (result == null)
+                Assert.Fail(host.ErrorMessage);
+
+            Assert.IsTrue(result.Contains("West Wind"));
+        }
+
+        [TestMethod]
+        public void FolderWithPartialTest()
+        {
+            var host = new RazorFolderHostContainer();
+
+            host.TemplatePath = Path.GetFullPath(@"..\..\FileTemplates\");
+            host.BaseBinaryFolder = Environment.CurrentDirectory;
+
+            // add model assembly - ie. this assembly
+            host.AddAssemblyFromType(typeof(Person));
+
+            host.UseAppDomain = true;
+            //host.Configuration.CompileToMemory = true;
+            //host.Configuration.TempAssemblyPath = Environment.CurrentDirectory;
+
+            host.Start();
+
+            Person person = new Person()
+            {
+                Name = "John Doe",
+                Company = "Doeboy Incorporated",
+                Entered = DateTime.Now,
+                Address = new Address()
+                {
+                    Street = "32 Kaiea",
+                    City = "Paia"
+                }
+            };
+
+            string result = host.RenderTemplate("~/TestPartial.cshtml", person);
+
             Console.WriteLine(result);
             Console.WriteLine("---");
             Console.WriteLine(host.Engine.LastGeneratedCode);
 
             if (result == null)
-            {
                 Assert.Fail(host.ErrorMessage);
-            }
-            
+
+
+            Assert.IsTrue(result.Contains("of Doeboy Incorporated"));
+
             host.Stop();
-            
         }
     }
 }

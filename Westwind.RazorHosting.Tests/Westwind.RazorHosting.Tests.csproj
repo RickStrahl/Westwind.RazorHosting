@@ -72,8 +72,8 @@
       <Name>Westwind.RazorHosting</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
+    <None Include="FileTemplates\TestPartial.cshtml" />
     <None Include="FileTemplates\Header_Partial.cshtml" />
     <None Include="FileTemplates\HelloWorld.cshtml" />
   </ItemGroup>

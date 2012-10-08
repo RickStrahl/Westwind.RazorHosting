@@ -1,16 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{FFC8864F-579E-45F5-B870-47F4FA17902D}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Westwind.RazorHosting", "Westwind.RazorHosting\Westwind.RazorHosting.csproj", "{ABF048CF-EAD5-40B7-AED2-B367E8579590}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorHosting.Tests", "Westwind.RazorHosting.Tests\Westwind.RazorHosting.Tests.csproj", "{A85CDBCE-2F73-41C4-807B-5E10ECA7C443}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Westwind.RazorHosting.Tests", "Westwind.RazorHosting.Tests\Westwind.RazorHosting.Tests.csproj", "{A85CDBCE-2F73-41C4-807B-5E10ECA7C443}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

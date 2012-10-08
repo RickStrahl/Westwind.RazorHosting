@@ -87,16 +87,12 @@ namespace RazorHostingTests
             
             string result = host.RenderTemplate(Templates.BasicTemplateStringWithPersonModel,person);
             
-
             Console.WriteLine(result);
             Console.WriteLine("---");
             Console.WriteLine(host.Engine.LastGeneratedCode);
 
             if (result == null)
-            {
                 Assert.Fail(host.ErrorMessage);
-            }
-
             
             host.Stop();
         }

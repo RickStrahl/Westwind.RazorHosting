@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("RazorHosting2")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Westwind.RazorHosting")]
+[assembly: AssemblyDescription("Host the Razor Runtime outside of ASP.NET MVC/WebPages")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("RazorHosting2")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
+[assembly: AssemblyCompany("West Wind Technologies")]
+[assembly: AssemblyProduct("Westwind.RazorHosting")]
+[assembly: AssemblyCopyright("© Rick Strahl - Westwind Technologies, 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
