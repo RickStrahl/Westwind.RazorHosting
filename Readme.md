@@ -38,7 +38,7 @@ To execute a template:
 
     string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
 	var host = new RazorEngine<RazorTemplateBase>();
-    string result = host.RenderTemplate(template,new Person() { Name="Joe Doe" }");
+    string result = host.RenderTemplate(template,new { Name="Joe Doe" });
 
 You can also create a template and cache it:
 
