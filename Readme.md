@@ -90,13 +90,12 @@ the template string is identical the cached assembly is used.
 To run a String Template Host:
 
     var host = new RazorStringHostContainer();
-            
+    //host.UseAppDomain = true; 
+        
     // add model assembly - ie. this assembly
     host.AddAssemblyFromType(this);
     host.AddAssembly("System.Data.dll");
-
-    host.UseAppDomain = true;
-
+    
     host.Start();
               
     Person person = new Person()
@@ -196,12 +195,24 @@ where the template might look like this:
 
 Note that you can render partials, by specifying the virtual path for the partial.
 
+####Running in a separate AppDomain wiht UseAppDomain####
+Note that you can choose to host the container in a separate AppDomain by using:
+
+	host.UseAppDomain = true;
+
+If you do, make sure any models  passed to the host for rendering are marked serializable or inherit from MarshalByRefObject.
+Using an AppDomain is useful when loading lots of templates and allows for unloading the engine to reduce 
+memory usage. It also helps isolate template code from the rest of your application for security purposes, 
+since Razor templates essentially can execute any code in the context of the host.
+
 ###Limitations
 Unlike MVC and/or WebPages the RazorHosting engine only supports core Razor functinonality
 so it's not equivalent to the feature set provided by MVC or WebPages. As such many common
-features like HTML and URL helpers, @section and @Layout are not available in this implementation
-since these features are specific to MVC/WebPages and their close ties to the HTTP features
-provided in ASP.NET.
+features like HTML and URL helpers, @Section, @Helper and @Layout directives are not available 
+in this implementation since these features are specific to MVC/WebPages and their close ties to 
+the HTTP features provided in ASP.NET.
+
+Only the RazorFolderHostContainer supports partial rendering.
 
 ##License
 This library is published under MIT license terms:
