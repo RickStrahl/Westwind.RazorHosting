@@ -11,7 +11,7 @@ be used for things like text merging for things like Mail Merge operations, HTML
 displays in desktop applications, code generation and much more. You can use it in Desktop applications
 as well as in any ASP.NET application that doesn't already have ready access to the Razor View engine.
 
-* [http://nuget.org/packages/Westwind.RazorHosting](Install from NuGet (Westwind.RazorHosting) )
+* [http://nuget.org/packages/Westwind.RazorHosting](Install from NuGet - Westwind.RazorHosting)
 * [http://www.west-wind.com/wwThreads/default.asp?Forum=West+Wind+.NET+Tools+and+Demos](Questions and Discussion of Westwind.RazorHosting)
 
 > **Note!**
