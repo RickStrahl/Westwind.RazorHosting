@@ -132,7 +132,7 @@ namespace Westwind.RazorHosting
             ReferencedNamespaces.Add("System.Collections.Generic");
             ReferencedNamespaces.Add("System.Linq");
             ReferencedNamespaces.Add("System.IO");
-            ReferencedNamespaces.Add("System.Web");
+            ReferencedNamespaces.Add("System.Web");            
             ReferencedNamespaces.Add("Westwind.RazorHosting");
 
             ReferencedAssemblies = new List<string>();
@@ -147,8 +147,8 @@ namespace Westwind.RazorHosting
 
         /// <summary>
         /// Method to add assemblies to the referenced assembly list.
-        /// Each assembly added HAS to be accessible via GAC or in
-        /// the applications' bin/bin private path
+        /// Use the DLL name or strongly typed name. Assembly added HAS 
+        /// to be accessible via GAC or in bin/privatebin path
         /// </summary>
         /// <param name="assemblyName"></param>
         public void AddAssembly(string ns, params string[] additionalAssemblies)
@@ -159,7 +159,39 @@ namespace Westwind.RazorHosting
         }
 
 
-        
+        /// <summary>
+        /// Adds an assembly to the Referenced assemblies based on a type
+        /// reference. Useful to add the 'host' assembly and model types.
+        /// </summary>
+        /// <param name="type"></param>
+        public void AddAssemblyFromType(Type type)
+        {
+            if (type != null)
+            {
+                string assemblyFile = type.Assembly.Location;
+                string justFile = Path.GetFileName(assemblyFile).ToLower();
+                if (!ReferencedAssemblies.Where(s => s.ToLower().Contains(justFile)).Any())
+                    ReferencedAssemblies.Add(assemblyFile);
+            }
+        }
+
+        /// <summary>
+        /// Adds an assembly to the ReferenceAssemblies based on an object instance.
+        /// Easy way to add a model's assembly.
+        /// </summary>
+        /// <param name="instance">any object instance</param>        
+        public void AddAssemblyFromType(object instance)
+        {
+            if (instance != null)
+            {
+                string assemblyFile = instance.GetType().Assembly.Location;
+                string justFile = Path.GetFileName(assemblyFile).ToLower();
+                if (!ReferencedAssemblies.Where(s => s.ToLower().Contains(justFile)).Any())
+                    ReferencedAssemblies.Add(assemblyFile);
+            }
+        }
+
+
         /// <summary>
         /// Method to add namespaces to the compiled code.
         /// Add namespaces to minimize explicit namespace
@@ -225,7 +257,7 @@ namespace Westwind.RazorHosting
         {
             this.SetError();
              
-            AddReferencedAssemblyFromInstance(model);
+            AddAssemblyFromType(model);
 
             var assemblyId = CompileTemplate(templateSourceReader);
 
@@ -573,22 +605,8 @@ namespace Westwind.RazorHosting
  	         return null;
         }
 
-        /// <summary>
-        /// Adds an assembly to the ReferenceAssemblies based on an object instance.
-        /// Easy way to add a model's assembly.
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="referencedAssemblies"></param>
-        public void AddReferencedAssemblyFromInstance(object model)
-        {
-            if (model != null)
-            {
-                string assemblyFile = model.GetType().Assembly.Location;
-                string justFile = Path.GetFileName(assemblyFile).ToLower();
-                if (!ReferencedAssemblies.Where(s => s.ToLower().Contains(justFile)).Any())
-                        ReferencedAssemblies.Add(assemblyFile);
-            }
-        }
+
+
 
         /// <summary>
         /// Internally fix ups for templates

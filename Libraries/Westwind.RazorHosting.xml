@@ -196,13 +196,12 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorEngine`1.AddReferencedAssemblyFromInstance(System.Object)">
+        <member name="M:Westwind.RazorHosting.RazorEngine`1.AddAssemblyFromType(System.Object)">
             <summary>
             Adds an assembly to the ReferenceAssemblies based on an object instance.
             Easy way to add a model's assembly.
             </summary>
-            <param name="model"></param>
-            <param name="referencedAssemblies"></param>
+            <param name="instance"></param>        
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.FixupTemplate(System.String)">
             <summary>

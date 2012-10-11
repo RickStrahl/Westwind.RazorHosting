@@ -265,7 +265,7 @@ Hello World @Model.Name. Time is: @DateTime.Now";
             // we have to explicitly add a reference to the model's assembly
             // if we're compiling manually - the compiler doesn't know about
             // the model.
-            host.AddReferencedAssemblyFromInstance(person);
+            host.AddAssemblyFromType(person);
             
             string templateId = host.CompileTemplate(
                             Templates.BasicTemplateStringWithPersonModel,
