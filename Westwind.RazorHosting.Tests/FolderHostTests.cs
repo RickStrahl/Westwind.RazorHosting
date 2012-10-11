@@ -105,6 +105,60 @@ namespace RazorHostingTests
             Assert.IsTrue(result.Contains("West Wind"));
         }
 
+
+        /// <summary>
+        /// Demonstrates using @model syntax in the template
+        /// Note:
+        /// @model Person is turned to 
+        /// @inherits RazorTemplateFolderHost<Person>
+        /// 
+        /// @model syntax is easier to write (and compatible with MVC), 
+        /// but doesn't not provide Intellisense inside of Visual Studio. 
+        /// </summary>
+        [TestMethod]
+        public void BasicFolderHostWithModelSyntaxTest()
+        {
+            var host = new RazorFolderHostContainer();
+
+            host.TemplatePath = Path.GetFullPath(@"..\..\FileTemplates\");
+            host.BaseBinaryFolder = Environment.CurrentDirectory;
+
+            // add model assembly - ie. this assembly
+            host.AddAssemblyFromType(typeof(Person));
+
+            host.UseAppDomain = true;
+            //host.Configuration.CompileToMemory = true;
+            //host.Configuration.TempAssemblyPath = Environment.CurrentDirectory;
+
+            host.Start();
+
+            Person person = new Person()
+            {
+                Name = "Rick",
+                Company = "West Wind",
+                Entered = DateTime.Now,
+                Address = new Address()
+                {
+                    Street = "32 Kaiea",
+                    City = "Paia"
+                }
+            };
+
+            string result = host.RenderTemplate("~/HelloWorldWithModelSyntax.cshtml", person);
+
+            Console.WriteLine(result);
+            Console.WriteLine("---");
+            Console.WriteLine(host.Engine.LastGeneratedCode);
+
+            host.Stop();
+
+
+            if (result == null)
+                Assert.Fail(host.ErrorMessage);
+
+            Assert.IsTrue(result.Contains("West Wind"));
+        }
+
         [TestMethod]
         public void FolderWithPartialTest()
         {

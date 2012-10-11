@@ -84,7 +84,7 @@ namespace Westwind.RazorHosting
         /// <param name="text">The text string to encode. </param>
         /// <returns>The HTML-encoded text.</returns>
         public static string HtmlEncode(string text)
-        {
+        {            
             if (text == null)
                 return string.Empty;
 

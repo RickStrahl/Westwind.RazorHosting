@@ -145,17 +145,41 @@ namespace Westwind.RazorHosting
             ReferencedAssemblies.Add( this.GetType().Assembly.Location);
         }
 
-
-
         /// <summary>
         /// Method to add assemblies to the referenced assembly list.
         /// Each assembly added HAS to be accessible via GAC or in
         /// the applications' bin/bin private path
         /// </summary>
         /// <param name="assemblyName"></param>
-        public void AddAssembly(string assemblyName)
+        public void AddAssembly(string ns, params string[] additionalAssemblies)
+        {            
+            ReferencedAssemblies.Add(ns);
+            if (additionalAssemblies != null)
+                ReferencedAssemblies.AddRange(additionalAssemblies);
+        }
+
+
+        
+        /// <summary>
+        /// Method to add namespaces to the compiled code.
+        /// Add namespaces to minimize explicit namespace
+        /// requirements in your Razor template code.
+        /// 
+        /// Make sure that any required assemblies are
+        /// loaded first.
+        /// </summary>
+        /// <param name="ns">First namespace</param>
+        /// <param name="additionalNamespaces">additional namespaces</param>
+        public void AddNamespace(string ns,params string[] additionalNamespaces)
         {
-            ReferencedAssemblies.Add(assemblyName);
+            ReferencedNamespaces.Add(ns);             
+            if (additionalNamespaces != null)
+            {
+                foreach (string ans in additionalNamespaces)
+                {
+                    ReferencedNamespaces.AddRange(additionalNamespaces);
+                }
+            }
         }
 
         /// <summary>
@@ -166,10 +190,18 @@ namespace Westwind.RazorHosting
         /// Make sure that any required assemblies are
         /// loaded first.
         /// </summary>
-        /// <param name="namespace"></param>
-        public void AddNamespace(string ns)
+        /// <param name="ns">First namespace</param>
+        /// <param name="additionalNamespaces">additional namespaces</param>
+        public void AddNamespace(params string[] additionalNamespaces)
         {
-            ReferencedNamespaces.Add(ns);
+            //ReferencedNamespaces.Add(ns);
+            if (additionalNamespaces != null)
+            {
+                foreach (string ans in additionalNamespaces)
+                {
+                    ReferencedNamespaces.Add(ans);
+                }
+            }
         }
 
         /// <summary>
@@ -320,7 +352,7 @@ namespace Westwind.RazorHosting
         /// 
         /// </summary>
         /// <param name="referencedAssemblies">Any referenced assemblies by dll name only. Assemblies must be in execution path of host or in GAC.</param>
-        /// <param name="templateSourceReader">Textreader that loads the template</param>
+        /// <param name="templateReader">Textreader that loads the template</param>
         /// <param name="generatedNamespace">The namespace of the class to generate from the template. null generates name.</param>
         /// <param name="generatedClassName">The name of the class to generate from the template. null generates name.</param>
         /// <remarks>
@@ -330,9 +362,9 @@ namespace Westwind.RazorHosting
         /// </remarks>
         /// <returns>An assembly Id. The Assembly is cached in memory and can be used with RenderFromAssembly.</returns>
         public string CompileTemplate(
-                    TextReader templateSourceReader,                                    
+                    TextReader templateReader,                                    
                     string generatedNamespace = null,
-                    string generatedClassName = null)
+                    string generatedClassName = null)                    
         {
             if (string.IsNullOrEmpty(generatedNamespace))
                 generatedNamespace = "__RazorHost";
@@ -343,12 +375,22 @@ namespace Westwind.RazorHosting
 
             RazorTemplateEngine engine = CreateHost(generatedNamespace, generatedClassName);
 
+            string template = templateReader.ReadToEnd();
+            templateReader.Close();
+
+            template = FixupTemplate(template);
+
+            var reader = new StringReader(template);
+
             // Generate the template class as CodeDom  
-            GeneratorResults razorResults = engine.GenerateCode(templateSourceReader);
+            GeneratorResults razorResults = engine.GenerateCode(reader);
+
+            reader.Close();
 
             // Create code from the codeDom and compile
             CSharpCodeProvider codeProvider = new CSharpCodeProvider();
             CodeGeneratorOptions options = new CodeGeneratorOptions();
+          
 
             // Capture Code Generated as a string for error info
             // and debugging
@@ -391,8 +433,10 @@ namespace Westwind.RazorHosting
         /// loaded assembly.
         /// 
         /// </summary>
-        /// <param name="ReferencedAssemblies">Any referenced assemblies by dll name only. Assemblies must be in execution path of host or in GAC.</param>
-        /// <param name="templateSourceReader">Textreader that loads the template</param>
+        /// <param name="templateText">Text of the template to render</param>
+        /// <param name="generatedNamespace">Namespace for the generated class. If not passed will be __RazorHosting</param>
+        /// <param name="generatedClassName">Classname for the generated class. If not passed will be a generated unique name based on GUID</param>
+        /// <param name="modelType">Optional type of the model passed with this template - used for @model fixup</param>
         /// <remarks>
         /// The actual assembly isn't returned here to allow for cross-AppDomain
         /// operation. If the assembly was returned it would fail for cross-AppDomain
@@ -417,9 +461,10 @@ namespace Westwind.RazorHosting
         /// <param name="generatedNamespace"></param>
         /// <param name="generatedClass"></param>
         /// <returns></returns>
-        protected RazorTemplateEngine CreateHost(string generatedNamespace, string generatedClass)
+        protected RazorTemplateEngine CreateHost(string generatedNamespace, string generatedClass, Type baseClassType = null)
         {     
-            Type baseClassType = typeof(TBaseTemplateType);
+            if (baseClassType == null)
+                baseClassType = typeof(TBaseTemplateType);            
 
             RazorEngineHost host = new RazorEngineHost(new CSharpRazorCodeLanguage());
             host.DefaultBaseClass = baseClassType.FullName;
@@ -434,9 +479,6 @@ namespace Westwind.RazorHosting
             return new RazorTemplateEngine(host);            
         }
         
-
-
-
         /// <summary>
         /// Allows retrieval of an Assembly cached internally by its id
         /// returned from ParseAndCompileTemplate. Useful if you want
@@ -449,7 +491,6 @@ namespace Westwind.RazorHosting
             AssemblyCache.TryGetValue(assemblyId, out ass);
             return ass;            
         }
-
 
         /// <summary>
         /// Overridable instance creation routine for the host. 
@@ -549,6 +590,29 @@ namespace Westwind.RazorHosting
             }
         }
 
+        /// <summary>
+        /// Internally fix ups for templates
+        /// </summary>
+        /// <param name="template"></param>
+        /// <returns></returns>
+        protected virtual string FixupTemplate(string template)
+        {
+            // @model fixup
+            if (template.Contains("@model "))
+            {
+                int at = template.IndexOf("@model ");
+                int at2 = template.IndexOf("\r\n", at);
+                var line = template.Substring(at, at2 - at);
+                var modelClass = line.Replace("@model ", "").Trim();
+                var templateType = typeof(TBaseTemplateType);
+                var newline = "@inherits " + 
+                              (!string.IsNullOrEmpty(templateType.Namespace) ? templateType.Namespace + "."  : "") +
+                              templateType.Name + "<" + modelClass + ">";
+                template = template.Replace(line, newline);
+            }
+
+            return template;
+        }
 
         /// <summary>
         /// Returns a unique ClassName for a template to execute

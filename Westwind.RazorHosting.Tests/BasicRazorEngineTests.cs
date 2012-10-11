@@ -48,10 +48,12 @@ namespace RazorHostingTests
         {
             string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
 	        var host = new RazorEngine<RazorTemplateBase>();
-            string result = host.RenderTemplate(template,new Person{ Name="Joe Doe" });
+            string result = host.RenderTemplate(template, new Person { Name = "Joe Doe" });
 
             Assert.IsNotNull(result,host.ErrorMessage);
             Assert.IsTrue(result.Contains("Joe Doe"));
+
+            Console.WriteLine(result);
         }
 
         /// <summary>
@@ -89,6 +91,33 @@ namespace RazorHostingTests
 
             Assert.IsNotNull(result, host.ErrorMessage);
             Assert.IsTrue(result.Contains("Joe Doe"));
+        }
+
+        /// <summary>
+        /// Demonstrates using @model syntax in the template
+        /// 
+        /// Note:
+        /// @model Person is turned to 
+        /// @inherits RazorTemplateFolderHost<Person>
+        /// 
+        /// @model syntax is easier to write (and compatible with MVC), 
+        /// but doesn't not provide Intellisense inside of Visual Studio. 
+        /// </summary>
+        [TestMethod]
+        public void SimplestRazorEngineWithModelTest()
+        {
+            string template = @"@model Person
+Hello World @Model.Name. Time is: @DateTime.Now";
+
+            var host = new RazorEngine<RazorTemplateBase>();
+            host.AddNamespace("RazorHostingTests");
+
+            string result = host.RenderTemplate(template, new Person { Name = "Joe Doe" });
+
+            Assert.IsNotNull(result, host.ErrorMessage);
+            Assert.IsTrue(result.Contains("Joe Doe"));
+
+            Console.WriteLine(result);
         }
 
         [TestMethod]

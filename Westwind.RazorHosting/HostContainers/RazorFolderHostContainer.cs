@@ -54,7 +54,6 @@ namespace Westwind.RazorHosting
     /// For any other template implementation use the generic parameter
     /// to specify the template type.
     /// </summary>
-
     public class RazorFolderHostContainer : RazorFolderHostContainer<RazorTemplateFolderHost>
     {
     }
@@ -181,22 +180,22 @@ namespace Westwind.RazorHosting
             if (assemblyId == null)
             {
                 string safeClassName = GetSafeClassName(fileName);
-                StreamReader reader = null;
+
+                string template = null;
                 try
                 {
-                    reader = new StreamReader(fileName, true);
+                    template = File.ReadAllText(fileName);
                 }
                 catch
                 {
                     this.SetError(Resources.ErrorReadingTemplateFile + fileName);
                     return null;
                 }
-
-                assemblyId = Engine.CompileTemplate(reader);
+                assemblyId = Engine.CompileTemplate(template);
 
                 // need to ensure reader is closed
-                if (reader != null)
-                    reader.Close();
+                //if (reader != null)
+                //    reader.Close();
 
                 if (assemblyId == null)
                 {
@@ -245,6 +244,8 @@ namespace Westwind.RazorHosting
             fileName = Utilities.GetRelativePath(fileName, TemplatePath);
             return Path.GetFileNameWithoutExtension(fileName).Replace("\\", "_");
         }
+
+     
      
     }
 

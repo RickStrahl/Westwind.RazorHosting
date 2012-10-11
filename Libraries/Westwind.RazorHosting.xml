@@ -40,7 +40,7 @@
             Optionally pass in any required namespaces and assemblies by name
             </summary>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorEngine`1.AddAssembly(System.String)">
+        <member name="M:Westwind.RazorHosting.RazorEngine`1.AddAssembly(System.String,System.String[])">
             <summary>
             Method to add assemblies to the referenced assembly list.
             Each assembly added HAS to be accessible via GAC or in
@@ -48,7 +48,7 @@
             </summary>
             <param name="assemblyName"></param>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorEngine`1.AddNamespace(System.String)">
+        <member name="M:Westwind.RazorHosting.RazorEngine`1.AddNamespace(System.String,System.String[])">
             <summary>
             Method to add namespaces to the compiled code.
             Add namespaces to minimize explicit namespace
@@ -57,7 +57,20 @@
             Make sure that any required assemblies are
             loaded first.
             </summary>
-            <param name="namespace"></param>
+            <param name="ns">First namespace</param>
+            <param name="additionalNamespaces">additional namespaces</param>
+        </member>
+        <member name="M:Westwind.RazorHosting.RazorEngine`1.AddNamespace(System.String[])">
+            <summary>
+            Method to add namespaces to the compiled code.
+            Add namespaces to minimize explicit namespace
+            requirements in your Razor template code.
+            
+            Make sure that any required assemblies are
+            loaded first.
+            </summary>
+            <param name="ns">First namespace</param>
+            <param name="additionalNamespaces">additional namespaces</param>
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.RenderTemplate(System.IO.TextReader,System.Object,System.IO.TextWriter)">
             <summary>
@@ -112,7 +125,7 @@
             
             </summary>
             <param name="referencedAssemblies">Any referenced assemblies by dll name only. Assemblies must be in execution path of host or in GAC.</param>
-            <param name="templateSourceReader">Textreader that loads the template</param>
+            <param name="templateReader">Textreader that loads the template</param>
             <param name="generatedNamespace">The namespace of the class to generate from the template. null generates name.</param>
             <param name="generatedClassName">The name of the class to generate from the template. null generates name.</param>
             <remarks>
@@ -130,8 +143,10 @@
             loaded assembly.
             
             </summary>
-            <param name="ReferencedAssemblies">Any referenced assemblies by dll name only. Assemblies must be in execution path of host or in GAC.</param>
-            <param name="templateSourceReader">Textreader that loads the template</param>
+            <param name="templateText">Text of the template to render</param>
+            <param name="generatedNamespace">Namespace for the generated class. If not passed will be __RazorHosting</param>
+            <param name="generatedClassName">Classname for the generated class. If not passed will be a generated unique name based on GUID</param>
+            <param name="modelType">Optional type of the model passed with this template - used for @model fixup</param>
             <remarks>
             The actual assembly isn't returned here to allow for cross-AppDomain
             operation. If the assembly was returned it would fail for cross-AppDomain
@@ -139,7 +154,7 @@
             </remarks>
             <returns>An assembly Id. The Assembly is cached in memory and can be used with RenderFromAssembly.</returns>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorEngine`1.CreateHost(System.String,System.String)">
+        <member name="M:Westwind.RazorHosting.RazorEngine`1.CreateHost(System.String,System.String,System.Type)">
             <summary>
             Creates an instance of the RazorHost with various options applied.
             Applies basic namespace imports and the name of the class to generate
@@ -188,6 +203,13 @@
             </summary>
             <param name="model"></param>
             <param name="referencedAssemblies"></param>
+        </member>
+        <member name="M:Westwind.RazorHosting.RazorEngine`1.FixupTemplate(System.String)">
+            <summary>
+            Internally fix ups for templates
+            </summary>
+            <param name="template"></param>
+            <returns></returns>
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.GetSafeClassName(System.Object)">
             <summary>
@@ -499,17 +521,17 @@
             <param name="objectId"></param>
             <returns></returns>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorBaseHostContainer`1.AddAssemblyFromType(System.Object)">
-            <summary>
-            Adds an assembly to the referenced assemblies from an existing
-            object instance.
-            </summary>
-            <param name="instance"></param>
-        </member>
         <member name="M:Westwind.RazorHosting.RazorBaseHostContainer`1.AddAssemblyFromType(System.Type)">
             <summary>
             Adds an assembly to the referenced assemblies from an existing
             .NET Type.
+            </summary>
+            <param name="instance"></param>
+        </member>
+        <member name="M:Westwind.RazorHosting.RazorBaseHostContainer`1.AddAssemblyFromType(System.Object)">
+            <summary>
+            Adds an assembly to the referenced assemblies from an existing
+            object instance.
             </summary>
             <param name="instance"></param>
         </member>
@@ -886,16 +908,13 @@
         </member>
         <member name="M:Westwind.RazorHosting.RazorTemplateBase.WriteAttribute(System.String,Westwind.RazorHosting.PositionTagged{System.String},Westwind.RazorHosting.PositionTagged{System.String},Westwind.RazorHosting.AttributeValue[])">
             <summary>
-            This method is used to write out attribute values using
-            some funky nested tuple storage.
-            
-            Handles situations like href="@(Model.Url)?parm1=1"
-            where text and expressions mix in the attribute
-            
-            This call comes in from the Razor runtime parser
+            WriteAttribute implementation lifted from ANurse's MicroRazor Implementation
+            and the AspWebStack source.
             </summary>
-            <param name="attr"></param>
-            <param name="tokens"></param>
+            <param name="name"></param>
+            <param name="prefix"></param>
+            <param name="suffix"></param>
+            <param name="values"></param>
         </member>
         <member name="M:Westwind.RazorHosting.RazorTemplateBase.Execute">
             <summary>
