@@ -39,8 +39,10 @@ namespace Westwind.RazorHosting
         /// <param name="configurationData"></param>
         public override void InitializeTemplate(object model, object configurationData = null)
         {
+            Html = new HtmlHelper();
+
             if (model is TModel)
-                Model = model as TModel;
+                Model = model as TModel;           
         }
     }
 
@@ -65,6 +67,12 @@ namespace Westwind.RazorHosting
         /// to use in your template code
         /// </summary>
         public dynamic Model { get; set; }
+
+
+        /// <summary>
+        /// Simplistic Html Helper implementation
+        /// </summary>
+        public HtmlHelper Html { get; set; }
 
         /// <summary>
         /// An optional result property that can receive a 
@@ -113,6 +121,7 @@ namespace Westwind.RazorHosting
         /// <param name="configurationData"></param>
         public virtual void InitializeTemplate(object model = null, object configurationData = null)
         {
+            Html = new HtmlHelper();
             Model = model;
         }
 

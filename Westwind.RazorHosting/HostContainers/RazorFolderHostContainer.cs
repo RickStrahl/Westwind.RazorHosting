@@ -67,7 +67,8 @@ namespace Westwind.RazorHosting
     /// Runs Razor Templates in a seperate AppDomain
     /// </summary>
     /// <typeparam name="TBaseTemplate">The type of the base template to use</typeparam>
-    public class RazorFolderHostContainer<TBaseTemplate> : RazorBaseHostContainer<RazorTemplateFolderHost>
+    public class RazorFolderHostContainer<TBaseTemplate> : RazorBaseHostContainer<TBaseTemplate>
+        where TBaseTemplate : RazorTemplateFolderHost, new()
     {
         /// <summary>
         /// The Path where templates live
@@ -102,7 +103,8 @@ namespace Westwind.RazorHosting
             CompiledAssemblyItem item = GetAssemblyFromFileAndCache(relativePath);
             if (item == null)
             {
-                writer.Close();
+                if (writer != null)
+                    writer.Close();
                 return null;
             }
 

@@ -61,6 +61,7 @@
     <Compile Include="TemplateBase\AttributeParsing\AttributeValue.cs" />
     <Compile Include="TemplateBase\AttributeParsing\HashCodeCombiner.cs" />
     <Compile Include="TemplateBase\AttributeParsing\PositionTagged.cs" />
+    <Compile Include="TemplateBase\HtmlHelper.cs" />
     <Compile Include="TemplateBase\RazorRequest.cs" />
     <Compile Include="TemplateBase\RazorResponse.cs" />
     <Compile Include="TemplateBase\RazorTemplateBase.cs" />

@@ -197,10 +197,23 @@ namespace RazorHostingTests
             if (result == null)
                 Assert.Fail(host.ErrorMessage);
 
+            // run again
+            person.Name = "Billy Bobb";
+            result = host.RenderTemplate("~/TestPartial.cshtml", person);
 
-            Assert.IsTrue(result.Contains("of Doeboy Incorporated"));
+            Console.WriteLine(result);
+            Console.WriteLine("---");
+            Console.WriteLine(host.Engine.LastGeneratedCode);
+
+            if (result == null)
+                Assert.Fail(host.ErrorMessage);
+
+
+            Assert.IsTrue(result.Contains("Billy Bobb"));
 
             host.Stop();
         }
+
+   
     }
 }

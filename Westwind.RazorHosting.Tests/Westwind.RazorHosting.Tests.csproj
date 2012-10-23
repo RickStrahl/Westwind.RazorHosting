@@ -59,6 +59,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Models\ComHelper.cs" />
     <Compile Include="StringHostTests.cs" />
     <Compile Include="FolderHostTests.cs" />
     <Compile Include="Models\Person.cs" />

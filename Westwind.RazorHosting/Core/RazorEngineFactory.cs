@@ -62,7 +62,7 @@ namespace Westwind.RazorHosting
         /// that it can be unloaded manually using the static
         /// methods.
         /// </summary>
-        static RazorEngineFactory<TBaseTemplateType> Current;
+        public static RazorEngineFactory<TBaseTemplateType> Current;
 
         public string ErrorMessage { get; set; }
 
@@ -73,7 +73,10 @@ namespace Westwind.RazorHosting
         /// <returns></returns>
         public static RazorEngine<TBaseTemplateType> CreateRazorHost()
         {
-            return new RazorEngine<TBaseTemplateType>();
+            if (Current == null)
+                Current = new RazorEngineFactory<TBaseTemplateType>(); 
+            
+            return Current.GetRazorHost();
         }
 
         /// <summary>

@@ -119,7 +119,7 @@ namespace Westwind.RazorHosting
         /// Cached instance of the Host Factory - so we can unload
         /// the host and its associated AppDomain.
         /// </summary>
-        protected RazorEngineFactory<TBaseTemplateType> EngineFactory;
+        //protected RazorEngineFactory<TBaseTemplateType> EngineFactory;
 
         /// <summary>
         /// Keep track of each compiled assembly
@@ -152,7 +152,7 @@ namespace Westwind.RazorHosting
 
                 if (Engine == null)
                 {
-                    this.ErrorMessage = EngineFactory.ErrorMessage;
+                    this.ErrorMessage = RazorEngineFactory<TBaseTemplateType>.Current.ErrorMessage;
                     return false;
                 }
 

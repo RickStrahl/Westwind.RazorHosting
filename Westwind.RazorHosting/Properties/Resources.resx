@@ -150,4 +150,8 @@
     <value>Partial Rendering failed for {0}: {1}</value>
     <comment>PartialRenderingFailed description</comment>
   </data>
+  <data name="UnableToLoadRazorEngine" xml:space="preserve">
+    <value>Unable to load Razor Engine</value>
+    <comment>UnableToLoadRazorEngine description</comment>
+  </data>
 </root>

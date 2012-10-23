@@ -24,6 +24,8 @@ namespace Westwind.RazorHosting
 
         public override void InitializeTemplate(object context, object configurationData)
         {
+            Html = new HtmlHelper();
+
             if (configurationData == null)
             {
                 if (context is TModel)
@@ -54,6 +56,8 @@ namespace Westwind.RazorHosting
       
         public override void InitializeTemplate(object model, object configurationData)
         {
+            Html = new HtmlHelper();
+
             // Pick up configuration data and stuff into Request object
             RazorFolderHostTemplateConfiguration config = configurationData as RazorFolderHostTemplateConfiguration;
 

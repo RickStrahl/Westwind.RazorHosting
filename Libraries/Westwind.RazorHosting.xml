@@ -43,10 +43,24 @@
         <member name="M:Westwind.RazorHosting.RazorEngine`1.AddAssembly(System.String,System.String[])">
             <summary>
             Method to add assemblies to the referenced assembly list.
-            Each assembly added HAS to be accessible via GAC or in
-            the applications' bin/bin private path
+            Use the DLL name or strongly typed name. Assembly added HAS 
+            to be accessible via GAC or in bin/privatebin path
             </summary>
             <param name="assemblyName"></param>
+        </member>
+        <member name="M:Westwind.RazorHosting.RazorEngine`1.AddAssemblyFromType(System.Type)">
+            <summary>
+            Adds an assembly to the Referenced assemblies based on a type
+            reference. Useful to add the 'host' assembly and model types.
+            </summary>
+            <param name="type"></param>
+        </member>
+        <member name="M:Westwind.RazorHosting.RazorEngine`1.AddAssemblyFromType(System.Object)">
+            <summary>
+            Adds an assembly to the ReferenceAssemblies based on an object instance.
+            Easy way to add a model's assembly.
+            </summary>
+            <param name="instance">any object instance</param>        
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.AddNamespace(System.String,System.String[])">
             <summary>
@@ -195,13 +209,6 @@
             Override to allow indefinite lifetime - no unloading
             </summary>
             <returns></returns>
-        </member>
-        <member name="M:Westwind.RazorHosting.RazorEngine`1.AddAssemblyFromType(System.Object)">
-            <summary>
-            Adds an assembly to the ReferenceAssemblies based on an object instance.
-            Easy way to add a model's assembly.
-            </summary>
-            <param name="instance"></param>        
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.FixupTemplate(System.String)">
             <summary>
@@ -450,12 +457,6 @@
             <summary>
             Cached instance of the Host. Required to keep the
             reference to the host alive for multiple uses.
-            </summary>
-        </member>
-        <member name="F:Westwind.RazorHosting.RazorBaseHostContainer`1.EngineFactory">
-            <summary>
-            Cached instance of the Host Factory - so we can unload
-            the host and its associated AppDomain.
             </summary>
         </member>
         <member name="F:Westwind.RazorHosting.RazorBaseHostContainer`1.LoadedAssemblies">
@@ -791,6 +792,25 @@
               Looks up a localized string similar to Unable to create type  .
             </summary>
         </member>
+        <member name="P:Westwind.RazorHosting.Properties.Resources.UnableToLoadRazorEngine">
+            <summary>
+              Looks up a localized string similar to Unable to load Razor Engine.
+            </summary>
+        </member>
+        <member name="M:Westwind.RazorHosting.HtmlHelper.Raw(System.String)">
+            <summary>
+            Output a string without formatting
+            </summary>
+            <param name="html"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.RazorHosting.HtmlHelper.HtmlString(System.Object)">
+            <summary>
+            Outputs an unencoded string from a value
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
         <member name="T:Westwind.RazorHosting.RazorRequest">
             <summary>
             Not used at the moment - more of a placeholder for now
@@ -924,6 +944,11 @@
             <summary>
             You can pass in a generic context object
             to use in your template code
+            </summary>
+        </member>
+        <member name="P:Westwind.RazorHosting.RazorTemplateBase.Html">
+            <summary>
+            Simplistic Html Helper implementation
             </summary>
         </member>
         <member name="P:Westwind.RazorHosting.RazorTemplateBase.ResultData">
