@@ -935,6 +935,21 @@
             <param name="suffix"></param>
             <param name="values"></param>
         </member>
+        <member name="M:Westwind.RazorHosting.RazorTemplateBase.RenderTemplate(System.String,System.Object)">
+            <summary>
+            Allows rendering a dynamic template from within the
+            running template. The template passed must be a string
+            and you can pass a model for rendering.
+            
+            This is useful to support nested templating for allowing
+            rendered values to contain embedded Razor template expressions
+            which is useful where user generated content may contain
+            Razor template logic.
+            </summary>
+            <param name="template"></param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
         <member name="M:Westwind.RazorHosting.RazorTemplateBase.Execute">
             <summary>
             Razor Parser overrides this method

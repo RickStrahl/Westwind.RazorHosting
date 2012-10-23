@@ -12,6 +12,7 @@ using System.Dynamic;
 
 namespace RazorHostingTests
 {
+    
     /// <summary>
     /// These tests use the basic RazorEngine rendering without
     /// any of the host containers that provide for caching and starting
@@ -23,24 +24,22 @@ namespace RazorHostingTests
     [TestClass]
     public class BasicRazorEngineTests
     {
-
-        RazorEngine<RazorTemplateBase> Host = null;
-
+        RazorEngine<RazorTemplateBase> Engine = null;
 
         private RazorEngine<RazorTemplateBase> CreateHost()
         {
-            if (this.Host != null)
-                return this.Host;
+            if (this.Engine != null)
+                return this.Engine;
 
-            this.Host = new RazorEngine<RazorTemplateBase>();
+            this.Engine = new RazorEngine<RazorTemplateBase>();
 
             // Use Static Methods - no error message if host doesn't load                       
             //this.Host = RazorEngineFactory<RazorTemplateBase>.CreateRazorHostInAppDomain();
 
-            if (this.Host == null)
+            if (this.Engine == null)
                 throw new ApplicationException("Unable to load Razor Template Host");
             
-            return this.Host;
+            return this.Engine;
         }
 
         [TestMethod]
@@ -286,9 +285,5 @@ Hello World @Model.Name. Time is: @DateTime.Now";
             Console.WriteLine("--- Source Code ---");
             Console.WriteLine(host.LastGeneratedCode);
         }
-
-
-
-
     }
 }

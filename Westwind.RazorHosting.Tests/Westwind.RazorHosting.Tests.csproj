@@ -59,7 +59,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Models\ComHelper.cs" />
     <Compile Include="StringHostTests.cs" />
     <Compile Include="FolderHostTests.cs" />
     <Compile Include="Models\Person.cs" />
@@ -75,6 +74,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="FileTemplates\TestRenderTemplate.cshtml" />
     <None Include="FileTemplates\HelloWorld.cshtml" />
     <None Include="FileTemplates\TestPartial.cshtml" />
     <None Include="FileTemplates\Header_Partial.cshtml" />

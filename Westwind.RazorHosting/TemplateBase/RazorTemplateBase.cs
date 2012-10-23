@@ -108,7 +108,7 @@ namespace Westwind.RazorHosting
         /// <summary>
         /// Instance of the RazorEngine object.
         /// </summary>
-        public object Engine { get; set; }
+        public object Engine { get; set; }        
 
 
         /// <summary>
@@ -129,6 +129,8 @@ namespace Westwind.RazorHosting
         {
             Response = new RazorResponse();
             Request = new RazorRequest();
+
+
         }
 
         /// <summary>
@@ -252,6 +254,36 @@ namespace Westwind.RazorHosting
         {
             return WebUtility.HtmlEncode(input);
         }   
+
+        /// <summary>
+        /// Allows rendering a dynamic template from within the
+        /// running template. The template passed must be a string
+        /// and you can pass a model for rendering.
+        /// 
+        /// This is useful to support nested templating for allowing
+        /// rendered values to contain embedded Razor template expressions
+        /// which is useful where user generated content may contain
+        /// Razor template logic.
+        /// </summary>
+        /// <param name="template"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public virtual string RenderTemplate(string template,object model)
+        {            
+            if (template == null)
+                return string.Empty;
+            
+            if(!template.Contains("@"))
+                return template;
+
+            // use dynamic to get around generic type casting
+            dynamic engine = Engine;
+            string result = engine.RenderTemplate(template, model);
+            if (result == null)
+                throw new ApplicationException("RenderTemplate failed: " + engine.ErrorMessage);
+                       
+            return result;
+        }
 
         /// <summary>
         /// Razor Parser overrides this method
