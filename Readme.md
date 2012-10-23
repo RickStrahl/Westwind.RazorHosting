@@ -37,7 +37,7 @@ a template and cache it yourself.
 To execute a template:
 
     string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
-	var host = new RazorEngine<RazorTemplateBase>();
+	var host = new RazorEngine();
     string result = host.RenderTemplate(template,new { Name="Joe Doe" });
 
 You can also create a template and cache it:
@@ -189,11 +189,15 @@ where the template might look like this:
 		@{for (int i = 0; i < 10; i++)
 		  {
 			  Response.WriteLine(i + ".");
-		  }   
+		  }  
+
+	   You can also render nested templates from string
+	   @RenderTemplate("Child Template rendered from String. Name: @Model.Name",Model) 
 	</body>
 	</html>
 
-Note that you can render partials, by specifying the virtual path for the partial.
+Note that you can render partials, by specifying the virtual path for the partial
+relative to the to TemplateBasePath specified.
 
 ####Running in a separate AppDomain wiht UseAppDomain####
 Note that you can choose to host the container in a separate AppDomain by using:
