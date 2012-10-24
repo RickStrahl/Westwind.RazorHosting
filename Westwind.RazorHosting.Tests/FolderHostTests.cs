@@ -245,9 +245,9 @@ namespace RazorHostingTests
             };
 
             string result = null;
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 10; i++)
             {
-                result = host.RenderTemplate("~/TestRenderTemplate.cshtml", person);    
+                result = host.RenderTemplate("~/TestRenderTemplate.cshtml", person);
             }
             
             Console.WriteLine(result);

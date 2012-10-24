@@ -24,6 +24,15 @@
             </summary>
             <param name="instance"></param>
         </member>
+        <member name="T:Westwind.RazorHosting.RazorEngine">
+            <summary>
+            Razor Hosting Engine that allows execution of Razor templates outside of
+            ASP.NET. You can execute templates from string or a textreader and output
+            to string or a text reader.
+            
+            This implementation only supports C#.
+            </summary>
+        </member>
         <member name="T:Westwind.RazorHosting.RazorEngine`1">
             <summary>
             Razor Hosting Engine that allows execution of Razor templates outside of

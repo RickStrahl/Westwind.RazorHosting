@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Net;
 using System.Web;
 
@@ -129,8 +128,6 @@ namespace Westwind.RazorHosting
         {
             Response = new RazorResponse();
             Request = new RazorRequest();
-
-
         }
 
         /// <summary>

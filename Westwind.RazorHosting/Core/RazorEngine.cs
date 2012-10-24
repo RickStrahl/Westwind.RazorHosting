@@ -45,11 +45,20 @@ using System.Web.Razor;
 
 namespace Westwind.RazorHosting
 {
+
+    /// <summary>
+    /// Razor Hosting Engine that allows execution of Razor templates outside of
+    /// ASP.NET. You can execute templates from string or a textreader and output
+    /// to string or a text reader.
+    /// 
+    /// This implementation only supports C#.
+    /// </summary>
     public class RazorEngine : RazorEngine<RazorTemplateBase>
     {
-        public RazorEngine() : base() { }        
+        public RazorEngine() : base()
+        { }
     }
-
+    
     /// <summary>
     /// Razor Hosting Engine that allows execution of Razor templates outside of
     /// ASP.NET. You can execute templates from string or a textreader and output
@@ -145,6 +154,8 @@ namespace Westwind.RazorHosting
             ReferencedAssemblies.Add("System.Core.dll");
             ReferencedAssemblies.Add("Microsoft.CSharp.dll");   // dynamic support!                         
             ReferencedAssemblies.Add("System.Web.dll");
+
+
             
             ReferencedAssemblies.Add(typeof(RazorEngineHost).Assembly.Location);            
             ReferencedAssemblies.Add(typeof(RazorEngine).Assembly.Location);
