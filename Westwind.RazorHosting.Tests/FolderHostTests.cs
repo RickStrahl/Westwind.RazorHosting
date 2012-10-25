@@ -215,6 +215,11 @@ namespace RazorHostingTests
         }
 
 
+        /// <summary>
+        /// Renders a page that contains a RenderTemplate() call used to
+        /// render nested content. Useful to render user entered content
+        /// that might need to contain dynamic expressions
+        /// </summary>
         [TestMethod]
         public void StringTemplateTest()
         {
@@ -227,7 +232,7 @@ namespace RazorHostingTests
             host.AddAssemblyFromType(typeof(Person));
 
             host.UseAppDomain = true;
-            //host.Configuration.CompileToMemory = true;
+            //host.Configuration.CompileToMemory = false;
             //host.Configuration.TempAssemblyPath = Environment.CurrentDirectory;
 
             host.Start();

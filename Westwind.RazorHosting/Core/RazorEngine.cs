@@ -154,8 +154,6 @@ namespace Westwind.RazorHosting
             ReferencedAssemblies.Add("System.Core.dll");
             ReferencedAssemblies.Add("Microsoft.CSharp.dll");   // dynamic support!                         
             ReferencedAssemblies.Add("System.Web.dll");
-
-
             
             ReferencedAssemblies.Add(typeof(RazorEngineHost).Assembly.Location);            
             ReferencedAssemblies.Add(typeof(RazorEngine).Assembly.Location);
@@ -166,10 +164,14 @@ namespace Westwind.RazorHosting
         /// Use the DLL name or strongly typed name. Assembly added HAS 
         /// to be accessible via GAC or in bin/privatebin path
         /// </summary>
-        /// <param name="assemblyName"></param>
-        public void AddAssembly(string ns, params string[] additionalAssemblies)
+        /// <param name="assemblyName">
+        /// Path to the assembly. GAC'd assemblies or assemblies in current path
+        /// can be provided without a path. All others should contain a fully qualified OS path. 
+        /// Note that Razor does not look in the PrivateBin path for the AppDomain.
+        /// </param>
+        public void AddAssembly(string assemblyPath, params string[] additionalAssemblies)
         {            
-            ReferencedAssemblies.Add(ns);
+            ReferencedAssemblies.Add(assemblyPath);
             if (additionalAssemblies != null)
                 ReferencedAssemblies.AddRange(additionalAssemblies);
         }

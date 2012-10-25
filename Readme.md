@@ -12,6 +12,7 @@ displays in desktop applications, code generation and much more. You can use it 
 as well as in any ASP.NET application that doesn't already have ready access to the Razor View engine.
 
 * [Install from NuGet (Westwind.RazorHosting)](http://nuget.org/packages/Westwind.RazorHosting)
+* [Westwind.RazorHosting Documentation](http://west-wind.com/files/tools/razorhosting/docs/)
 * [Questions and Discussion of Westwind.RazorHosting](http://www.west-wind.com/wwThreads/default.asp?Forum=West+Wind+.NET+Tools+and+Demos)
 
 > **Note!**

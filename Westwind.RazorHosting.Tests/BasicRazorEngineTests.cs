@@ -34,7 +34,7 @@ namespace RazorHostingTests
             this.Engine = new RazorEngine<RazorTemplateBase>();
 
             // Use Static Methods - no error message if host doesn't load                       
-            //this.Host = RazorEngineFactory<RazorTemplateBase>.CreateRazorHostInAppDomain();
+            //this.Host = RazorEngineFactory<RazorTemplateBase>.CreateRazorHost();
 
             if (this.Engine == null)
                 throw new ApplicationException("Unable to load Razor Template Host");
@@ -51,6 +51,26 @@ namespace RazorHostingTests
 
             Assert.IsNotNull(result,host.ErrorMessage);
             Assert.IsTrue(result.Contains("Joe Doe"));
+
+            Console.WriteLine(result);
+        }
+
+        [TestMethod]
+        public void SimplestRazorEngineTestWithAppDomain()
+        {
+            
+            string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
+            
+            // Load engine into new AppDomain
+            var host = RazorEngineFactory<RazorTemplateBase>.CreateRazorHostInAppDomain();
+            
+            string result = host.RenderTemplate(template, new Person { Name = "Joe Doe" });
+            
+            Assert.IsNotNull(result, host.ErrorMessage);
+            Assert.IsTrue(result.Contains("Joe Doe"));
+
+            // shut down AppDomain
+            RazorEngineFactory<RazorTemplateBase>.UnloadRazorHostInAppDomain();
 
             Console.WriteLine(result);
         }

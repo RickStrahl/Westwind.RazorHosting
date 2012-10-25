@@ -55,7 +55,11 @@
             Use the DLL name or strongly typed name. Assembly added HAS 
             to be accessible via GAC or in bin/privatebin path
             </summary>
-            <param name="assemblyName"></param>
+            <param name="assemblyName">
+            Path to the assembly. GAC'd assemblies or assemblies in current path
+            can be provided without a path. All others should contain a fully qualified OS path. 
+            Note that Razor does not look in the PrivateBin path for the AppDomain.
+            </param>
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.AddAssemblyFromType(System.Type)">
             <summary>
