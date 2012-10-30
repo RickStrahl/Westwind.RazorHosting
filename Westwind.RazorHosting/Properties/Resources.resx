@@ -126,7 +126,7 @@
     <comment>UnableToCreateType description</comment>
   </data>
   <data name="CouldnTActivateTypeInstance" xml:space="preserve">
-    <value>Couldn't activate type instance: </value>
+    <value>Couldn't activate compiled  template type instance: </value>
     <comment>CouldnTActivateTypeInstance description</comment>
   </data>
   <data name="LineX0TColX1TErrorX2RN" xml:space="preserve">

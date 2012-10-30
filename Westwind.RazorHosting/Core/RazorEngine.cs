@@ -80,6 +80,12 @@ namespace Westwind.RazorHosting
         /// </summary>
         public string LastGeneratedCode { get; set; }
 
+        /// <summary>
+        /// Allows retrieval of the template's ResultData property
+        /// to be retrieved from the last request.
+        /// </summary>
+        public dynamic LastResultData { get; set; }
+
        /// <summary>
        /// Holds Razor Configuration Properties
        /// </summary>
@@ -369,6 +375,9 @@ namespace Westwind.RazorHosting
 
             using (TBaseTemplateType instance = InstantiateTemplateClass(type))
             {
+                if (instance == null)
+                    throw new InvalidOperationException(this.ErrorMessage);
+
                 //if (TemplatePerRequestConfigurationData != null)
                 instance.InitializeTemplate(model, TemplatePerRequestConfigurationData);
 
@@ -579,6 +588,8 @@ namespace Westwind.RazorHosting
         /// <returns>true or false - check ErrorMessage for errors</returns>
         protected virtual bool InvokeTemplateInstance(TBaseTemplateType instance, object context)
         {
+            LastResultData = null;
+
             try
             {
                 instance.Model = context;
@@ -611,6 +622,11 @@ namespace Westwind.RazorHosting
                 // Must make sure Response is closed
                 instance.Response.Dispose();
             }
+
+            // capture result data so the engine can 
+            // pass it back to the caller
+            this.LastResultData = instance.ResultData;
+
             return true;
         }
 

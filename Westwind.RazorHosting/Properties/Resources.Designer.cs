@@ -61,7 +61,7 @@ namespace Westwind.RazorHosting.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Couldn&apos;t activate type instance: .
+        ///   Looks up a localized string similar to Couldn&apos;t activate compiled  template type instance: .
         /// </summary>
         public static string CouldnTActivateTypeInstance {
             get {
@@ -120,7 +120,7 @@ namespace Westwind.RazorHosting.Properties {
         /// </summary>
         public static string TemplateFileDoesnTExist {
             get {
-               return ResourceManager.GetString("TemplateFileDoesnTExist", resourceCulture);
+                return ResourceManager.GetString("TemplateFileDoesnTExist", resourceCulture);
             }
         }
         
