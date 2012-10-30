@@ -266,6 +266,45 @@ namespace RazorHostingTests
 
             Assert.IsTrue(result.Contains("West Wind"));
         }
+
+        [TestMethod]
+        public void Test()
+        {
+            var host = new RazorFolderHostContainer();
+
+            host.TemplatePath = Path.GetFullPath(@"..\..\FileTemplates\");
+            host.BaseBinaryFolder = Environment.CurrentDirectory;
+
+            // add model assembly - ie. this assembly
+            host.AddAssemblyFromType(typeof(Person));
+
+            host.UseAppDomain = true;
+            //host.Configuration.CompileToMemory = true;
+            //host.Configuration.TempAssemblyPath = Environment.CurrentDirectory;
+
+            host.Start();
+
+            Person person = new Person()
+            {
+                Name = "Rick",
+                Company = "West Wind",
+                Entered = DateTime.Now,
+                Address = new Address()
+                {
+                    Street = "32 Kaiea",
+                    City = "Paia"
+                }
+            };
+
+            string result = host.RenderTemplate("~/NotThere.cshtml", person);
+
+            Assert.IsTrue(host.ErrorMessage.Contains("Template File doesn't exist"));
+
+            Console.WriteLine(host.ErrorMessage);
+
+            host.Stop();
+            
+        }
    
     }
 }

@@ -15,9 +15,7 @@ namespace RazorHostingTests
     /// </summary>
     [TestClass]
     public class RawRazorTemplateHostingTests
-    {
-   
-     
+    {        
 
         [TestMethod]
         public void RawRazorTest()

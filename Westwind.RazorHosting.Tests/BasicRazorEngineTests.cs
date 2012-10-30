@@ -46,31 +46,57 @@ namespace RazorHostingTests
         public void SimplestRazorEngineTest()
         {
             string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
-	        var host = new RazorEngine<RazorTemplateBase>();
-            string result = host.RenderTemplate(template, new Person { Name = "Joe Doe" });
+	        var host = new RazorEngine();
+
+            string result = host.RenderTemplate(template, new { Name = "Joe Doe" });
 
             Assert.IsNotNull(result,host.ErrorMessage);
             Assert.IsTrue(result.Contains("Joe Doe"));
 
             Console.WriteLine(result);
+            Console.WriteLine(host.LastGeneratedCode);
+        }
+
+        [TestMethod]
+        public void SimplestRazorEngineWithCompileTest()
+        {
+            string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
+            var host = new RazorEngine();
+
+            string assemblyId = host.CompileTemplate(template);
+
+            string result = null;
+
+            // this will now reuse the same compile template           
+            for (int i = 0; i < 10; i++)
+            {
+                result += host.RenderTemplateFromAssembly(assemblyId, new { Name = "Joe Doe" }) + "\r\n";    
+            }
+            
+            Assert.IsNotNull(result, host.ErrorMessage);
+            Assert.IsTrue(result.Contains("Joe Doe"));
+
+            Console.WriteLine(result);
+            
         }
 
         [TestMethod]
         public void SimplestRazorEngineTestWithAppDomain()
-        {
-            
+        {            
             string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
             
             // Load engine into new AppDomain
-            var host = RazorEngineFactory<RazorTemplateBase>.CreateRazorHostInAppDomain();
+            var host = RazorEngineFactory.CreateRazorHostInAppDomain();
             
+            // Note: You can't use anonymouse types for cross-AppDomain calls
+            //       Models passed must inherit MarshalByRefObject or be [Serializable]
             string result = host.RenderTemplate(template, new Person { Name = "Joe Doe" });
             
             Assert.IsNotNull(result, host.ErrorMessage);
             Assert.IsTrue(result.Contains("Joe Doe"));
 
             // shut down AppDomain
-            RazorEngineFactory<RazorTemplateBase>.UnloadRazorHostInAppDomain();
+            RazorEngineFactory.UnloadRazorHostInAppDomain();
 
             Console.WriteLine(result);
         }
@@ -85,14 +111,14 @@ namespace RazorHostingTests
         public void SimplestRazorEngineWithAnonymousModelTest()
         {
             var model = new { Name = "Joe Doe", Company = "West Wind" };
-
-            var type = model.GetType();
-
+        
             string template = @"Hello World @Model.Name of @Model.Company. Time is: @DateTime.Now";
             var host = new RazorEngine<RazorTemplateBase>();
             string cid = host.CompileTemplate(template);            
             string result = host.RenderTemplateFromAssembly(cid, model);
-            Console.WriteLine(result + "\r\n" + host.ErrorMessage + "\r\n" + host.LastGeneratedCode);
+            Console.WriteLine(result + "\r\n" + 
+                              host.ErrorMessage + "\r\n" + 
+                              host.LastGeneratedCode);
 
             Assert.IsNotNull(result, host.ErrorMessage + "\r\n" + host.LastGeneratedCode);
             Assert.IsTrue(result.Contains("Joe Doe"));

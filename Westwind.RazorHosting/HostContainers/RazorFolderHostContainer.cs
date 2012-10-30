@@ -38,7 +38,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Reflection;
-using Westwind.RazorHosting.Properties;
 
 namespace Westwind.RazorHosting
 {
@@ -159,7 +158,7 @@ namespace Westwind.RazorHosting
             int fileNameHash = fileName.GetHashCode();
             if (!File.Exists(fileName))
             {
-                this.SetError(Resources.TemplateFileDoesnTExist + fileName);
+                this.SetError(Westwind.RazorHosting.Properties.Resources.TemplateFileDoesnTExist + fileName);
                 return null;
             }
 
@@ -190,7 +189,7 @@ namespace Westwind.RazorHosting
                 }
                 catch
                 {
-                    this.SetError(Resources.ErrorReadingTemplateFile + fileName);
+                    this.SetError(Westwind.RazorHosting.Properties.Resources.ErrorReadingTemplateFile + fileName);
                     return null;
                 }
                 assemblyId = Engine.CompileTemplate(template);

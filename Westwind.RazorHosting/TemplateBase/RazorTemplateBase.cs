@@ -297,6 +297,15 @@ namespace Westwind.RazorHosting
             }
         }
 
+        /// <summary>
+        /// Force this host to stay alive indefinitely
+        /// </summary>
+        /// <returns></returns>
+        public override object InitializeLifetimeService()
+        {
+            return null;
+        }
+
         #region Old_WriteAttribute_Implementations
         #if false
         /// <summary>

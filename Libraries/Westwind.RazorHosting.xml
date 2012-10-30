@@ -968,6 +968,12 @@
             Razor Parser overrides this method
             </summary>
         </member>
+        <member name="M:Westwind.RazorHosting.RazorTemplateBase.InitializeLifetimeService">
+            <summary>
+            Force this host to stay alive indefinitely
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:Westwind.RazorHosting.RazorTemplateBase.Model">
             <summary>
             You can pass in a generic context object

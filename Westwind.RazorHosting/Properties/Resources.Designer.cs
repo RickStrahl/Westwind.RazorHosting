@@ -22,7 +22,7 @@ namespace Westwind.RazorHosting.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Westwind.RazorHosting.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Westwind.RazorHosting.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace Westwind.RazorHosting.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Westwind.RazorHosting.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Couldn&apos;t activate type instance: .
         /// </summary>
-        internal static string CouldnTActivateTypeInstance {
+        public static string CouldnTActivateTypeInstance {
             get {
                 return ResourceManager.GetString("CouldnTActivateTypeInstance", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Westwind.RazorHosting.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Error reading template file: .
         /// </summary>
-        internal static string ErrorReadingTemplateFile {
+        public static string ErrorReadingTemplateFile {
             get {
                 return ResourceManager.GetString("ErrorReadingTemplateFile", resourceCulture);
             }
@@ -82,7 +82,7 @@ namespace Westwind.RazorHosting.Properties {
         ///   Looks up a localized string similar to Line: {0}\t Col: {1}\t Error: {2}
         ///.
         /// </summary>
-        internal static string LineX0TColX1TErrorX2RN {
+        public static string LineX0TColX1TErrorX2RN {
             get {
                 return ResourceManager.GetString("LineX0TColX1TErrorX2RN", resourceCulture);
             }
@@ -91,7 +91,7 @@ namespace Westwind.RazorHosting.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Partial Rendering failed for {0}: {1}.
         /// </summary>
-        internal static string PartialRenderingFailed {
+        public static string PartialRenderingFailed {
             get {
                 return ResourceManager.GetString("PartialRenderingFailed", resourceCulture);
             }
@@ -100,7 +100,7 @@ namespace Westwind.RazorHosting.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Previously compiled assembly not found..
         /// </summary>
-        internal static string PreviouslyCompiledAssemblyNotFound {
+        public static string PreviouslyCompiledAssemblyNotFound {
             get {
                 return ResourceManager.GetString("PreviouslyCompiledAssemblyNotFound", resourceCulture);
             }
@@ -109,7 +109,7 @@ namespace Westwind.RazorHosting.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Template Execution Error: .
         /// </summary>
-        internal static string TemplateExecutionError {
+        public static string TemplateExecutionError {
             get {
                 return ResourceManager.GetString("TemplateExecutionError", resourceCulture);
             }
@@ -118,16 +118,16 @@ namespace Westwind.RazorHosting.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Template File doesn&apos;t exist: .
         /// </summary>
-        internal static string TemplateFileDoesnTExist {
+        public static string TemplateFileDoesnTExist {
             get {
-                return ResourceManager.GetString("TemplateFileDoesnTExist", resourceCulture);
+               return ResourceManager.GetString("TemplateFileDoesnTExist", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Unable to create type  .
         /// </summary>
-        internal static string UnableToCreateType {
+        public static string UnableToCreateType {
             get {
                 return ResourceManager.GetString("UnableToCreateType", resourceCulture);
             }
@@ -136,7 +136,7 @@ namespace Westwind.RazorHosting.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Unable to load Razor Engine.
         /// </summary>
-        internal static string UnableToLoadRazorEngine {
+        public static string UnableToLoadRazorEngine {
             get {
                 return ResourceManager.GetString("UnableToLoadRazorEngine", resourceCulture);
             }
