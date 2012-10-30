@@ -40,7 +40,7 @@ using System.CodeDom.Compiler;
 using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
-using Westwind.RazorHosting.Properties;
+
 using System.Web.Razor;
 
 namespace Westwind.RazorHosting
@@ -334,7 +334,7 @@ namespace Westwind.RazorHosting
             Assembly generatedAssembly = AssemblyCache[assemblyId];
             if (generatedAssembly == null)
             {
-                this.SetError(Resources.PreviouslyCompiledAssemblyNotFound);
+                this.SetError(Westwind.RazorHosting.Properties.Resources.PreviouslyCompiledAssemblyNotFound);
                 return null;
             }
 
@@ -346,7 +346,7 @@ namespace Westwind.RazorHosting
                 type = generatedAssembly.GetTypes().FirstOrDefault();
                 if (type == null)
                 {
-                    this.SetError(Resources.UnableToCreateType);
+                    this.SetError(Westwind.RazorHosting.Properties.Resources.UnableToCreateType);
                     return null;
                 }
             }
@@ -359,7 +359,7 @@ namespace Westwind.RazorHosting
                 }
                 catch (Exception ex)
                 {
-                    SetError(Resources.UnableToCreateType + className + ": " + ex.Message);
+                    SetError(Westwind.RazorHosting.Properties.Resources.UnableToCreateType + className + ": " + ex.Message);
                     return null;
                 }
             }
@@ -462,7 +462,7 @@ namespace Westwind.RazorHosting
             {
                 var compileErrors = new StringBuilder();
                 foreach (System.CodeDom.Compiler.CompilerError compileError in compilerResults.Errors)
-                    compileErrors.Append(String.Format(Resources.LineX0TColX1TErrorX2RN, 
+                    compileErrors.Append(String.Format("Line: {0}, Column: {1}, Error: {2}", 
                                         compileError.Line, 
                                         compileError.Column, 
                                         compileError.ErrorText));
@@ -559,7 +559,7 @@ namespace Westwind.RazorHosting
 
             if (instance == null)
             {
-                SetError(Resources.CouldnTActivateTypeInstance + type.FullName);
+                SetError(Westwind.RazorHosting.Properties.Resources.CouldnTActivateTypeInstance + type.FullName);
                 return null;
             }
 
@@ -603,7 +603,7 @@ namespace Westwind.RazorHosting
             }
             catch (Exception ex)
             {
-                this.SetError(Resources.TemplateExecutionError + ex.Message);
+                this.SetError(Westwind.RazorHosting.Properties.Resources.TemplateExecutionError + ex.Message);
                 return false;
             }
             finally
