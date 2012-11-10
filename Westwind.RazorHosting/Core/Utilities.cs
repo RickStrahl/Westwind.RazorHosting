@@ -123,5 +123,18 @@ namespace Westwind.RazorHosting
             }
             return sb.ToString();
         }
+
+        /// <summary>
+        /// HtmlEncodes any value by calling ToString() first
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string HtmlEncode(object value)
+        {
+            if (value == null)
+                return string.Empty;
+
+            return HtmlEncode(value.ToString());
+        }
     }
 }

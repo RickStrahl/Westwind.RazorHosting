@@ -24,6 +24,12 @@
             </summary>
             <param name="instance"></param>
         </member>
+        <member name="T:Westwind.RazorHosting.RawString">
+            <summary>
+            Class that wraps a string and returns it as a raw
+            non-encoded string.
+            </summary>
+        </member>
         <member name="T:Westwind.RazorHosting.RazorEngine">
             <summary>
             Razor Hosting Engine that allows execution of Razor templates outside of
@@ -257,6 +263,12 @@
             Last generated output
             </summary>
         </member>
+        <member name="P:Westwind.RazorHosting.RazorEngine`1.LastResultData">
+            <summary>
+            Allows retrieval of the template's ResultData property
+            to be retrieved from the last request.
+            </summary>
+        </member>
         <member name="P:Westwind.RazorHosting.RazorEngine`1.Configuration">
             <summary>
             Holds Razor Configuration Properties
@@ -341,7 +353,11 @@
             assemblies created through scripting.
             
             Both static and instance loader methods are available. For
-            AppDomain created hosts. 
+            AppDomain created hosts.
+            
+            Note:
+            Only works for a single AppDomain as this class holds on
+            to the AppDomain as a Singleton.    
             </summary>
             <typeparam name="TBaseTemplateType">RazorTemplateBase based type</typeparam>
         </member>
@@ -450,6 +466,13 @@
             </summary>
             <param name="text">The text string to encode. </param>
             <returns>The HTML-encoded text.</returns>
+        </member>
+        <member name="M:Westwind.RazorHosting.Utilities.HtmlEncode(System.Object)">
+            <summary>
+            HtmlEncodes any value by calling ToString() first
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
         </member>
         <member name="T:Westwind.RazorHosting.RazorBaseHostContainer`1">
             <summary>
@@ -766,7 +789,7 @@
         </member>
         <member name="P:Westwind.RazorHosting.Properties.Resources.CouldnTActivateTypeInstance">
             <summary>
-              Looks up a localized string similar to Couldn&apos;t activate type instance: .
+              Looks up a localized string similar to Couldn&apos;t activate compiled  template type instance: .
             </summary>
         </member>
         <member name="P:Westwind.RazorHosting.Properties.Resources.ErrorReadingTemplateFile">

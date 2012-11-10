@@ -46,9 +46,10 @@ namespace RazorHostingTests
         public void SimplestRazorEngineTest()
         {
             string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
+            template = Templates.BasicTemplateStringWithPersonModel;
 	        var host = new RazorEngine();
 
-            string result = host.RenderTemplate(template, new { Name = "Joe Doe" });
+            string result = host.RenderTemplate(template, new Person { Name = "Joe Doe" });
 
             Assert.IsNotNull(result,host.ErrorMessage);
             Assert.IsTrue(result.Contains("Joe Doe"));
@@ -86,7 +87,7 @@ namespace RazorHostingTests
             string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
             
             // Load engine into new AppDomain
-            var host = RazorEngineFactory.CreateRazorHostInAppDomain();
+            var host = RazorEngineFactory<RazorTemplateBase>.CreateRazorHostInAppDomain();
             
             // Note: You can't use anonymouse types for cross-AppDomain calls
             //       Models passed must inherit MarshalByRefObject or be [Serializable]
@@ -96,7 +97,7 @@ namespace RazorHostingTests
             Assert.IsTrue(result.Contains("Joe Doe"));
 
             // shut down AppDomain
-            RazorEngineFactory.UnloadRazorHostInAppDomain();
+            RazorEngineFactory<RazorTemplateBase>.UnloadRazorHostInAppDomain();
 
             Console.WriteLine(result);
         }

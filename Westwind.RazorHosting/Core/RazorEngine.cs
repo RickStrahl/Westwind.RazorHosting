@@ -151,15 +151,14 @@ namespace Westwind.RazorHosting
             ReferencedNamespaces.Add("System.Text");
             ReferencedNamespaces.Add("System.Collections.Generic");
             ReferencedNamespaces.Add("System.Linq");
-            ReferencedNamespaces.Add("System.IO");
-            ReferencedNamespaces.Add("System.Web");            
+            ReferencedNamespaces.Add("System.IO");                     
             ReferencedNamespaces.Add("Westwind.RazorHosting");
 
             ReferencedAssemblies = new List<string>();
             ReferencedAssemblies.Add("System.dll");
             ReferencedAssemblies.Add("System.Core.dll");
             ReferencedAssemblies.Add("Microsoft.CSharp.dll");   // dynamic support!                         
-            ReferencedAssemblies.Add("System.Web.dll");
+            
             
             ReferencedAssemblies.Add(typeof(RazorEngineHost).Assembly.Location);            
             ReferencedAssemblies.Add(typeof(RazorEngine).Assembly.Location);
@@ -703,4 +702,10 @@ namespace Westwind.RazorHosting
         CSharp,
         VisualBasic
     }
+
+    public class Foo : MarshalByRefObject
+    {
+        public string Name { get; set; }
+    }
+
   }

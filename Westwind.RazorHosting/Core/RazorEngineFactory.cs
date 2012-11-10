@@ -38,6 +38,7 @@ using System.IO;
 namespace Westwind.RazorHosting
 {
 
+
     /// <summary>
     /// Factory that creates a RazorHost instance in a remote 
     /// AppDomain that can be unloaded. This allows unloading of
@@ -48,70 +49,8 @@ namespace Westwind.RazorHosting
     /// 
     /// Note:
     /// Only works for a single AppDomain as this class holds on
-    /// to the AppDomain as a Singleton.
+    /// to the AppDomain as a Singleton.    
     /// </summary>
-    /// <typeparam name="TBaseTemplateType">RazorTemplateBase based type</typeparam>
-    public class RazorEngineFactory : RazorEngineFactory<RazorTemplateBase>
-    {
-        /// <summary>
-        /// Internally managed instance of the HostFactory
-        /// that ensures that the AppDomain stays alive and
-        /// that it can be unloaded manually using the static
-        /// methods.
-        /// </summary>
-        public static RazorEngineFactory<RazorTemplateBase> Current;
-
-        public string ErrorMessage { get; set; }
-
-        /// <summary>
-        /// Create an instance of the RazorHost in the current
-        /// AppDomain. No special handling...
-        /// </summary>
-        /// <returns></returns>
-        public static RazorEngine<RazorTemplateBase> CreateRazorHost()
-        {
-            if (Current == null)
-                Current = new RazorEngineFactory<RazorTemplateBase>();
-
-            return Current.GetRazorHost();
-        }
-
-        /// <summary>
-        /// Creates an instance of the RazorHost in a new AppDomain. This 
-        /// version creates a static singleton that that is cached and you
-        /// can call UnloadRazorHostInAppDomain to unload it.
-        /// </summary>
-        /// <returns></returns>
-        public static RazorEngine<RazorTemplateBase> CreateRazorHostInAppDomain()
-        {
-            if (Current == null)
-                Current = new RazorEngineFactory<RazorTemplateBase>();
-
-            return Current.GetRazorHostInAppDomain();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public static void UnloadRazorHostInAppDomain()
-        {
-            if (Current != null)
-                Current.UnloadHost();
-            Current = null;
-        }
-    }
-
-    /// <summary>
-    /// Factory that creates a RazorHost instance in a remote 
-    /// AppDomain that can be unloaded. This allows unloading of
-    /// assemblies created through scripting.
-    /// 
-    /// Both static and instance loader methods are available. For
-    /// AppDomain created hosts.
-    /// 
-    /// Note:
-    /// Only works for a single AppDomain as this class holds on
-    /// to the AppDomain as a Singleton.    /// </summary>
     /// <typeparam name="TBaseTemplateType">RazorTemplateBase based type</typeparam>
     public class RazorEngineFactory<TBaseTemplateType>
         where TBaseTemplateType : RazorTemplateBase
@@ -194,17 +133,20 @@ namespace Westwind.RazorHosting
             
             /// Create the instance inside of the new AppDomain
             /// Note: remote domain uses local EXE's AppBasePath!!!
-            RazorEngine<TBaseTemplateType> host  = null;
-       
+            RazorEngine<TBaseTemplateType> host  = null;       
 
             try
             {
                 Assembly ass = Assembly.GetExecutingAssembly();
-
                 string AssemblyPath = ass.Location;
 
-                host = (RazorEngine<TBaseTemplateType>) LocalAppDomain.CreateInstanceFrom(AssemblyPath,
-                                                       typeof(RazorEngine<TBaseTemplateType>).FullName).Unwrap();
+                var templateType = typeof(RazorEngine<TBaseTemplateType>);
+                
+                object instance = LocalAppDomain.CreateInstanceFrom(AssemblyPath,
+                                                                    templateType.FullName)
+                                                .Unwrap();
+
+                host = instance as RazorEngine<TBaseTemplateType>;
             }
             catch (Exception ex)
             {
@@ -283,4 +225,69 @@ namespace Westwind.RazorHosting
             }
         }
     }
+
+
+
+    ///// <summary>
+    ///// Factory that creates a RazorHost instance in a remote 
+    ///// AppDomain that can be unloaded. This allows unloading of
+    ///// assemblies created through scripting.
+    ///// 
+    ///// Both static and instance loader methods are available. For
+    ///// AppDomain created hosts.
+    ///// 
+    ///// Note:
+    ///// Only works for a single AppDomain as this class holds on
+    ///// to the AppDomain as a Singleton.
+    ///// </summary>
+    ///// <typeparam name="TBaseTemplateType">RazorTemplateBase based type</typeparam>
+    //public class RazorEngineFactory : RazorEngineFactory<RazorTemplateBase>
+    //{
+    //    /// <summary>
+    //    /// Internally managed instance of the HostFactory
+    //    /// that ensures that the AppDomain stays alive and
+    //    /// that it can be unloaded manually using the static
+    //    /// methods.
+    //    /// </summary>
+    //    public static RazorEngineFactory<RazorTemplateBase> Current;
+
+    //    public string ErrorMessage { get; set; }
+
+    //    /// <summary>
+    //    /// Create an instance of the RazorHost in the current
+    //    /// AppDomain. No special handling...
+    //    /// </summary>
+    //    /// <returns></returns>
+    //    public static RazorEngine<RazorTemplateBase> CreateRazorHost()
+    //    {
+    //        if (Current == null)
+    //            Current = new RazorEngineFactory<RazorTemplateBase>();
+
+    //        return Current.GetRazorHost();
+    //    }
+
+    //    /// <summary>
+    //    /// Creates an instance of the RazorHost in a new AppDomain. This 
+    //    /// version creates a static singleton that that is cached and you
+    //    /// can call UnloadRazorHostInAppDomain to unload it.
+    //    /// </summary>
+    //    /// <returns></returns>
+    //    public static RazorEngine<RazorTemplateBase> CreateRazorHostInAppDomain()
+    //    {
+    //        if (Current == null)
+    //            Current = new RazorEngineFactory<RazorTemplateBase>();
+
+    //        return Current.GetRazorHostInAppDomain();
+    //    }
+
+    //    /// <summary>
+    //    /// 
+    //    /// </summary>
+    //    public static void UnloadRazorHostInAppDomain()
+    //    {
+    //        if (Current != null)
+    //            Current.UnloadHost();
+    //        Current = null;
+    //    }
+    //}
 }

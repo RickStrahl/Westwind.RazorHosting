@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web;
 
 namespace Westwind.RazorHosting
 {
@@ -13,9 +12,9 @@ namespace Westwind.RazorHosting
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        public HtmlString Raw(string html)
+        public RawString Raw(string html)
         {
-            return new HtmlString(html);
+            return new RawString(html);
         }
 
         /// <summary>
@@ -23,19 +22,19 @@ namespace Westwind.RazorHosting
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public HtmlString HtmlString(object value)
+        public RawString HtmlString(object value)
         {
             if (value == null)
                 return null;
 
-            return new HtmlString(value.ToString());
+            return new RawString(value.ToString());
         }
 
         public string Encode(string value)
         {
             if (value == null)
                 return string.Empty;
-            return HttpUtility.HtmlEncode(value);
+            return Utilities.HtmlEncode(value);
         }
 
         public string Encode(object value)
@@ -43,7 +42,7 @@ namespace Westwind.RazorHosting
             if (value == null)
                 return string.Empty;
 
-            return HttpUtility.HtmlEncode(value);
+            return Utilities.HtmlEncode(value);
         }
     }
 }

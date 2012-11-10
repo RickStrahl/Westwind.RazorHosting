@@ -71,8 +71,8 @@ namespace RazorHostingTests
 
             // add model assembly - ie. this assembly
             host.AddAssemblyFromType(typeof(Person));
-
             host.UseAppDomain = true;
+
             //host.Configuration.CompileToMemory = true;
             //host.Configuration.TempAssemblyPath = Environment.CurrentDirectory;
 
@@ -92,12 +92,13 @@ namespace RazorHostingTests
 
             string result = host.RenderTemplate("~/HelloWorld.cshtml", person);
 
+
+
             Console.WriteLine(result);
             Console.WriteLine("---");
             Console.WriteLine(host.Engine.LastGeneratedCode);
 
             host.Stop();
-
 
             if (result == null)
                 Assert.Fail(host.ErrorMessage);

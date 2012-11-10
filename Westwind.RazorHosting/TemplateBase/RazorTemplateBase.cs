@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net;
-using System.Web;
 
 namespace Westwind.RazorHosting
 {
@@ -146,7 +145,7 @@ namespace Westwind.RazorHosting
         /// <param name="value"></param>
         public virtual void Write(object value)
         {
-            if (value is HtmlString)
+            if (value is RawString)
             {
                 // Write as raw string without encoding
                 WriteLiteral(value.ToString());
@@ -155,7 +154,7 @@ namespace Westwind.RazorHosting
             {
                 // For HTML output we'd probably want to HTMLEncode everything            
                 // But not for plain text templating
-                WriteLiteral(HttpUtility.HtmlEncode(value));
+                WriteLiteral(Utilities.HtmlEncode(value));
             }
         }
 
