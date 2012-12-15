@@ -82,7 +82,12 @@ namespace Westwind.RazorHosting
 
         public RazorFolderHostContainer()
         {
-            BaseBinaryFolder = Environment.CurrentDirectory;
+            var assembly = Assembly.GetEntryAssembly();
+            if (assembly == null)
+                BaseBinaryFolder = Environment.CurrentDirectory;
+            else
+                BaseBinaryFolder = assembly.Location;
+
 
             // Default the template path underneath the binary folder as \templates
             TemplatePath = Path.Combine(BaseBinaryFolder, "templates");
