@@ -8,8 +8,7 @@
 
 * **Removed System.Web dependency**
 
-* **RazorEngine.LastResultData property**
-   to hold response data retrieved from last request
+* **RazorEngine.LastResultData property**  to hold response data retrieved from last request
 
 * **Added non-generic RazorEngine class**
   To simplify basic pages that don't require strongly typed ViewModels the non-generic RazorEngine class can now be used. When used only dynamic models are available.
