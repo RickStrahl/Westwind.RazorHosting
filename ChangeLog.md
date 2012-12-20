@@ -2,11 +2,15 @@
 * * * 
 
 ##Version 1.01
+*December 20th, 2012*
 
 * **Changed default bin folder location**  
   Default folder location is now loaded from GetEntryAssembly() location by default and falls back to current directory if that can't resolve. BaseBinary folder can still be used to explicitly override the path.
 
-* **Removed System.Web dependency**
+* **Removed System.Web dependency**  
+  Removed dependency on System.Web for client applications. One drawback: 
+  No access to HtmlString(), for raw result values, so templates use a custom
+  RawString format.
 
 * **RazorEngine.LastResultData property**  
    to hold response data retrieved from last request
