@@ -13,6 +13,7 @@ as well as in any ASP.NET application that doesn't already have ready access to 
 
 * [Install from NuGet (Westwind.RazorHosting)](http://nuget.org/packages/Westwind.RazorHosting)
 * [Westwind.RazorHosting Documentation](http://west-wind.com/files/tools/razorhosting/docs/)
+* [Change Log](https://github.com/RickStrahl/Westwind.RazorHosting/blob/master/ChangeLog.md)
 * [Questions and Discussion of Westwind.RazorHosting](http://www.west-wind.com/wwThreads/default.asp?Forum=West+Wind+.NET+Tools+and+Demos)
 
 > **Note!**
@@ -222,7 +223,7 @@ Only the RazorFolderHostContainer supports partial rendering.
 ##License
 This library is published under MIT license terms:
 
-Copyright © 2012 Rick Strahl, West Wind Technologies
+Copyright ï¿½ 2012 Rick Strahl, West Wind Technologies
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 associated documentation files (the "Software"), to deal in the Software without restriction, 
