@@ -6,11 +6,12 @@ November 15th, 2013
 
 * **Update to Razor 3.0**
   Updated to the latest version of the Razor Engine distributed
-  with MVC 5. 
+  with MVC 5. Fix various small issues that are a result of the 
+  new rendering engine.
 
 * **Require .NET 4.5 to run**
-  The Razor Libraries version 3 require .NET 4.5 so this library
-  is updating to version 3 as well.
+  The Razor Libraries version 3 requires .NET 4.5 so this library
+  is updating to the same .NET version.
 
 * **Version numbers in Sync with Razor Version**
   Decided to keep the library version in sync with Razor version.
