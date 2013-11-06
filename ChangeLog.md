@@ -15,6 +15,11 @@ November 15th, 2013
 * **Version numbers in Sync with Razor Version**
   Decided to keep the library version in sync with Razor version.
 
+* **RazorHostContainerBase now implements IDisposable**
+  Container hosts are now IDisposable which makes it easier to stop them when
+  they are released. Default Dispose() behavior stops the engine and releases
+  all cached assemblies.
+
 ##Version 1.01
 *December 20th, 2012*
 
