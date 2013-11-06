@@ -38,23 +38,27 @@ a template and cache it yourself.
 
 To execute a template:
 
-    string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
-	var host = new RazorEngine();
-    string result = host.RenderTemplate(template,new { Name="Joe Doe" });
+```c#
+string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
+var host = new RazorEngine();
+string result = host.RenderTemplate(template,new { Name="Joe Doe" });
+```
 
 You can also create a template and cache it:
 
-    string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
-	var host = new RazorEngine<RazorTemplateBase>();
-	host.AddAssembly("System.Data.dll");  // add any assemblies you need in templates            
+```c#
+string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
+var host = new RazorEngine<RazorTemplateBase>();
+host.AddAssembly("System.Data.dll");  // add any assemblies you need in templates            
     
-    string compiledId = host.CompileTemplate(template);    
-	string result = host.RenderTemplateFromAssembly(compiledId,
-													new Person() { Name = "Joe Doe" });
+string compiledId = host.CompileTemplate(template);    
+string result = host.RenderTemplateFromAssembly(compiledId,
+												new Person() { Name = "Joe Doe" });
 
-    // Run again later without recompilation
-	string result = host.RenderTemplateFromAssembly(compiledId,
-													new Person() { Name = "Rick Strahl" });
+// Run again later without recompilation
+string result = host.RenderTemplateFromAssembly(compiledId,
+												new Person() { Name = "Rick Strahl" });
+```
 
 The latter allows you to capture the compiled id which points to a cached assembly instance
 in the current RazorEngine instance. This avoids having to reparse and recompile the template
@@ -65,8 +69,9 @@ All templates include a model property and the RenderTemplate method can pass in
 By default models are of type _dynamic_, but the model can also be explicitly typed by
 using the Razor @inherits tag:
 
-	@inherits RazorTemplateBase<RazorHostingTests.Person>
-
+```c#
+@inherits RazorTemplateBase<RazorHostingTests.Person>
+```
 This is equivalent to MVC's @model property and represents the native Razor syntax for
 determining the base class, which is RazorTemplateBase<T> here (or your custom subclass thereof).
 If no @inherits is specified RazorTemplateBase is used with a dynamic Model.
@@ -81,7 +86,7 @@ HostContainers are meant to be instantiated once and then left running for the d
 of an application or long running operation, processing many template requests during
 their lifecycle.
 
-There are two HostContainers:
+There are two provided HostContainers:
 
 ####RazorStringHostContainer####
 StringHostContainer executes templates from string, but caches compiled templates based on
@@ -91,39 +96,41 @@ the template string is identical the cached assembly is used.
 
 To run a String Template Host:
 
-    var host = new RazorStringHostContainer();
-    //host.UseAppDomain = true; 
+```c#
+var host = new RazorStringHostContainer();
+//host.UseAppDomain = true; 
         
-    // add model assembly - ie. this assembly
-    host.AddAssemblyFromType(this);
-    host.AddAssembly("System.Data.dll");
+// add model assembly - ie. this assembly
+host.AddAssemblyFromType(this);
+host.AddAssembly("System.Data.dll");
     
-    host.Start();
+host.Start();
               
-    Person person = new Person()
+Person person = new Person()
+{
+    Name = "Rick",
+    Company = "West Wind",
+    Entered = DateTime.Now,
+    Address = new Address()
     {
-        Name = "Rick",
-        Company = "West Wind",
-        Entered = DateTime.Now,
-        Address = new Address()
-        {
-            Street = "32 Kaiea",
-            City = "Paia"
-        }
-    };
-	string template = @"@inherits Westwind.RazorTemplateBase<RazorHostingTests.Person>
-	<b>@Model.Name of @Model.Company entered on @Model.Entered";
+        Street = "32 Kaiea",
+        City = "Paia"
+    }
+};
+string template = @"@inherits Westwind.RazorTemplateBase<RazorHostingTests.Person>
+<b>@Model.Name of @Model.Company entered on @Model.Entered";
     
-    string result = host.RenderTemplate(string,person);
+string result = host.RenderTemplate(string,person);
     	
-    Console.WriteLine(result);
-    Console.WriteLine("---");
-    Console.WriteLine(host.Engine.LastGeneratedCode);
+Console.WriteLine(result);
+Console.WriteLine("---");
+Console.WriteLine(host.Engine.LastGeneratedCode);
 
-    if (result == null)
-        Assert.Fail(host.ErrorMessage);
+if (result == null)
+    Assert.Fail(host.ErrorMessage);
             
-    host.Stop();
+host.Stop();
+```
 
 With a host container you typically will run many requests between the Start() and Stop() operations.
 
@@ -134,69 +141,73 @@ and support the abililty to use @RenderPartial() to render partials.
 
 To run folder host templates:
 
-	var host = new RazorFolderHostContainer();
+```c#
+var host = new RazorFolderHostContainer();
 
-	host.TemplatePath = Path.GetFullPath(@"..\..\FileTemplates\");
-	host.BaseBinaryFolder = Environment.CurrentDirectory;
+host.TemplatePath = Path.GetFullPath(@"..\..\FileTemplates\");
+host.BaseBinaryFolder = Environment.CurrentDirectory;
 
-	// add model assembly - ie. this assembly
-	host.AddAssemblyFromType(typeof(Person));
+// add model assembly - ie. this assembly
+host.AddAssemblyFromType(typeof(Person));
 
-	host.UseAppDomain = true;
-	//host.Configuration.CompileToMemory = true;
-	//host.Configuration.TempAssemblyPath = Environment.CurrentDirectory;
+host.UseAppDomain = true;
+//host.Configuration.CompileToMemory = true;
+//host.Configuration.TempAssemblyPath = Environment.CurrentDirectory;
 
-	host.Start();
+host.Start();
 
-	Person person = new Person()
+Person person = new Person()
+{
+	Name = "Rick",
+	Company = "West Wind",
+	Entered = DateTime.Now,
+	Address = new Address()
 	{
-		Name = "Rick",
-		Company = "West Wind",
-		Entered = DateTime.Now,
-		Address = new Address()
-		{
-			Street = "32 Kaiea",
-			City = "Paia"
-		}
-	};
+		Street = "32 Kaiea",
+		City = "Paia"
+	}
+};
 
-	string result = host.RenderTemplate("~/HelloWorld.cshtml", person);
+string result = host.RenderTemplate("~/HelloWorld.cshtml", person);
 
-	Console.WriteLine(result);
-	Console.WriteLine("---");
-	Console.WriteLine(host.Engine.LastGeneratedCode);
+Console.WriteLine(result);
+Console.WriteLine("---");
+Console.WriteLine(host.Engine.LastGeneratedCode);
 
-	host.Stop();
+host.Stop();
 
 
-	if (result == null)
-		Assert.Fail(host.ErrorMessage);
+if (result == null)
+	Assert.Fail(host.ErrorMessage);
 
-	Assert.IsTrue(result.Contains("West Wind"));
-   
+Assert.IsTrue(result.Contains("West Wind"));
+```
+	   
 where the template might look like this:
 
-	@inherits RazorTemplateFolderHost<RazorHostingTests.Person>
-	<!DOCTYPE html>
-	<html>
-	<head>
-		<meta charset="utf-8" />
-		<title></title>
-	</head>
-	<body>    
-        @RenderPartial("~/Header_Partial.cshtml",Model)
+```html
+@inherits RazorTemplateFolderHost<RazorHostingTests.Person>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+</head>
+<body>    
+    @RenderPartial("~/Header_Partial.cshtml",Model)
 
-		@Model.Name @Model.Company @Model.Address.City @Model.Entered 
+	@Model.Name @Model.Company @Model.Address.City @Model.Entered 
     
-		@{for (int i = 0; i < 10; i++)
-		  {
-			  Response.WriteLine(i + ".");
-		  }  
+	@{for (int i = 0; i < 10; i++)
+		{
+			Response.WriteLine(i + ".");
+		}  
 
-	   You can also render nested templates from string
-	   @RenderTemplate("Child Template rendered from String. Name: @Model.Name",Model) 
-	</body>
-	</html>
+	You can also render nested templates from string
+	@RenderTemplate("Child Template rendered from String. Name: @Model.Name",Model) 
+</body>
+</html>
+```
 
 Note that you can render partials, by specifying the virtual path for the partial
 relative to the to TemplateBasePath specified.
@@ -204,7 +215,9 @@ relative to the to TemplateBasePath specified.
 ####Running in a separate AppDomain wiht UseAppDomain####
 Note that you can choose to host the container in a separate AppDomain by using:
 
-	host.UseAppDomain = true;
+```c#
+host.UseAppDomain = true;
+```
 
 If you do, make sure any models  passed to the host for rendering are marked serializable or inherit from MarshalByRefObject.
 Using an AppDomain is useful when loading lots of templates and allows for unloading the engine to reduce 
@@ -223,7 +236,7 @@ Only the RazorFolderHostContainer supports partial rendering.
 ##License
 This library is published under MIT license terms:
 
-Copyright � 2012 Rick Strahl, West Wind Technologies
+Copyright � 2012-2013 Rick Strahl, West Wind Technologies
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 associated documentation files (the "Software"), to deal in the Software without restriction, 

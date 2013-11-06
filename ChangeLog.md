@@ -2,7 +2,7 @@
 * * * 
 
 ##Version 3.0
-November 15th, 2013
+*November 15th, 2013*
 
 * **Update to Razor 3.0**
   Updated to the latest version of the Razor Engine distributed
