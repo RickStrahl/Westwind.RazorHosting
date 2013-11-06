@@ -143,7 +143,7 @@ namespace Westwind.RazorHosting
         /// Writes an expression value. This value is HtmlEncoded always
         /// </summary>
         /// <param name="value"></param>
-        public virtual void Write(object value)
+        public virtual void Write(object value = null)
         {
             if (value is RawString)
             {

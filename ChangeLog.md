@@ -1,6 +1,20 @@
 #Westwind.RazorHosting Change Log
 * * * 
 
+##Version 3.0
+November 15th, 2013
+
+* **Update to Razor 3.0**
+  Updated to the latest version of the Razor Engine distributed
+  with MVC 5. 
+
+* **Require .NET 4.5 to run**
+  The Razor Libraries version 3 require .NET 4.5 so this library
+  is updating to version 3 as well.
+
+* **Version numbers in Sync with Razor Version**
+  Decided to keep the library version in sync with Razor version.
+
 ##Version 1.01
 *December 20th, 2012*
 

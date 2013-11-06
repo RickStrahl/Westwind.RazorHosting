@@ -278,7 +278,7 @@ namespace Westwind.RazorHosting
                     object model = null,                    
                     TextWriter outputWriter = null)
         {
-            this.SetError();
+            SetError();
              
             AddAssemblyFromType(model);
 
@@ -330,7 +330,7 @@ namespace Westwind.RazorHosting
             string generatedNamespace = null,
             string generatedClass = null)
         {
-            this.SetError();
+            SetError();
 
             // Handle anonymous and other non-public types
             if (model != null && model.GetType().IsNotPublic)
@@ -339,7 +339,7 @@ namespace Westwind.RazorHosting
             Assembly generatedAssembly = AssemblyCache[assemblyId];
             if (generatedAssembly == null)
             {
-                this.SetError(Westwind.RazorHosting.Properties.Resources.PreviouslyCompiledAssemblyNotFound);
+                SetError(Westwind.RazorHosting.Properties.Resources.PreviouslyCompiledAssemblyNotFound);
                 return null;
             }
 
@@ -351,7 +351,7 @@ namespace Westwind.RazorHosting
                 type = generatedAssembly.GetTypes().FirstOrDefault();
                 if (type == null)
                 {
-                    this.SetError(Westwind.RazorHosting.Properties.Resources.UnableToCreateType);
+                    SetError(Westwind.RazorHosting.Properties.Resources.UnableToCreateType);
                     return null;
                 }
             }
@@ -375,7 +375,7 @@ namespace Westwind.RazorHosting
             using (TBaseTemplateType instance = InstantiateTemplateClass(type))
             {
                 if (instance == null)
-                    throw new InvalidOperationException(this.ErrorMessage);
+                    throw new InvalidOperationException(ErrorMessage);
 
                 //if (TemplatePerRequestConfigurationData != null)
                 instance.InitializeTemplate(model, TemplatePerRequestConfigurationData);
@@ -475,7 +475,7 @@ namespace Westwind.RazorHosting
                                         compileError.Column, 
                                         compileError.ErrorText));
 
-                this.SetError(compileErrors.ToString() + "\r\n" + LastGeneratedCode);
+                SetError(compileErrors.ToString() + "\r\n" + LastGeneratedCode);
                 return null;
             }
 
@@ -529,7 +529,7 @@ namespace Westwind.RazorHosting
             host.DefaultClassName = generatedClass;
             host.DefaultNamespace = generatedNamespace;
 
-            foreach (string ns in this.ReferencedNamespaces)
+            foreach (string ns in ReferencedNamespaces)
             {
                 host.NamespaceImports.Add(ns);
             }            
@@ -574,7 +574,7 @@ namespace Westwind.RazorHosting
             instance.Engine = this;
 
             // If a HostContainer was set pass that to the template too
-            instance.HostContainer = this.HostContainer;
+            instance.HostContainer = HostContainer;
             
             return instance;
         }
@@ -613,7 +613,7 @@ namespace Westwind.RazorHosting
             }
             catch (Exception ex)
             {
-                this.SetError(Westwind.RazorHosting.Properties.Resources.TemplateExecutionError + ex.Message);
+                SetError(Properties.Resources.TemplateExecutionError + ex.Message);
                 return false;
             }
             finally
@@ -624,7 +624,7 @@ namespace Westwind.RazorHosting
 
             // capture result data so the engine can 
             // pass it back to the caller
-            this.LastResultData = instance.ResultData;
+            LastResultData = instance.ResultData;
 
             return true;
         }

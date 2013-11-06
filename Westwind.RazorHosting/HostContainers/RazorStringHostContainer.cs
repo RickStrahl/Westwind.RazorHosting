@@ -78,7 +78,7 @@ namespace Westwind.RazorHosting
 
             if (result == null)
             {
-                this.ErrorMessage = Engine.ErrorMessage;
+                ErrorMessage = Engine.ErrorMessage;
                 return null;     
             }               
 
@@ -114,7 +114,7 @@ namespace Westwind.RazorHosting
                 return false;
             }
 
-            return this.RenderTemplateFromAssembly(assItem.AssemblyId, context, writer);
+            return RenderTemplateFromAssembly(assItem.AssemblyId, context, writer);
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace Westwind.RazorHosting
             int hash = templateText.GetHashCode();
 
             CompiledAssemblyItem item = null;
-            this.LoadedAssemblies.TryGetValue(hash, out item);
+            LoadedAssemblies.TryGetValue(hash, out item);
 
             string assemblyId = null;
 
@@ -147,7 +147,7 @@ namespace Westwind.RazorHosting
 
                 if (assemblyId == null)
                 {
-                    this.ErrorMessage = Engine.ErrorMessage;
+                    ErrorMessage = Engine.ErrorMessage;
                     return null;
                 }
 
@@ -155,7 +155,7 @@ namespace Westwind.RazorHosting
                 item.CompileTimeUtc = DateTime.UtcNow;
                 item.SafeClassName = safeClassName;
 
-                this.LoadedAssemblies[hash] = item;
+                LoadedAssemblies[hash] = item;
             }
 
             return item;

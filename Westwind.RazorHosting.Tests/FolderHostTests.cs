@@ -73,6 +73,7 @@ namespace RazorHostingTests
             host.AddAssemblyFromType(typeof(Person));
             host.UseAppDomain = true;
 
+            // these are implicitly set
             //host.Configuration.CompileToMemory = true;
             //host.Configuration.TempAssemblyPath = Environment.CurrentDirectory;
 
@@ -96,6 +97,7 @@ namespace RazorHostingTests
 
             Console.WriteLine(result);
             Console.WriteLine("---");
+            Console.WriteLine(host.ErrorMessage);
             Console.WriteLine(host.Engine.LastGeneratedCode);
 
             host.Stop();

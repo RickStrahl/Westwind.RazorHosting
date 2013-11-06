@@ -36,13 +36,13 @@ namespace Westwind.RazorHosting
             // Pick up configuration data and stuff into Request object
             RazorFolderHostTemplateConfiguration config = configurationData as RazorFolderHostTemplateConfiguration;
 
-            this.Request.TemplatePath = config.TemplatePath;
-            this.Request.TemplateRelativePath = config.TemplateRelativePath;
+            Request.TemplatePath = config.TemplatePath;
+            Request.TemplateRelativePath = config.TemplateRelativePath;
 
             // Just use the entire ConfigData as the model, but in theory 
             // configData could contain many objects or values to set on
             // template properties
-            this.Model = config.ConfigData as TModel;
+            Model = config.ConfigData as TModel;
         }
     }
 
@@ -61,8 +61,8 @@ namespace Westwind.RazorHosting
             // Pick up configuration data and stuff into Request object
             RazorFolderHostTemplateConfiguration config = configurationData as RazorFolderHostTemplateConfiguration;
 
-            this.Request.TemplatePath = config.TemplatePath;
-            this.Request.TemplateRelativePath = config.TemplateRelativePath;
+            Request.TemplatePath = config.TemplatePath;
+            Request.TemplateRelativePath = config.TemplateRelativePath;
         }        
 
 
@@ -74,7 +74,7 @@ namespace Westwind.RazorHosting
         /// <returns>HtmlString that indicates this string should not be escaped</returns>
         public RawString RenderPartial(string relativePath, object model)
         {
-            if (this.HostContainer == null)
+            if (HostContainer == null)
                 return null;
 
             relativePath = Path.ChangeExtension(relativePath,"cshtml");
