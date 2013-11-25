@@ -35,6 +35,7 @@
 using System;
 using System.Text;
 using System.Linq;
+using System.Web.Razor.Generator;
 using Microsoft.CSharp;
 using System.CodeDom.Compiler;
 using System.IO;
@@ -152,7 +153,7 @@ namespace Westwind.RazorHosting
             ReferencedNamespaces.Add("System.Collections.Generic");
             ReferencedNamespaces.Add("System.Linq");
             ReferencedNamespaces.Add("System.IO");                     
-            ReferencedNamespaces.Add("Westwind.RazorHosting");
+            ReferencedNamespaces.Add("Westwind.RazorHosting"); // this namespace
 
             ReferencedAssemblies = new List<string>();
             ReferencedAssemblies.Add("System.dll");
@@ -528,6 +529,11 @@ namespace Westwind.RazorHosting
             host.DefaultBaseClass = baseClassType.FullName;
             host.DefaultClassName = generatedClass;
             host.DefaultNamespace = generatedNamespace;
+            
+            var context = new GeneratedClassContext("Execute", "Write", "WriteLiteral", "WriteTo", "WriteLiteralTo", typeof(HelperResult).FullName, "DefineSection");
+            context.ResolveUrlMethodName = "ResolveUrl";
+            
+            host.GeneratedClassContext = context;
 
             foreach (string ns in ReferencedNamespaces)
             {

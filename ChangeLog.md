@@ -13,6 +13,12 @@
   The Razor Libraries version 3 requires .NET 4.5 so this library
   is updating to the same .NET version.
 
+* **Support for @helper **
+  You can now use Razor Helpers using the @helper syntax supported
+  in core Razor. Helpers allow you to create small function like
+  Razor snippets that can either act as functions or execute razor
+  templates to provide reusability.
+
 * **Version numbers in Sync with Razor Version**
   Decided to keep the library version in sync with Razor version.
 

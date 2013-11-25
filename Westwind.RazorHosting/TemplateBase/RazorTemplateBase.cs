@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 
 namespace Westwind.RazorHosting
@@ -145,7 +146,7 @@ namespace Westwind.RazorHosting
         /// <param name="value"></param>
         public virtual void Write(object value = null)
         {
-            if (value is RawString)
+            if (value is RawString || value is IHtmlString)
             {
                 // Write as raw string without encoding
                 WriteLiteral(value.ToString());
@@ -156,6 +157,21 @@ namespace Westwind.RazorHosting
                 // But not for plain text templating
                 WriteLiteral(Utilities.HtmlEncode(value));
             }
+        }
+
+        public virtual void WriteTo(TextWriter writer, object value)
+        {
+            writer.Write(HtmlEncode(value));
+        }
+
+        /// <summary>
+        /// Writes the provided <paramref name="value"/>, as a literal, to the provided <paramref name="writer"/>.
+        /// </summary>
+        /// <param name="writer">The <see cref="TextWriter"/> that should be written to.</param>
+        /// <param name="value">The value that should be written as a literal.</param>
+        public virtual void WriteLiteralTo(TextWriter writer, object value)
+        {
+            writer.Write(value);
         }
 
         /// <summary>
@@ -249,7 +265,15 @@ namespace Westwind.RazorHosting
         public virtual string HtmlEncode(string input)
         {
             return WebUtility.HtmlEncode(input);
-        }   
+        }
+
+        public virtual string HtmlEncode(object input)
+        {
+            if (input == null)
+                return "";
+            return WebUtility.HtmlEncode(input.ToString());
+        }
+   
 
         /// <summary>
         /// Allows rendering a dynamic template from within the
