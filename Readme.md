@@ -246,9 +246,9 @@ since Razor templates essentially can execute any code in the context of the hos
 ###Limitations
 Unlike MVC and/or WebPages the RazorHosting engine only supports core Razor functinonality
 so it's not equivalent to the feature set provided by MVC or WebPages. As such many common
-features like HTML and URL helpers, @Section, @Helper and @Layout directives are not available 
+features like HTML and URL helpers, @Section and @Layout directives are not available 
 in this implementation since these features are specific to MVC/WebPages and their close ties to 
-the HTTP features provided in ASP.NET.
+the HTTP features provided in ASP.NET. There is support for @helper though.
 
 Only the RazorFolderHostContainer supports partial rendering.
 
