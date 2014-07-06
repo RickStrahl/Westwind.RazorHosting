@@ -68,15 +68,17 @@
     <Compile Include="BasicRazorEngineTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="FileTemplates\TestRenderTemplate.cshtml" />
+    <None Include="FileTemplates\HelloWorld.cshtml" />
+    <None Include="FileTemplates\TestPartial.cshtml" />
+    <None Include="FileTemplates\Header_Partial.cshtml" />
+    <None Include="FileTemplates\HelloWorldWithModelSyntax.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Westwind.RazorHosting\Westwind.RazorHosting.csproj">
       <Project>{abf048cf-ead5-40b7-aed2-b367e8579590}</Project>
       <Name>Westwind.RazorHosting</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="FileTemplates\TestPartial.cshtml" />
-    <None Include="FileTemplates\Header_Partial.cshtml" />
-    <None Include="FileTemplates\HelloWorld.cshtml" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

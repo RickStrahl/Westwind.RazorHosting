@@ -8,14 +8,14 @@ namespace RazorHostingTests
     public class Templates
     {
        public static string BasicTemplateStringWithPersonModel =
-@"inherits Westwind.RazorTemplateBase<RazorHostingTests.Person>
-Hello Current time is: @DateTime.Now.
+@"@inherits Westwind.RazorHosting.RazorTemplateBase<RazorHostingTests.Person>
+Hello @Model.Name,
 
-Current time is: @DateTime.Now
+Current time is: @DateTime.Now.
+User Name: @Environment.UserName
 
 <b class=""@(Environment.UserName)"">BOLD</b>
 
-This Template runs in its own AppDomain which can be unloaded.
 AppDomain: @AppDomain.CurrentDomain.FriendlyName
 Assembly: @System.Reflection.Assembly.GetExecutingAssembly().FullName
 
@@ -23,11 +23,10 @@ Assembly: @System.Reflection.Assembly.GetExecutingAssembly().FullName
 
 Entered on @Model.Entered
 
+Base Type:
 @this.GetType().BaseType.ToString()
 
-helper HelloWorld(this HtmlHelper helper, string name) {
-  <div class=""errordisplay"">Helloname</div>
-}
+@{ ResultData = ""Hello from the template""; }
 ";
     }
 }

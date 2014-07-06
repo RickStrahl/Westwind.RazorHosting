@@ -12,6 +12,7 @@ using System.Dynamic;
 
 namespace RazorHostingTests
 {
+    
     /// <summary>
     /// These tests use the basic RazorEngine rendering without
     /// any of the host containers that provide for caching and starting
@@ -23,35 +24,82 @@ namespace RazorHostingTests
     [TestClass]
     public class BasicRazorEngineTests
     {
-
-        RazorEngine<RazorTemplateBase> Host = null;
-
+        RazorEngine<RazorTemplateBase> Engine = null;
 
         private RazorEngine<RazorTemplateBase> CreateHost()
         {
-            if (this.Host != null)
-                return this.Host;
+            if (this.Engine != null)
+                return this.Engine;
 
-            this.Host = new RazorEngine<RazorTemplateBase>();
+            this.Engine = new RazorEngine<RazorTemplateBase>();
 
             // Use Static Methods - no error message if host doesn't load                       
-            //this.Host = RazorEngineFactory<RazorTemplateBase>.CreateRazorHostInAppDomain();
+            //this.Host = RazorEngineFactory<RazorTemplateBase>.CreateRazorHost();
 
-            if (this.Host == null)
+            if (this.Engine == null)
                 throw new ApplicationException("Unable to load Razor Template Host");
             
-            return this.Host;
+            return this.Engine;
         }
 
         [TestMethod]
         public void SimplestRazorEngineTest()
         {
             string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
-	        var host = new RazorEngine<RazorTemplateBase>();
-            string result = host.RenderTemplate(template,new Person{ Name="Joe Doe" });
+            template = Templates.BasicTemplateStringWithPersonModel;
+	        var host = new RazorEngine();
+
+            string result = host.RenderTemplate(template, new Person { Name = "Joe Doe" });
 
             Assert.IsNotNull(result,host.ErrorMessage);
             Assert.IsTrue(result.Contains("Joe Doe"));
+
+            Console.WriteLine(result);
+            Console.WriteLine(host.LastGeneratedCode);
+        }
+
+        [TestMethod]
+        public void SimplestRazorEngineWithCompileTest()
+        {
+            string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
+            var host = new RazorEngine();
+
+            string assemblyId = host.CompileTemplate(template);
+
+            string result = null;
+
+            // this will now reuse the same compile template           
+            for (int i = 0; i < 10; i++)
+            {
+                result += host.RenderTemplateFromAssembly(assemblyId, new { Name = "Joe Doe" }) + "\r\n";    
+            }
+            
+            Assert.IsNotNull(result, host.ErrorMessage);
+            Assert.IsTrue(result.Contains("Joe Doe"));
+
+            Console.WriteLine(result);
+            
+        }
+
+        [TestMethod]
+        public void SimplestRazorEngineTestWithAppDomain()
+        {            
+            string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
+            
+            // Load engine into new AppDomain
+            var host = RazorEngineFactory<RazorTemplateBase>.CreateRazorHostInAppDomain();
+            
+            // Note: You can't use anonymouse types for cross-AppDomain calls
+            //       Models passed must inherit MarshalByRefObject or be [Serializable]
+            string result = host.RenderTemplate(template, new Person { Name = "Joe Doe" });
+            
+            Assert.IsNotNull(result, host.ErrorMessage);
+            Assert.IsTrue(result.Contains("Joe Doe"));
+
+            // shut down AppDomain
+            RazorEngineFactory<RazorTemplateBase>.UnloadRazorHostInAppDomain();
+
+            Console.WriteLine(result);
         }
 
         /// <summary>
@@ -64,14 +112,14 @@ namespace RazorHostingTests
         public void SimplestRazorEngineWithAnonymousModelTest()
         {
             var model = new { Name = "Joe Doe", Company = "West Wind" };
-
-            var type = model.GetType();
-
+        
             string template = @"Hello World @Model.Name of @Model.Company. Time is: @DateTime.Now";
             var host = new RazorEngine<RazorTemplateBase>();
             string cid = host.CompileTemplate(template);            
             string result = host.RenderTemplateFromAssembly(cid, model);
-            Console.WriteLine(result + "\r\n" + host.ErrorMessage + "\r\n" + host.LastGeneratedCode);
+            Console.WriteLine(result + "\r\n" + 
+                              host.ErrorMessage + "\r\n" + 
+                              host.LastGeneratedCode);
 
             Assert.IsNotNull(result, host.ErrorMessage + "\r\n" + host.LastGeneratedCode);
             Assert.IsTrue(result.Contains("Joe Doe"));
@@ -89,6 +137,33 @@ namespace RazorHostingTests
 
             Assert.IsNotNull(result, host.ErrorMessage);
             Assert.IsTrue(result.Contains("Joe Doe"));
+        }
+
+        /// <summary>
+        /// Demonstrates using @model syntax in the template
+        /// 
+        /// Note:
+        /// @model Person is turned to 
+        /// @inherits RazorTemplateFolderHost<Person>
+        /// 
+        /// @model syntax is easier to write (and compatible with MVC), 
+        /// but doesn't not provide Intellisense inside of Visual Studio. 
+        /// </summary>
+        [TestMethod]
+        public void SimplestRazorEngineWithModelTest()
+        {
+            string template = @"@model Person
+Hello World @Model.Name. Time is: @DateTime.Now";
+
+            var host = new RazorEngine<RazorTemplateBase>();
+            host.AddNamespace("RazorHostingTests");
+
+            string result = host.RenderTemplate(template, new Person { Name = "Joe Doe" });
+
+            Assert.IsNotNull(result, host.ErrorMessage);
+            Assert.IsTrue(result.Contains("Joe Doe"));
+
+            Console.WriteLine(result);
         }
 
         [TestMethod]
@@ -236,7 +311,7 @@ namespace RazorHostingTests
             // we have to explicitly add a reference to the model's assembly
             // if we're compiling manually - the compiler doesn't know about
             // the model.
-            host.AddReferencedAssemblyFromInstance(person);
+            host.AddAssemblyFromType(person);
             
             string templateId = host.CompileTemplate(
                             Templates.BasicTemplateStringWithPersonModel,
@@ -257,9 +332,5 @@ namespace RazorHostingTests
             Console.WriteLine("--- Source Code ---");
             Console.WriteLine(host.LastGeneratedCode);
         }
-
-
-
-
     }
 }

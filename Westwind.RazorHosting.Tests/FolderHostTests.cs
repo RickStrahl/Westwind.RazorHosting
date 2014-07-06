@@ -71,6 +71,61 @@ namespace RazorHostingTests
 
             // add model assembly - ie. this assembly
             host.AddAssemblyFromType(typeof(Person));
+            host.UseAppDomain = true;
+
+            //host.Configuration.CompileToMemory = true;
+            //host.Configuration.TempAssemblyPath = Environment.CurrentDirectory;
+
+            host.Start();
+
+            Person person = new Person()
+            {
+                Name = "Rick",
+                Company = "West Wind",
+                Entered = DateTime.Now,
+                Address = new Address()
+                {
+                    Street = "32 Kaiea",
+                    City = "Paia"
+                }
+            };
+
+            string result = host.RenderTemplate("~/HelloWorld.cshtml", person);
+
+
+
+            Console.WriteLine(result);
+            Console.WriteLine("---");
+            Console.WriteLine(host.Engine.LastGeneratedCode);
+
+            host.Stop();
+
+            if (result == null)
+                Assert.Fail(host.ErrorMessage);
+
+            Assert.IsTrue(result.Contains("West Wind"));
+        }
+
+
+        /// <summary>
+        /// Demonstrates using @model syntax in the template
+        /// Note:
+        /// @model Person is turned to 
+        /// @inherits RazorTemplateFolderHost<Person>
+        /// 
+        /// @model syntax is easier to write (and compatible with MVC), 
+        /// but doesn't not provide Intellisense inside of Visual Studio. 
+        /// </summary>
+        [TestMethod]
+        public void BasicFolderHostWithModelSyntaxTest()
+        {
+            var host = new RazorFolderHostContainer();
+
+            host.TemplatePath = Path.GetFullPath(@"..\..\FileTemplates\");
+            host.BaseBinaryFolder = Environment.CurrentDirectory;
+
+            // add model assembly - ie. this assembly
+            host.AddAssemblyFromType(typeof(Person));
 
             host.UseAppDomain = true;
             //host.Configuration.CompileToMemory = true;
@@ -90,7 +145,7 @@ namespace RazorHostingTests
                 }
             };
 
-            string result = host.RenderTemplate("~/HelloWorld.cshtml", person);
+            string result = host.RenderTemplate("~/HelloWorldWithModelSyntax.cshtml", person);
 
             Console.WriteLine(result);
             Console.WriteLine("---");
@@ -143,10 +198,114 @@ namespace RazorHostingTests
             if (result == null)
                 Assert.Fail(host.ErrorMessage);
 
+            // run again
+            person.Name = "Billy Bobb";
+            result = host.RenderTemplate("~/TestPartial.cshtml", person);
 
-            Assert.IsTrue(result.Contains("of Doeboy Incorporated"));
+            Console.WriteLine(result);
+            Console.WriteLine("---");
+            Console.WriteLine(host.Engine.LastGeneratedCode);
+
+            if (result == null)
+                Assert.Fail(host.ErrorMessage);
+
+
+            Assert.IsTrue(result.Contains("Billy Bobb"));
 
             host.Stop();
         }
+
+
+        /// <summary>
+        /// Renders a page that contains a RenderTemplate() call used to
+        /// render nested content. Useful to render user entered content
+        /// that might need to contain dynamic expressions
+        /// </summary>
+        [TestMethod]
+        public void StringTemplateTest()
+        {
+            var host = new RazorFolderHostContainer();
+
+            host.TemplatePath = Path.GetFullPath(@"..\..\FileTemplates\");
+            host.BaseBinaryFolder = Environment.CurrentDirectory;
+
+            // add model assembly - ie. this assembly
+            host.AddAssemblyFromType(typeof(Person));
+
+            host.UseAppDomain = true;
+            //host.Configuration.CompileToMemory = false;
+            //host.Configuration.TempAssemblyPath = Environment.CurrentDirectory;
+
+            host.Start();
+
+            Person person = new Person()
+            {
+                Name = "Rick",
+                Company = "West Wind",
+                Entered = DateTime.Now,
+                Address = new Address()
+                {
+                    Street = "32 Kaiea",
+                    City = "Paia"
+                }
+            };
+
+            string result = null;
+            for (int i = 0; i < 10; i++)
+            {
+                result = host.RenderTemplate("~/TestRenderTemplate.cshtml", person);
+            }
+            
+            Console.WriteLine(result);
+            Console.WriteLine("---");
+            Console.WriteLine(host.Engine.LastGeneratedCode);
+
+            host.Stop();
+            
+            if (result == null)
+                Assert.Fail(host.ErrorMessage);
+
+            Assert.IsTrue(result.Contains("West Wind"));
+        }
+
+        [TestMethod]
+        public void Test()
+        {
+            var host = new RazorFolderHostContainer();
+
+            host.TemplatePath = Path.GetFullPath(@"..\..\FileTemplates\");
+            host.BaseBinaryFolder = Environment.CurrentDirectory;
+
+            // add model assembly - ie. this assembly
+            host.AddAssemblyFromType(typeof(Person));
+
+            host.UseAppDomain = true;
+            //host.Configuration.CompileToMemory = true;
+            //host.Configuration.TempAssemblyPath = Environment.CurrentDirectory;
+
+            host.Start();
+
+            Person person = new Person()
+            {
+                Name = "Rick",
+                Company = "West Wind",
+                Entered = DateTime.Now,
+                Address = new Address()
+                {
+                    Street = "32 Kaiea",
+                    City = "Paia"
+                }
+            };
+
+            string result = host.RenderTemplate("~/NotThere.cshtml", person);
+
+            Assert.IsTrue(host.ErrorMessage.Contains("Template File doesn't exist"));
+
+            Console.WriteLine(host.ErrorMessage);
+
+            host.Stop();
+            
+        }
+   
     }
 }

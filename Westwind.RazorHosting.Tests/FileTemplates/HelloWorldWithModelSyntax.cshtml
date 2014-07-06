@@ -1,4 +1,5 @@
-﻿@inherits RazorTemplateFolderHost<RazorHostingTests.Person>
+﻿@model RazorHostingTests.Person
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,9 +13,5 @@
       {
           Response.WriteLine(i + ".");
       }   
-      
-    @{
-         ResultData = "Hello from the template";
-     }  
 </body>
 </html>

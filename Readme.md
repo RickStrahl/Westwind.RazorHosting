@@ -11,8 +11,10 @@ be used for things like text merging for things like Mail Merge operations, HTML
 displays in desktop applications, code generation and much more. You can use it in Desktop applications
 as well as in any ASP.NET application that doesn't already have ready access to the Razor View engine.
 
-* [http://nuget.org/packages/Westwind.RazorHosting](Install from NuGet (Westwind.RazorHosting) )
-* [http://www.west-wind.com/wwThreads/default.asp?Forum=West+Wind+.NET+Tools+and+Demos](Questions and Discussion of Westwind.RazorHosting)
+* [Install from NuGet (Westwind.RazorHosting)](http://nuget.org/packages/Westwind.RazorHosting)
+* [Westwind.RazorHosting Documentation](http://west-wind.com/files/tools/razorhosting/docs/)
+* [Change Log](https://github.com/RickStrahl/Westwind.RazorHosting/blob/master/ChangeLog.md)
+* [Questions and Discussion of Westwind.RazorHosting](http://www.west-wind.com/wwThreads/default.asp?Forum=West+Wind+.NET+Tools+and+Demos)
 
 > **Note!**
 > The RazorHosting engine provides core templating functionality of the Razor sytnax engine. This means that
@@ -37,8 +39,8 @@ a template and cache it yourself.
 To execute a template:
 
     string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
-	var host = new RazorEngine<RazorTemplateBase>();
-    string result = host.RenderTemplate(template,new Person() { Name="Joe Doe" }");
+	var host = new RazorEngine();
+    string result = host.RenderTemplate(template,new { Name="Joe Doe" });
 
 You can also create a template and cache it:
 
@@ -90,13 +92,12 @@ the template string is identical the cached assembly is used.
 To run a String Template Host:
 
     var host = new RazorStringHostContainer();
-            
+    //host.UseAppDomain = true; 
+        
     // add model assembly - ie. this assembly
     host.AddAssemblyFromType(this);
     host.AddAssembly("System.Data.dll");
-
-    host.UseAppDomain = true;
-
+    
     host.Start();
               
     Person person = new Person()
@@ -190,23 +191,39 @@ where the template might look like this:
 		@{for (int i = 0; i < 10; i++)
 		  {
 			  Response.WriteLine(i + ".");
-		  }   
+		  }  
+
+	   You can also render nested templates from string
+	   @RenderTemplate("Child Template rendered from String. Name: @Model.Name",Model) 
 	</body>
 	</html>
 
-Note that you can render partials, by specifying the virtual path for the partial.
+Note that you can render partials, by specifying the virtual path for the partial
+relative to the to TemplateBasePath specified.
+
+####Running in a separate AppDomain wiht UseAppDomain####
+Note that you can choose to host the container in a separate AppDomain by using:
+
+	host.UseAppDomain = true;
+
+If you do, make sure any models  passed to the host for rendering are marked serializable or inherit from MarshalByRefObject.
+Using an AppDomain is useful when loading lots of templates and allows for unloading the engine to reduce 
+memory usage. It also helps isolate template code from the rest of your application for security purposes, 
+since Razor templates essentially can execute any code in the context of the host.
 
 ###Limitations
 Unlike MVC and/or WebPages the RazorHosting engine only supports core Razor functinonality
 so it's not equivalent to the feature set provided by MVC or WebPages. As such many common
-features like HTML and URL helpers, @section and @Layout are not available in this implementation
-since these features are specific to MVC/WebPages and their close ties to the HTTP features
-provided in ASP.NET.
+features like HTML and URL helpers, @Section, @Helper and @Layout directives are not available 
+in this implementation since these features are specific to MVC/WebPages and their close ties to 
+the HTTP features provided in ASP.NET.
+
+Only the RazorFolderHostContainer supports partial rendering.
 
 ##License
 This library is published under MIT license terms:
 
-Copyright © 2012 Rick Strahl, West Wind Technologies
+Copyright ï¿½ 2012 Rick Strahl, West Wind Technologies
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 associated documentation files (the "Software"), to deal in the Software without restriction, 

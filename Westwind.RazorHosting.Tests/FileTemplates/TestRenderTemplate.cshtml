@@ -1,0 +1,22 @@
+﻿@inherits Westwind.RazorHosting.RazorTemplateFolderHost<RazorHostingTests.Person>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+@{
+    string template =
+@"From String Template: Current Path is: @Environment.CurrentDirectory. Company: @Model.Company
+
+
+";        
+}
+<body>    
+    This is standard Template Text
+    Current Path: @Environment.CurrentDirectory
+    Name: @Model.Name
+    
+    @RenderTemplate(template, Model)
+</body>
+</html>

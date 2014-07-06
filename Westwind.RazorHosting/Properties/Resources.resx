@@ -126,7 +126,7 @@
     <comment>UnableToCreateType description</comment>
   </data>
   <data name="CouldnTActivateTypeInstance" xml:space="preserve">
-    <value>Couldn't activate type instance: </value>
+    <value>Couldn't activate compiled  template type instance: </value>
     <comment>CouldnTActivateTypeInstance description</comment>
   </data>
   <data name="LineX0TColX1TErrorX2RN" xml:space="preserve">
@@ -149,5 +149,9 @@
   <data name="PartialRenderingFailed" xml:space="preserve">
     <value>Partial Rendering failed for {0}: {1}</value>
     <comment>PartialRenderingFailed description</comment>
+  </data>
+  <data name="UnableToLoadRazorEngine" xml:space="preserve">
+    <value>Unable to load Razor Engine</value>
+    <comment>UnableToLoadRazorEngine description</comment>
   </data>
 </root>

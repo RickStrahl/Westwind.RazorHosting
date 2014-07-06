@@ -38,7 +38,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Reflection;
-using Westwind.RazorHosting.Properties;
 
 namespace Westwind.RazorHosting
 {
@@ -54,7 +53,6 @@ namespace Westwind.RazorHosting
     /// For any other template implementation use the generic parameter
     /// to specify the template type.
     /// </summary>
-
     public class RazorFolderHostContainer : RazorFolderHostContainer<RazorTemplateFolderHost>
     {
     }
@@ -68,7 +66,8 @@ namespace Westwind.RazorHosting
     /// Runs Razor Templates in a seperate AppDomain
     /// </summary>
     /// <typeparam name="TBaseTemplate">The type of the base template to use</typeparam>
-    public class RazorFolderHostContainer<TBaseTemplate> : RazorBaseHostContainer<RazorTemplateFolderHost>
+    public class RazorFolderHostContainer<TBaseTemplate> : RazorBaseHostContainer<TBaseTemplate>
+        where TBaseTemplate : RazorTemplateFolderHost, new()
     {
         /// <summary>
         /// The Path where templates live
@@ -83,7 +82,12 @@ namespace Westwind.RazorHosting
 
         public RazorFolderHostContainer()
         {
-            BaseBinaryFolder = Environment.CurrentDirectory;
+            var assembly = Assembly.GetEntryAssembly();
+            if (assembly == null)
+                BaseBinaryFolder = Environment.CurrentDirectory;
+            else
+                BaseBinaryFolder = assembly.Location;
+
 
             // Default the template path underneath the binary folder as \templates
             TemplatePath = Path.Combine(BaseBinaryFolder, "templates");
@@ -103,7 +107,8 @@ namespace Westwind.RazorHosting
             CompiledAssemblyItem item = GetAssemblyFromFileAndCache(relativePath);
             if (item == null)
             {
-                writer.Close();
+                if (writer != null)
+                    writer.Close();
                 return null;
             }
 
@@ -158,7 +163,7 @@ namespace Westwind.RazorHosting
             int fileNameHash = fileName.GetHashCode();
             if (!File.Exists(fileName))
             {
-                this.SetError(Resources.TemplateFileDoesnTExist + fileName);
+                this.SetError(Westwind.RazorHosting.Properties.Resources.TemplateFileDoesnTExist + fileName);
                 return null;
             }
 
@@ -181,22 +186,22 @@ namespace Westwind.RazorHosting
             if (assemblyId == null)
             {
                 string safeClassName = GetSafeClassName(fileName);
-                StreamReader reader = null;
+
+                string template = null;
                 try
                 {
-                    reader = new StreamReader(fileName, true);
+                    template = File.ReadAllText(fileName);
                 }
                 catch
                 {
-                    this.SetError(Resources.ErrorReadingTemplateFile + fileName);
+                    this.SetError(Westwind.RazorHosting.Properties.Resources.ErrorReadingTemplateFile + fileName);
                     return null;
                 }
-
-                assemblyId = Engine.CompileTemplate(reader);
+                assemblyId = Engine.CompileTemplate(template);
 
                 // need to ensure reader is closed
-                if (reader != null)
-                    reader.Close();
+                //if (reader != null)
+                //    reader.Close();
 
                 if (assemblyId == null)
                 {
@@ -245,6 +250,8 @@ namespace Westwind.RazorHosting
             fileName = Utilities.GetRelativePath(fileName, TemplatePath);
             return Path.GetFileNameWithoutExtension(fileName).Replace("\\", "_");
         }
+
+     
      
     }
 

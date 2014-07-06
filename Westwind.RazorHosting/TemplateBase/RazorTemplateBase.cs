@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Net;
-using System.Web;
 
 namespace Westwind.RazorHosting
 {
@@ -39,8 +37,10 @@ namespace Westwind.RazorHosting
         /// <param name="configurationData"></param>
         public override void InitializeTemplate(object model, object configurationData = null)
         {
+            Html = new HtmlHelper();
+
             if (model is TModel)
-                Model = model as TModel;
+                Model = model as TModel;           
         }
     }
 
@@ -65,6 +65,12 @@ namespace Westwind.RazorHosting
         /// to use in your template code
         /// </summary>
         public dynamic Model { get; set; }
+
+
+        /// <summary>
+        /// Simplistic Html Helper implementation
+        /// </summary>
+        public HtmlHelper Html { get; set; }
 
         /// <summary>
         /// An optional result property that can receive a 
@@ -100,7 +106,7 @@ namespace Westwind.RazorHosting
         /// <summary>
         /// Instance of the RazorEngine object.
         /// </summary>
-        public object Engine { get; set; }
+        public object Engine { get; set; }        
 
 
         /// <summary>
@@ -113,6 +119,7 @@ namespace Westwind.RazorHosting
         /// <param name="configurationData"></param>
         public virtual void InitializeTemplate(object model = null, object configurationData = null)
         {
+            Html = new HtmlHelper();
             Model = model;
         }
 
@@ -138,7 +145,7 @@ namespace Westwind.RazorHosting
         /// <param name="value"></param>
         public virtual void Write(object value)
         {
-            if (value is HtmlString)
+            if (value is RawString)
             {
                 // Write as raw string without encoding
                 WriteLiteral(value.ToString());
@@ -147,83 +154,20 @@ namespace Westwind.RazorHosting
             {
                 // For HTML output we'd probably want to HTMLEncode everything            
                 // But not for plain text templating
-                WriteLiteral(HttpUtility.HtmlEncode(value));
+                WriteLiteral(Utilities.HtmlEncode(value));
             }
         }
 
         /// <summary>
-        /// This method is used to write out attribute values using
-        /// some funky nested tuple storage.
-        /// 
-        /// Handles situations like href="@Model.Entry.Id"
-        /// 
-        /// This call comes in from the Razor runtime parser
+        /// WriteAttribute implementation lifted from ANurse's MicroRazor Implementation
+        /// and the AspWebStack source.
         /// </summary>
-        /// <param name="attr"></param>
-        /// <param name="tokens"></param>
-        //public virtual void WriteAttribute(string attr,
-        //    //params object[] parms)
-        //                                   Tuple<string, int> token1,
-        //                                   Tuple<string, int> token2,
-        //                                   Tuple<Tuple<string, int>,
-        //                                   Tuple<object, int>, bool> token3)
-        //{
-        //    object value = null;
-        //
-        //    if (token3 != null)
-        //        value = token3.Item2.Item1;
-        //    else
-        //        value = string.Empty;
-        //
-        //    var output = token1.Item1 + value.ToString() + token2.Item1;
-        //
-        //    Response.Write(output);
-        //}
-
-        /// <summary>
-        /// This method is used to write out attribute values using
-        /// some funky nested tuple storage.
-        /// 
-        /// Handles situations like href="@(Model.Url)?parm1=1"
-        /// where text and expressions mix in the attribute
-        /// 
-        /// This call comes in from the Razor runtime parser
-        /// </summary>
-        /// <param name="attr"></param>
-        /// <param name="tokens"></param>
-        //public virtual void WriteAttribute(string attr,
-        //    //params object[] parms)
-        //                           Tuple<string, int> token1,
-        //                           Tuple<string, int> token2,
-        //                           Tuple<Tuple<string, int>,
-        //                                 Tuple<object, int>, bool> token3,
-        //                           Tuple<Tuple<string, int>,
-        //                                 Tuple<string, int>, bool> token4)
-        //{
-        //    //            WriteAttribute("href", 
-        //    //                Tuple.Create(" href=\"", 395), 
-        //    //                Tuple.Create("\"", 452), 
-        //    //                Tuple.Create(Tuple.Create("", 402), Tuple.Create<System.Object, System.Int32>("Value", 402), false),
-        //    //                Tuple.Create(Tuple.Create("", 439), Tuple.Create("?action=login", 439), true)            
-        //    object value = null;
-        //    object textval = null;
-        //    if (token3 != null)
-        //        value = token3.Item2.Item1;
-        //    else
-        //        value = string.Empty;
-
-        //    if (token4 != null)
-        //        textval = token4.Item2.Item1;
-        //    else
-        //        textval = string.Empty;
-
-        //    var output = token1.Item1 + value.ToString() + textval.ToString() + token2.Item1;
-
-        //    Response.Write(output);
-        //}
-
-
-        public virtual void WriteAttribute(string name, PositionTagged<string> prefix, PositionTagged<string> suffix, params AttributeValue[] values)
+        /// <param name="name"></param>
+        /// <param name="prefix"></param>
+        /// <param name="suffix"></param>
+        /// <param name="values"></param>
+        public virtual void WriteAttribute(string name, PositionTagged<string> prefix, 
+                                           PositionTagged<string> suffix, params AttributeValue[] values)
         {
             bool first = true;
             bool wroteSomething = false;
@@ -308,6 +252,36 @@ namespace Westwind.RazorHosting
         }   
 
         /// <summary>
+        /// Allows rendering a dynamic template from within the
+        /// running template. The template passed must be a string
+        /// and you can pass a model for rendering.
+        /// 
+        /// This is useful to support nested templating for allowing
+        /// rendered values to contain embedded Razor template expressions
+        /// which is useful where user generated content may contain
+        /// Razor template logic.
+        /// </summary>
+        /// <param name="template"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public virtual string RenderTemplate(string template,object model)
+        {            
+            if (template == null)
+                return string.Empty;
+            
+            if(!template.Contains("@"))
+                return template;
+
+            // use dynamic to get around generic type casting
+            dynamic engine = Engine;
+            string result = engine.RenderTemplate(template, model);
+            if (result == null)
+                throw new ApplicationException("RenderTemplate failed: " + engine.ErrorMessage);
+                       
+            return result;
+        }
+
+        /// <summary>
         /// Razor Parser overrides this method
         /// </summary>
         public virtual void Execute() { }
@@ -321,6 +295,90 @@ namespace Westwind.RazorHosting
                 Response = null;
             }
         }
+
+        /// <summary>
+        /// Force this host to stay alive indefinitely
+        /// </summary>
+        /// <returns></returns>
+        public override object InitializeLifetimeService()
+        {
+            return null;
+        }
+
+        #region Old_WriteAttribute_Implementations
+        #if false
+        /// <summary>
+        /// This method is used to write out attribute values using
+        /// some funky nested tuple storage.
+        /// 
+        /// Handles situations like href="@Model.Entry.Id"
+        /// 
+        /// This call comes in from the Razor runtime parser
+        /// </summary>
+        /// <param name="attr"></param>
+        /// <param name="tokens"></param>
+        public virtual void WriteAttribute(string attr,
+            //params object[] parms)
+                                           Tuple<string, int> token1,
+                                           Tuple<string, int> token2,
+                                           Tuple<Tuple<string, int>,
+                                           Tuple<object, int>, bool> token3)
+        {
+            object value = null;
+        
+            if (token3 != null)
+                value = token3.Item2.Item1;
+            else
+                value = string.Empty;
+        
+            var output = token1.Item1 + value.ToString() + token2.Item1;
+        
+            Response.Write(output);
+        }
+
+        /// <summary>
+        /// This method is used to write out attribute values using
+        /// some funky nested tuple storage.
+        /// 
+        /// Handles situations like href="@(Model.Url)?parm1=1"
+        /// where text and expressions mix in the attribute
+        /// 
+        /// This call comes in from the Razor runtime parser
+        /// </summary>
+        /// <param name="attr"></param>
+        /// <param name="tokens"></param>
+        public virtual void WriteAttribute(string attr,
+            //params object[] parms)
+                                   Tuple<string, int> token1,
+                                   Tuple<string, int> token2,
+                                   Tuple<Tuple<string, int>,
+                                         Tuple<object, int>, bool> token3,
+                                   Tuple<Tuple<string, int>,
+                                         Tuple<string, int>, bool> token4)
+        {
+            //            WriteAttribute("href", 
+            //                Tuple.Create(" href=\"", 395), 
+            //                Tuple.Create("\"", 452), 
+            //                Tuple.Create(Tuple.Create("", 402), Tuple.Create<System.Object, System.Int32>("Value", 402), false),
+            //                Tuple.Create(Tuple.Create("", 439), Tuple.Create("?action=login", 439), true)            
+            object value = null;
+            object textval = null;
+            if (token3 != null)
+                value = token3.Item2.Item1;
+            else
+                value = string.Empty;
+
+            if (token4 != null)
+                textval = token4.Item2.Item1;
+            else
+                textval = string.Empty;
+
+            var output = token1.Item1 + value.ToString() + textval.ToString() + token2.Item1;
+
+            Response.Write(output);
+        }
+        #endif
+        #endregion
     }
 }
 

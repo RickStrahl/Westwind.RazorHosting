@@ -1,7 +1,7 @@
 using Westwind.RazorHosting.Properties;
 using System;
 using System.IO;
-using System.Web;
+
 
 namespace Westwind.RazorHosting
 {
@@ -24,6 +24,8 @@ namespace Westwind.RazorHosting
 
         public override void InitializeTemplate(object context, object configurationData)
         {
+            Html = new HtmlHelper();
+
             if (configurationData == null)
             {
                 if (context is TModel)
@@ -54,6 +56,8 @@ namespace Westwind.RazorHosting
       
         public override void InitializeTemplate(object model, object configurationData)
         {
+            Html = new HtmlHelper();
+
             // Pick up configuration data and stuff into Request object
             RazorFolderHostTemplateConfiguration config = configurationData as RazorFolderHostTemplateConfiguration;
 
@@ -68,7 +72,7 @@ namespace Westwind.RazorHosting
         /// <param name="relativePath"></param>
         /// <param name="model"></param>
         /// <returns>HtmlString that indicates this string should not be escaped</returns>
-        public HtmlString RenderPartial(string relativePath, object model)
+        public RawString RenderPartial(string relativePath, object model)
         {
             if (this.HostContainer == null)
                 return null;
@@ -110,7 +114,7 @@ namespace Westwind.RazorHosting
             }
 
             // return result as raw output
-            return new HtmlString(output);
+            return new RawString(output);
         }
     }    
 }

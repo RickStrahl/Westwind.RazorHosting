@@ -40,11 +40,25 @@ using System.CodeDom.Compiler;
 using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
-using Westwind.RazorHosting.Properties;
+
 using System.Web.Razor;
 
 namespace Westwind.RazorHosting
 {
+
+    /// <summary>
+    /// Razor Hosting Engine that allows execution of Razor templates outside of
+    /// ASP.NET. You can execute templates from string or a textreader and output
+    /// to string or a text reader.
+    /// 
+    /// This implementation only supports C#.
+    /// </summary>
+    public class RazorEngine : RazorEngine<RazorTemplateBase>
+    {
+        public RazorEngine() : base()
+        { }
+    }
+    
     /// <summary>
     /// Razor Hosting Engine that allows execution of Razor templates outside of
     /// ASP.NET. You can execute templates from string or a textreader and output
@@ -65,6 +79,12 @@ namespace Westwind.RazorHosting
         /// Last generated output
         /// </summary>
         public string LastGeneratedCode { get; set; }
+
+        /// <summary>
+        /// Allows retrieval of the template's ResultData property
+        /// to be retrieved from the last request.
+        /// </summary>
+        public dynamic LastResultData { get; set; }
 
        /// <summary>
        /// Holds Razor Configuration Properties
@@ -131,31 +151,90 @@ namespace Westwind.RazorHosting
             ReferencedNamespaces.Add("System.Text");
             ReferencedNamespaces.Add("System.Collections.Generic");
             ReferencedNamespaces.Add("System.Linq");
-            ReferencedNamespaces.Add("System.IO");
-            ReferencedNamespaces.Add("System.Web");
+            ReferencedNamespaces.Add("System.IO");                     
             ReferencedNamespaces.Add("Westwind.RazorHosting");
 
             ReferencedAssemblies = new List<string>();
             ReferencedAssemblies.Add("System.dll");
             ReferencedAssemblies.Add("System.Core.dll");
             ReferencedAssemblies.Add("Microsoft.CSharp.dll");   // dynamic support!                         
-            ReferencedAssemblies.Add("System.Web.dll");
-            ReferencedAssemblies.Add("System.Web.Razor.dll");
             
-            ReferencedAssemblies.Add( this.GetType().Assembly.Location);
+            
+            ReferencedAssemblies.Add(typeof(RazorEngineHost).Assembly.Location);            
+            ReferencedAssemblies.Add(typeof(RazorEngine).Assembly.Location);
         }
-
-
 
         /// <summary>
         /// Method to add assemblies to the referenced assembly list.
-        /// Each assembly added HAS to be accessible via GAC or in
-        /// the applications' bin/bin private path
+        /// Use the DLL name or strongly typed name. Assembly added HAS 
+        /// to be accessible via GAC or in bin/privatebin path
         /// </summary>
-        /// <param name="assemblyName"></param>
-        public void AddAssembly(string assemblyName)
+        /// <param name="assemblyName">
+        /// Path to the assembly. GAC'd assemblies or assemblies in current path
+        /// can be provided without a path. All others should contain a fully qualified OS path. 
+        /// Note that Razor does not look in the PrivateBin path for the AppDomain.
+        /// </param>
+        public void AddAssembly(string assemblyPath, params string[] additionalAssemblies)
+        {            
+            ReferencedAssemblies.Add(assemblyPath);
+            if (additionalAssemblies != null)
+                ReferencedAssemblies.AddRange(additionalAssemblies);
+        }
+
+
+        /// <summary>
+        /// Adds an assembly to the Referenced assemblies based on a type
+        /// reference. Useful to add the 'host' assembly and model types.
+        /// </summary>
+        /// <param name="type"></param>
+        public void AddAssemblyFromType(Type type)
         {
-            ReferencedAssemblies.Add(assemblyName);
+            if (type != null)
+            {
+                string assemblyFile = type.Assembly.Location;
+                string justFile = Path.GetFileName(assemblyFile).ToLower();
+                if (!ReferencedAssemblies.Where(s => s.ToLower().Contains(justFile)).Any())
+                    ReferencedAssemblies.Add(assemblyFile);
+            }
+        }
+
+        /// <summary>
+        /// Adds an assembly to the ReferenceAssemblies based on an object instance.
+        /// Easy way to add a model's assembly.
+        /// </summary>
+        /// <param name="instance">any object instance</param>        
+        public void AddAssemblyFromType(object instance)
+        {
+            if (instance != null)
+            {
+                string assemblyFile = instance.GetType().Assembly.Location;
+                string justFile = Path.GetFileName(assemblyFile).ToLower();
+                if (!ReferencedAssemblies.Where(s => s.ToLower().Contains(justFile)).Any())
+                    ReferencedAssemblies.Add(assemblyFile);
+            }
+        }
+
+
+        /// <summary>
+        /// Method to add namespaces to the compiled code.
+        /// Add namespaces to minimize explicit namespace
+        /// requirements in your Razor template code.
+        /// 
+        /// Make sure that any required assemblies are
+        /// loaded first.
+        /// </summary>
+        /// <param name="ns">First namespace</param>
+        /// <param name="additionalNamespaces">additional namespaces</param>
+        public void AddNamespace(string ns,params string[] additionalNamespaces)
+        {
+            ReferencedNamespaces.Add(ns);             
+            if (additionalNamespaces != null)
+            {
+                foreach (string ans in additionalNamespaces)
+                {
+                    ReferencedNamespaces.AddRange(additionalNamespaces);
+                }
+            }
         }
 
         /// <summary>
@@ -166,10 +245,18 @@ namespace Westwind.RazorHosting
         /// Make sure that any required assemblies are
         /// loaded first.
         /// </summary>
-        /// <param name="namespace"></param>
-        public void AddNamespace(string ns)
+        /// <param name="ns">First namespace</param>
+        /// <param name="additionalNamespaces">additional namespaces</param>
+        public void AddNamespace(params string[] additionalNamespaces)
         {
-            ReferencedNamespaces.Add(ns);
+            //ReferencedNamespaces.Add(ns);
+            if (additionalNamespaces != null)
+            {
+                foreach (string ans in additionalNamespaces)
+                {
+                    ReferencedNamespaces.Add(ans);
+                }
+            }
         }
 
         /// <summary>
@@ -193,7 +280,7 @@ namespace Westwind.RazorHosting
         {
             this.SetError();
              
-            AddReferencedAssemblyFromInstance(model);
+            AddAssemblyFromType(model);
 
             var assemblyId = CompileTemplate(templateSourceReader);
 
@@ -252,7 +339,7 @@ namespace Westwind.RazorHosting
             Assembly generatedAssembly = AssemblyCache[assemblyId];
             if (generatedAssembly == null)
             {
-                this.SetError(Resources.PreviouslyCompiledAssemblyNotFound);
+                this.SetError(Westwind.RazorHosting.Properties.Resources.PreviouslyCompiledAssemblyNotFound);
                 return null;
             }
 
@@ -264,7 +351,7 @@ namespace Westwind.RazorHosting
                 type = generatedAssembly.GetTypes().FirstOrDefault();
                 if (type == null)
                 {
-                    this.SetError(Resources.UnableToCreateType);
+                    this.SetError(Westwind.RazorHosting.Properties.Resources.UnableToCreateType);
                     return null;
                 }
             }
@@ -277,7 +364,7 @@ namespace Westwind.RazorHosting
                 }
                 catch (Exception ex)
                 {
-                    SetError(Resources.UnableToCreateType + className + ": " + ex.Message);
+                    SetError(Westwind.RazorHosting.Properties.Resources.UnableToCreateType + className + ": " + ex.Message);
                     return null;
                 }
             }
@@ -287,6 +374,9 @@ namespace Westwind.RazorHosting
 
             using (TBaseTemplateType instance = InstantiateTemplateClass(type))
             {
+                if (instance == null)
+                    throw new InvalidOperationException(this.ErrorMessage);
+
                 //if (TemplatePerRequestConfigurationData != null)
                 instance.InitializeTemplate(model, TemplatePerRequestConfigurationData);
 
@@ -320,7 +410,7 @@ namespace Westwind.RazorHosting
         /// 
         /// </summary>
         /// <param name="referencedAssemblies">Any referenced assemblies by dll name only. Assemblies must be in execution path of host or in GAC.</param>
-        /// <param name="templateSourceReader">Textreader that loads the template</param>
+        /// <param name="templateReader">Textreader that loads the template</param>
         /// <param name="generatedNamespace">The namespace of the class to generate from the template. null generates name.</param>
         /// <param name="generatedClassName">The name of the class to generate from the template. null generates name.</param>
         /// <remarks>
@@ -330,9 +420,9 @@ namespace Westwind.RazorHosting
         /// </remarks>
         /// <returns>An assembly Id. The Assembly is cached in memory and can be used with RenderFromAssembly.</returns>
         public string CompileTemplate(
-                    TextReader templateSourceReader,                                    
+                    TextReader templateReader,                                    
                     string generatedNamespace = null,
-                    string generatedClassName = null)
+                    string generatedClassName = null)                    
         {
             if (string.IsNullOrEmpty(generatedNamespace))
                 generatedNamespace = "__RazorHost";
@@ -343,12 +433,22 @@ namespace Westwind.RazorHosting
 
             RazorTemplateEngine engine = CreateHost(generatedNamespace, generatedClassName);
 
+            string template = templateReader.ReadToEnd();
+            templateReader.Close();
+
+            template = FixupTemplate(template);
+
+            var reader = new StringReader(template);
+
             // Generate the template class as CodeDom  
-            GeneratorResults razorResults = engine.GenerateCode(templateSourceReader);
+            GeneratorResults razorResults = engine.GenerateCode(reader);
+
+            reader.Close();
 
             // Create code from the codeDom and compile
             CSharpCodeProvider codeProvider = new CSharpCodeProvider();
             CodeGeneratorOptions options = new CodeGeneratorOptions();
+          
 
             // Capture Code Generated as a string for error info
             // and debugging
@@ -370,7 +470,7 @@ namespace Westwind.RazorHosting
             {
                 var compileErrors = new StringBuilder();
                 foreach (System.CodeDom.Compiler.CompilerError compileError in compilerResults.Errors)
-                    compileErrors.Append(String.Format(Resources.LineX0TColX1TErrorX2RN, 
+                    compileErrors.Append(String.Format("Line: {0}, Column: {1}, Error: {2}", 
                                         compileError.Line, 
                                         compileError.Column, 
                                         compileError.ErrorText));
@@ -391,8 +491,10 @@ namespace Westwind.RazorHosting
         /// loaded assembly.
         /// 
         /// </summary>
-        /// <param name="ReferencedAssemblies">Any referenced assemblies by dll name only. Assemblies must be in execution path of host or in GAC.</param>
-        /// <param name="templateSourceReader">Textreader that loads the template</param>
+        /// <param name="templateText">Text of the template to render</param>
+        /// <param name="generatedNamespace">Namespace for the generated class. If not passed will be __RazorHosting</param>
+        /// <param name="generatedClassName">Classname for the generated class. If not passed will be a generated unique name based on GUID</param>
+        /// <param name="modelType">Optional type of the model passed with this template - used for @model fixup</param>
         /// <remarks>
         /// The actual assembly isn't returned here to allow for cross-AppDomain
         /// operation. If the assembly was returned it would fail for cross-AppDomain
@@ -417,9 +519,10 @@ namespace Westwind.RazorHosting
         /// <param name="generatedNamespace"></param>
         /// <param name="generatedClass"></param>
         /// <returns></returns>
-        protected RazorTemplateEngine CreateHost(string generatedNamespace, string generatedClass)
+        protected RazorTemplateEngine CreateHost(string generatedNamespace, string generatedClass, Type baseClassType = null)
         {     
-            Type baseClassType = typeof(TBaseTemplateType);
+            if (baseClassType == null)
+                baseClassType = typeof(TBaseTemplateType);            
 
             RazorEngineHost host = new RazorEngineHost(new CSharpRazorCodeLanguage());
             host.DefaultBaseClass = baseClassType.FullName;
@@ -434,9 +537,6 @@ namespace Westwind.RazorHosting
             return new RazorTemplateEngine(host);            
         }
         
-
-
-
         /// <summary>
         /// Allows retrieval of an Assembly cached internally by its id
         /// returned from ParseAndCompileTemplate. Useful if you want
@@ -449,7 +549,6 @@ namespace Westwind.RazorHosting
             AssemblyCache.TryGetValue(assemblyId, out ass);
             return ass;            
         }
-
 
         /// <summary>
         /// Overridable instance creation routine for the host. 
@@ -468,7 +567,7 @@ namespace Westwind.RazorHosting
 
             if (instance == null)
             {
-                SetError(Resources.CouldnTActivateTypeInstance + type.FullName);
+                SetError(Westwind.RazorHosting.Properties.Resources.CouldnTActivateTypeInstance + type.FullName);
                 return null;
             }
 
@@ -488,6 +587,8 @@ namespace Westwind.RazorHosting
         /// <returns>true or false - check ErrorMessage for errors</returns>
         protected virtual bool InvokeTemplateInstance(TBaseTemplateType instance, object context)
         {
+            LastResultData = null;
+
             try
             {
                 instance.Model = context;
@@ -512,7 +613,7 @@ namespace Westwind.RazorHosting
             }
             catch (Exception ex)
             {
-                this.SetError(Resources.TemplateExecutionError + ex.Message);
+                this.SetError(Westwind.RazorHosting.Properties.Resources.TemplateExecutionError + ex.Message);
                 return false;
             }
             finally
@@ -520,6 +621,11 @@ namespace Westwind.RazorHosting
                 // Must make sure Response is closed
                 instance.Response.Dispose();
             }
+
+            // capture result data so the engine can 
+            // pass it back to the caller
+            this.LastResultData = instance.ResultData;
+
             return true;
         }
 
@@ -532,23 +638,32 @@ namespace Westwind.RazorHosting
  	         return null;
         }
 
-        /// <summary>
-        /// Adds an assembly to the ReferenceAssemblies based on an object instance.
-        /// Easy way to add a model's assembly.
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="referencedAssemblies"></param>
-        public void AddReferencedAssemblyFromInstance(object model)
-        {
-            if (model != null)
-            {
-                string assemblyFile = model.GetType().Assembly.Location;
-                string justFile = Path.GetFileName(assemblyFile).ToLower();
-                if (!ReferencedAssemblies.Where(s => s.ToLower().Contains(justFile)).Any())
-                        ReferencedAssemblies.Add(assemblyFile);
-            }
-        }
 
+
+
+        /// <summary>
+        /// Internally fix ups for templates
+        /// </summary>
+        /// <param name="template"></param>
+        /// <returns></returns>
+        protected virtual string FixupTemplate(string template)
+        {
+            // @model fixup
+            if (template.Contains("@model "))
+            {
+                int at = template.IndexOf("@model ");
+                int at2 = template.IndexOf("\r\n", at);
+                var line = template.Substring(at, at2 - at);
+                var modelClass = line.Replace("@model ", "").Trim();
+                var templateType = typeof(TBaseTemplateType);
+                var newline = "@inherits " + 
+                              (!string.IsNullOrEmpty(templateType.Namespace) ? templateType.Namespace + "."  : "") +
+                              templateType.Name + "<" + modelClass + ">";
+                template = template.Replace(line, newline);
+            }
+
+            return template;
+        }
 
         /// <summary>
         /// Returns a unique ClassName for a template to execute
@@ -587,4 +702,10 @@ namespace Westwind.RazorHosting
         CSharp,
         VisualBasic
     }
+
+    public class Foo : MarshalByRefObject
+    {
+        public string Name { get; set; }
+    }
+
   }

@@ -15,9 +15,7 @@ namespace RazorHostingTests
     /// </summary>
     [TestClass]
     public class RawRazorTemplateHostingTests
-    {
-   
-     
+    {        
 
         [TestMethod]
         public void RawRazorTest()
@@ -54,7 +52,7 @@ namespace RazorHostingTests
 
             // Create code from the codeDom and compile
             CSharpCodeProvider codeProvider = new CSharpCodeProvider();
-            CodeGeneratorOptions options = new CodeGeneratorOptions();
+            CodeGeneratorOptions options = new CodeGeneratorOptions();            
 
             // Capture Code Generated as a string for error info
             // and debugging
@@ -88,15 +86,12 @@ namespace RazorHostingTests
             {
                 var compileErrors = new StringBuilder();
                 foreach (System.CodeDom.Compiler.CompilerError compileError in compilerResults.Errors)
-                    compileErrors.Append(String.Format("Line: {0}\t Col: {1}\t Error: {2}", compileError.Line, compileError.Column, compileError.ErrorText));
-                
+                    compileErrors.Append(String.Format("Line: {0}\t Col: {1}\t Error: {2}", compileError.Line, compileError.Column, compileError.ErrorText));                
 
                 Assert.Fail(compileErrors.ToString());
             }
 
             string name = compilerResults.CompiledAssembly.FullName;
-
-
 
             // Instantiate the template
             Assembly generatedAssembly = compilerResults.CompiledAssembly;
@@ -118,7 +113,6 @@ namespace RazorHostingTests
                 Assert.Fail("Couldn't activate template: " +  type.FullName);
                 return;
             }
-
            
             // Configure the instance 
             StringWriter outputWriter = new StringWriter();
@@ -138,18 +132,25 @@ namespace RazorHostingTests
                }
            };
 
+           // Configure the instance with model and
+           // other configuration data
+           // instance.Model = person;
            instance.InitializeTemplate(person);
            
-            
-     
            // Execute the template  and clean up
            instance.Execute();
-           instance.Dispose();
 
+           // template can set its ResultData property to pass data
+           // back to the caller
+           dynamic resultData = instance.ResultData;
+     
+           instance.Dispose();
 
            // read the result from the writer passed in
            var result = outputWriter.ToString();           
-           Console.WriteLine(result); 
+
+           Console.WriteLine(result);
+           Console.WriteLine("\r\nResultData: " + resultData.ToString());
         }
 
 
