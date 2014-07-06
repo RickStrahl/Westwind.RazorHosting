@@ -43,6 +43,7 @@ using System.Reflection;
 using System.Collections.Generic;
 
 using System.Web.Razor;
+using Westwind.RazorHosting.Properties;
 
 namespace Westwind.RazorHosting
 {
@@ -340,7 +341,7 @@ namespace Westwind.RazorHosting
             Assembly generatedAssembly = AssemblyCache[assemblyId];
             if (generatedAssembly == null)
             {
-                SetError(Westwind.RazorHosting.Properties.Resources.PreviouslyCompiledAssemblyNotFound);
+                SetError(Resources.PreviouslyCompiledAssemblyNotFound);
                 return null;
             }
 
@@ -352,7 +353,7 @@ namespace Westwind.RazorHosting
                 type = generatedAssembly.GetTypes().FirstOrDefault();
                 if (type == null)
                 {
-                    SetError(Westwind.RazorHosting.Properties.Resources.UnableToCreateType);
+                    SetError(Resources.UnableToCreateType);
                     return null;
                 }
             }
@@ -365,7 +366,7 @@ namespace Westwind.RazorHosting
                 }
                 catch (Exception ex)
                 {
-                    SetError(Westwind.RazorHosting.Properties.Resources.UnableToCreateType + className + ": " + ex.Message);
+                    SetError(Resources.UnableToCreateType + className + ": " + ex.Message);
                     return null;
                 }
             }
@@ -470,7 +471,7 @@ namespace Westwind.RazorHosting
             if (compilerResults.Errors.Count > 0)
             {
                 var compileErrors = new StringBuilder();
-                foreach (System.CodeDom.Compiler.CompilerError compileError in compilerResults.Errors)
+                foreach (CompilerError compileError in compilerResults.Errors)
                     compileErrors.Append(String.Format("Line: {0}, Column: {1}, Error: {2}", 
                                         compileError.Line, 
                                         compileError.Column, 
@@ -573,7 +574,7 @@ namespace Westwind.RazorHosting
 
             if (instance == null)
             {
-                SetError(Westwind.RazorHosting.Properties.Resources.CouldnTActivateTypeInstance + type.FullName);
+                SetError(Resources.CouldnTActivateTypeInstance + type.FullName);
                 return null;
             }
 
@@ -602,24 +603,17 @@ namespace Westwind.RazorHosting
                 if (context != null)
                 {
                     // if there's a model property try to 
-                    // assign it from context
-                    try
-                    {
-                        dynamic dynInstance = instance;
-                        dynamic dcontext = context;
-                        dynInstance.Model = dcontext;
-                    }
-                    catch(Exception ex) 
-                    {
-                        var msg = ex.Message;
-                    }                    
+                    // assign it from context                    
+                    dynamic dynInstance = instance;
+                    dynamic dcontext = context;
+                    dynInstance.Model = dcontext;                                     
                 }
 
                 instance.Execute();
             }
             catch (Exception ex)
             {
-                SetError(Properties.Resources.TemplateExecutionError + ex.Message);
+                SetError(Resources.TemplateExecutionError + ex.Message);
                 return false;
             }
             finally
