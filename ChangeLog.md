@@ -2,11 +2,11 @@
 * * * 
 
 ##Version 3.0
-*not released yet*
+*July 8th, 2014*
 
-* **Update to Razor 3.0**<br />
+* **Update to Razor Version 3**<br />
   Updated to the latest version of the Razor Engine distributed
-  with MVC 5. Fix various small issues that are a result of the 
+  with MVC 5. Fix various issues that are a result of the 
   new rendering engine.
 
 * **Require .NET 4.5 to run**<br/>
@@ -26,6 +26,7 @@
   Container hosts are now IDisposable which makes it easier to stop them when
   they are released. Default Dispose() behavior stops the engine and releases
   all cached assemblies.
+
 
 ##Version 1.01
 *December 20th, 2012*
