@@ -28,3 +28,6 @@ _ReSharper*/
 *.vssscc
 $tf*/
 [Ppackages]
+/packages
+Index.dat
+Storage.dat

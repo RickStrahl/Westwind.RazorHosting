@@ -218,10 +218,10 @@ namespace Westwind.RazorHosting
         /// </summary>
         public void UnloadHost()
         {
-            if (this.LocalAppDomain != null)
+            if (LocalAppDomain != null)
             {
-                AppDomain.Unload(this.LocalAppDomain);
-                this.LocalAppDomain = null;
+                AppDomain.Unload(LocalAppDomain);
+                LocalAppDomain = null;
             }
         }
     }

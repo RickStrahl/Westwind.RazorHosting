@@ -32,6 +32,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
 
@@ -49,8 +50,8 @@ namespace Westwind.RazorHosting
     /// For example implementations can provide assembly
     /// template caching so assemblies don't recompile for each access.
     /// </summary>
-    /// <typeparam name="TBaseTemplateType">The RazorTemplateBase class that templates will be based on</typeparam>
-    public abstract class RazorBaseHostContainer<TBaseTemplateType> : MarshalByRefObject
+    /// <typeparam name="TBaseTemplateType">The RazorTemplateBase class that templates will be based on</typeparam>    
+    public abstract class RazorBaseHostContainer<TBaseTemplateType> : MarshalByRefObject, IDisposable
             where TBaseTemplateType : RazorTemplateBase, new()
     {
 
@@ -152,7 +153,7 @@ namespace Westwind.RazorHosting
 
                 if (Engine == null)
                 {
-                    this.ErrorMessage = RazorEngineFactory<TBaseTemplateType>.Current.ErrorMessage;
+                    ErrorMessage = RazorEngineFactory<TBaseTemplateType>.Current.ErrorMessage;
                     return false;
                 }
 
@@ -177,11 +178,15 @@ namespace Westwind.RazorHosting
         /// <returns>true or false</returns>
         public bool Stop()
         {
-            this.LoadedAssemblies.Clear();
+            if (Engine != null)
+            {
+                // Release cached assemblies
+                LoadedAssemblies.Clear();
 
-            RazorEngineFactory<RazorTemplateBase>.UnloadRazorHostInAppDomain();
+                RazorEngineFactory<RazorTemplateBase>.UnloadRazorHostInAppDomain();
+                Engine = null;
+            }
 
-            this.Engine = null;
             return true;
         }
 
@@ -204,11 +209,11 @@ namespace Westwind.RazorHosting
             string assemblyId = Engine.CompileTemplate(reader);
             if (assemblyId == null)
             {
-                this.ErrorMessage = Engine.ErrorMessage;
+                ErrorMessage = Engine.ErrorMessage;
                 return false;
             }
 
-            return this.RenderTemplateFromAssembly(assemblyId, model, writer);
+            return RenderTemplateFromAssembly(assemblyId, model, writer);
         }
 
         /// <summary>
@@ -230,7 +235,7 @@ namespace Westwind.RazorHosting
 
             if (result == null)
             {
-                this.ErrorMessage = Engine.ErrorMessage;
+                ErrorMessage = Engine.ErrorMessage;
                 return false;
             }
 
@@ -289,9 +294,9 @@ namespace Westwind.RazorHosting
         protected void SetError(string message)
         {
             if (message == null)
-                this.ErrorMessage = string.Empty;
+                ErrorMessage = string.Empty;
 
-            this.ErrorMessage = message;
+            ErrorMessage = message;
         }
 
         /// <summary>
@@ -299,7 +304,22 @@ namespace Westwind.RazorHosting
         /// </summary>
         protected void SetError()
         {
-            this.SetError(null);
+            SetError(null);
+        }
+
+        public override string ToString()
+        {
+            if (string.IsNullOrEmpty(ErrorMessage))
+                return base.ToString();
+            return ErrorMessage;
+        }
+
+        /// <summary>
+        /// Automatically stops the host
+        /// </summary>
+        public void Dispose()
+        {
+            Stop();
         }
     }
 }

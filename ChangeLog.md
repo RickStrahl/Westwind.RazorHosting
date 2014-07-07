@@ -1,6 +1,32 @@
 #Westwind.RazorHosting Change Log
 * * * 
 
+##Version 3.0
+*not released yet*
+
+* **Update to Razor 3.0**<br />
+  Updated to the latest version of the Razor Engine distributed
+  with MVC 5. Fix various small issues that are a result of the 
+  new rendering engine.
+
+* **Require .NET 4.5 to run**<br/>
+  The Razor Libraries version 3 requires .NET 4.5 so this library
+  is updating to the same .NET version.
+
+* **Support for @helper**<br />
+  You can now use Razor Helpers using the @helper syntax supported
+  in core Razor. Helpers allow you to create small function like
+  Razor snippets that can either act as functions or execute razor
+  templates to provide reusability.
+
+* **Version numbers in Sync with Razor Version**<br />
+  Decided to keep the library version in sync with Razor version.
+
+* **RazorHostContainerBase now implements IDisposable**<br />
+  Container hosts are now IDisposable which makes it easier to stop them when
+  they are released. Default Dispose() behavior stops the engine and releases
+  all cached assemblies.
+
 ##Version 1.01
 *December 20th, 2012*
 

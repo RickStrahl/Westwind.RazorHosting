@@ -59,6 +59,34 @@ namespace RazorHostingTests
         }
 
         [TestMethod]
+        public void SimplestWithHelperRazorEngineTest()
+        {
+            string template = @"
+@helper HelloWorld(string name) {
+      int x = 1;
+      <div>
+            Hello world, @name
+      </div>  
+  }
+Hello World @Model.Name. Time is: @DateTime.Now
+<hr />
+The following comes from a helper.
+@HelloWorld(""rick"")
+";
+            //template = Templates.BasicTemplateStringWithPersonModel;
+            var host = new RazorEngine();
+
+            string result = host.RenderTemplate(template, new Person { Name = "Joe Doe" });
+
+            Assert.IsNotNull(result, host.ErrorMessage);
+            Assert.IsTrue(result.Contains("Joe Doe"));
+
+            Console.WriteLine(result);
+            Console.WriteLine(host.LastGeneratedCode);
+        }
+
+
+        [TestMethod]
         public void SimplestRazorEngineWithCompileTest()
         {
             string template = @"Hello World @Model.Name. Time is: @DateTime.Now";

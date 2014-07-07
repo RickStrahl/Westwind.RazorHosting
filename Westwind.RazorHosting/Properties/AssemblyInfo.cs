@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("West Wind Technologies")]
 [assembly: AssemblyProduct("Westwind.RazorHosting")]
-[assembly: AssemblyCopyright("© Rick Strahl - Westwind Technologies, 2012")]
+[assembly: AssemblyCopyright("© Rick Strahl - Westwind Technologies, 2012-2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.01.0.0")]
-[assembly: AssemblyFileVersion("1.01.0.0")]
+[assembly: AssemblyVersion("3.00.0.0")]
+[assembly: AssemblyFileVersion("3.00.0.0")]

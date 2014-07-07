@@ -24,6 +24,48 @@
             </summary>
             <param name="instance"></param>
         </member>
+        <member name="T:Westwind.RazorHosting.HelperResult">
+            <summary>
+            Helped class used by Razor to render generated code.
+            </summary>
+        </member>
+        <member name="M:Westwind.RazorHosting.IHtmlString.ToHtmlString">
+            <summary>
+            Returns an HTML-encoded string.
+            </summary>
+            <returns>An HTML-encoded string.</returns>
+        </member>
+        <member name="M:Westwind.RazorHosting.HelperResult.#ctor(System.Action{System.IO.TextWriter})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Westwind.RazorHosting.HelperResult"/> class,
+            with the provided <paramref name="action"/>.
+            </summary>
+            <param name="action">The action that should be used to produce the result.</param>
+        </member>
+        <member name="M:Westwind.RazorHosting.HelperResult.ToHtmlString">
+            <summary>
+            Returns a HTML formatted <see cref="T:System.String"/> that represents the current <see cref="T:Westwind.RazorHosting.HelperResult"/>.
+            </summary>
+            <returns>A HTML formatted <see cref="T:System.String"/> that represents the current <see cref="T:Westwind.RazorHosting.HelperResult"/>.</returns>
+        </member>
+        <member name="M:Westwind.RazorHosting.HelperResult.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents the current <see cref="T:Westwind.RazorHosting.HelperResult"/>.
+            </summary>
+            <returns>A <see cref="T:System.String"/> that represents the current <see cref="T:Westwind.RazorHosting.HelperResult"/>.</returns>
+        </member>
+        <member name="M:Westwind.RazorHosting.HelperResult.WriteTo(System.IO.TextWriter)">
+            <summary>
+            Writes the output of the <see cref="T:Westwind.RazorHosting.HelperResult"/> to the provided <paramref name="writer"/>.
+            </summary>
+            <param name="writer">A <see cref="T:System.IO.TextWriter"/> instance that the output should be written to.</param>
+        </member>
+        <member name="M:Westwind.RazorHosting.HelperResult.WriteTo(System.IO.TextWriter,System.Object)">
+            <summary>
+            Writes the output of the <see cref="T:Westwind.RazorHosting.HelperResult"/> to the provided <paramref name="writer"/>.
+            </summary>
+            <param name="writer">A <see cref="T:System.IO.TextWriter"/> instance that the output should be written to.</param>
+        </member>
         <member name="T:Westwind.RazorHosting.RawString">
             <summary>
             Class that wraps a string and returns it as a raw
@@ -487,7 +529,7 @@
             For example implementations can provide assembly
             template caching so assemblies don't recompile for each access.
             </summary>
-            <typeparam name="TBaseTemplateType">The RazorTemplateBase class that templates will be based on</typeparam>
+            <typeparam name="TBaseTemplateType">The RazorTemplateBase class that templates will be based on</typeparam>    
         </member>
         <member name="F:Westwind.RazorHosting.RazorBaseHostContainer`1.Engine">
             <summary>
@@ -586,6 +628,11 @@
         <member name="M:Westwind.RazorHosting.RazorBaseHostContainer`1.SetError">
             <summary>
             Sets an error message consistently
+            </summary>
+        </member>
+        <member name="M:Westwind.RazorHosting.RazorBaseHostContainer`1.Dispose">
+            <summary>
+            Automatically stops the host
             </summary>
         </member>
         <member name="P:Westwind.RazorHosting.RazorBaseHostContainer`1.UseAppDomain">
@@ -960,6 +1007,13 @@
             Writes an expression value. This value is HtmlEncoded always
             </summary>
             <param name="value"></param>
+        </member>
+        <member name="M:Westwind.RazorHosting.RazorTemplateBase.WriteLiteralTo(System.IO.TextWriter,System.Object)">
+            <summary>
+            Writes the provided <paramref name="value"/>, as a literal, to the provided <paramref name="writer"/>.
+            </summary>
+            <param name="writer">The <see cref="T:System.IO.TextWriter"/> that should be written to.</param>
+            <param name="value">The value that should be written as a literal.</param>
         </member>
         <member name="M:Westwind.RazorHosting.RazorTemplateBase.WriteAttribute(System.String,Westwind.RazorHosting.PositionTagged{System.String},Westwind.RazorHosting.PositionTagged{System.String},Westwind.RazorHosting.AttributeValue[])">
             <summary>

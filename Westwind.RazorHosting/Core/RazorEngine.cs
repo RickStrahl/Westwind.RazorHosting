@@ -35,6 +35,7 @@
 using System;
 using System.Text;
 using System.Linq;
+using System.Web.Razor.Generator;
 using Microsoft.CSharp;
 using System.CodeDom.Compiler;
 using System.IO;
@@ -42,6 +43,7 @@ using System.Reflection;
 using System.Collections.Generic;
 
 using System.Web.Razor;
+using Westwind.RazorHosting.Properties;
 
 namespace Westwind.RazorHosting
 {
@@ -152,7 +154,7 @@ namespace Westwind.RazorHosting
             ReferencedNamespaces.Add("System.Collections.Generic");
             ReferencedNamespaces.Add("System.Linq");
             ReferencedNamespaces.Add("System.IO");                     
-            ReferencedNamespaces.Add("Westwind.RazorHosting");
+            ReferencedNamespaces.Add("Westwind.RazorHosting"); // this namespace
 
             ReferencedAssemblies = new List<string>();
             ReferencedAssemblies.Add("System.dll");
@@ -278,7 +280,7 @@ namespace Westwind.RazorHosting
                     object model = null,                    
                     TextWriter outputWriter = null)
         {
-            this.SetError();
+            SetError();
              
             AddAssemblyFromType(model);
 
@@ -330,7 +332,7 @@ namespace Westwind.RazorHosting
             string generatedNamespace = null,
             string generatedClass = null)
         {
-            this.SetError();
+            SetError();
 
             // Handle anonymous and other non-public types
             if (model != null && model.GetType().IsNotPublic)
@@ -339,7 +341,7 @@ namespace Westwind.RazorHosting
             Assembly generatedAssembly = AssemblyCache[assemblyId];
             if (generatedAssembly == null)
             {
-                this.SetError(Westwind.RazorHosting.Properties.Resources.PreviouslyCompiledAssemblyNotFound);
+                SetError(Resources.PreviouslyCompiledAssemblyNotFound);
                 return null;
             }
 
@@ -351,7 +353,7 @@ namespace Westwind.RazorHosting
                 type = generatedAssembly.GetTypes().FirstOrDefault();
                 if (type == null)
                 {
-                    this.SetError(Westwind.RazorHosting.Properties.Resources.UnableToCreateType);
+                    SetError(Resources.UnableToCreateType);
                     return null;
                 }
             }
@@ -364,7 +366,7 @@ namespace Westwind.RazorHosting
                 }
                 catch (Exception ex)
                 {
-                    SetError(Westwind.RazorHosting.Properties.Resources.UnableToCreateType + className + ": " + ex.Message);
+                    SetError(Resources.UnableToCreateType + className + ": " + ex.Message);
                     return null;
                 }
             }
@@ -375,7 +377,7 @@ namespace Westwind.RazorHosting
             using (TBaseTemplateType instance = InstantiateTemplateClass(type))
             {
                 if (instance == null)
-                    throw new InvalidOperationException(this.ErrorMessage);
+                    throw new InvalidOperationException(ErrorMessage);
 
                 //if (TemplatePerRequestConfigurationData != null)
                 instance.InitializeTemplate(model, TemplatePerRequestConfigurationData);
@@ -469,13 +471,13 @@ namespace Westwind.RazorHosting
             if (compilerResults.Errors.Count > 0)
             {
                 var compileErrors = new StringBuilder();
-                foreach (System.CodeDom.Compiler.CompilerError compileError in compilerResults.Errors)
+                foreach (CompilerError compileError in compilerResults.Errors)
                     compileErrors.Append(String.Format("Line: {0}, Column: {1}, Error: {2}", 
                                         compileError.Line, 
                                         compileError.Column, 
                                         compileError.ErrorText));
 
-                this.SetError(compileErrors.ToString() + "\r\n" + LastGeneratedCode);
+                SetError(compileErrors.ToString() + "\r\n" + LastGeneratedCode);
                 return null;
             }
 
@@ -528,8 +530,13 @@ namespace Westwind.RazorHosting
             host.DefaultBaseClass = baseClassType.FullName;
             host.DefaultClassName = generatedClass;
             host.DefaultNamespace = generatedNamespace;
+            
+            var context = new GeneratedClassContext("Execute", "Write", "WriteLiteral", "WriteTo", "WriteLiteralTo", typeof(HelperResult).FullName, "DefineSection");
+            context.ResolveUrlMethodName = "ResolveUrl";
+            
+            host.GeneratedClassContext = context;
 
-            foreach (string ns in this.ReferencedNamespaces)
+            foreach (string ns in ReferencedNamespaces)
             {
                 host.NamespaceImports.Add(ns);
             }            
@@ -567,14 +574,14 @@ namespace Westwind.RazorHosting
 
             if (instance == null)
             {
-                SetError(Westwind.RazorHosting.Properties.Resources.CouldnTActivateTypeInstance + type.FullName);
+                SetError(Resources.CouldnTActivateTypeInstance + type.FullName);
                 return null;
             }
 
             instance.Engine = this;
 
             // If a HostContainer was set pass that to the template too
-            instance.HostContainer = this.HostContainer;
+            instance.HostContainer = HostContainer;
             
             return instance;
         }
@@ -596,24 +603,17 @@ namespace Westwind.RazorHosting
                 if (context != null)
                 {
                     // if there's a model property try to 
-                    // assign it from context
-                    try
-                    {
-                        dynamic dynInstance = instance;
-                        dynamic dcontext = context;
-                        dynInstance.Model = dcontext;
-                    }
-                    catch(Exception ex) 
-                    {
-                        var msg = ex.Message;
-                    }                    
+                    // assign it from context                    
+                    dynamic dynInstance = instance;
+                    dynamic dcontext = context;
+                    dynInstance.Model = dcontext;                                     
                 }
 
                 instance.Execute();
             }
             catch (Exception ex)
             {
-                this.SetError(Westwind.RazorHosting.Properties.Resources.TemplateExecutionError + ex.Message);
+                SetError(Resources.TemplateExecutionError + ex.Message);
                 return false;
             }
             finally
@@ -624,7 +624,7 @@ namespace Westwind.RazorHosting
 
             // capture result data so the engine can 
             // pass it back to the caller
-            this.LastResultData = instance.ResultData;
+            LastResultData = instance.ResultData;
 
             return true;
         }

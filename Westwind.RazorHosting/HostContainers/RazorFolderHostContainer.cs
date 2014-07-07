@@ -115,7 +115,7 @@ namespace Westwind.RazorHosting
             // Set configuration data that is to be passed to the template (any object) 
             Engine.TemplatePerRequestConfigurationData = new RazorFolderHostTemplateConfiguration()
             {
-                TemplatePath = Path.Combine(this.TemplatePath, relativePath),
+                TemplatePath = Path.Combine(TemplatePath, relativePath),
                 TemplateRelativePath = relativePath
             };
 
@@ -128,11 +128,11 @@ namespace Westwind.RazorHosting
                 result = Engine.RenderTemplateFromAssembly(item.AssemblyId, model, writer);
 
                 if (result == null)
-                    this.SetError(Engine.ErrorMessage);
+                    SetError(Engine.ErrorMessage);
             }
             catch (Exception ex)
             {
-                this.SetError(ex.Message);
+                SetError(ex.Message);
             }
             finally
             {
@@ -163,12 +163,12 @@ namespace Westwind.RazorHosting
             int fileNameHash = fileName.GetHashCode();
             if (!File.Exists(fileName))
             {
-                this.SetError(Westwind.RazorHosting.Properties.Resources.TemplateFileDoesnTExist + fileName);
+                SetError(Westwind.RazorHosting.Properties.Resources.TemplateFileDoesnTExist + fileName);
                 return null;
             }
 
             CompiledAssemblyItem item = null;
-            this.LoadedAssemblies.TryGetValue(fileNameHash, out item);
+            LoadedAssemblies.TryGetValue(fileNameHash, out item);
 
             string assemblyId = null;
 
@@ -194,7 +194,7 @@ namespace Westwind.RazorHosting
                 }
                 catch
                 {
-                    this.SetError(Westwind.RazorHosting.Properties.Resources.ErrorReadingTemplateFile + fileName);
+                    SetError(Westwind.RazorHosting.Properties.Resources.ErrorReadingTemplateFile + fileName);
                     return null;
                 }
                 assemblyId = Engine.CompileTemplate(template);
@@ -205,7 +205,7 @@ namespace Westwind.RazorHosting
 
                 if (assemblyId == null)
                 {
-                    this.SetError(Engine.ErrorMessage);
+                    SetError(Engine.ErrorMessage);
                     return null;
                 }
 
@@ -214,7 +214,7 @@ namespace Westwind.RazorHosting
                 item.FileName = fileName;
                 item.SafeClassName = safeClassName;
 
-                this.LoadedAssemblies[fileNameHash] = item;
+                LoadedAssemblies[fileNameHash] = item;
             }
 
             return item;
@@ -230,7 +230,7 @@ namespace Westwind.RazorHosting
         /// <returns></returns>
         protected virtual bool HasFileChanged(string relativePath, DateTime originalTimeUtc)
         {
-            string fileName = Path.Combine(this.TemplatePath, relativePath);
+            string fileName = Path.Combine(TemplatePath, relativePath);
             DateTime lastWriteTime = File.GetLastWriteTimeUtc(fileName);
 
             if (lastWriteTime > originalTimeUtc)

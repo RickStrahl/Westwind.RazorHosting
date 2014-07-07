@@ -1,4 +1,4 @@
-﻿@inherits RazorTemplateFolderHost<RazorHostingTests.Person>
+﻿@inherits Westwind.RazorHosting.RazorTemplateFolderHost<RazorHostingTests.Person>
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,15 +6,27 @@
     <title></title>
 </head>
 <body>    
-    @Model.Name @Model.Company @Model.Address.City @Model.Entered 
+    <div>
+        @Model.Name @Model.Company @Model.Address.City @Model.Entered
+    </div>
     
-    @{for (int i = 0; i < 10; i++)
-      {
-          Response.WriteLine(i + ".");
-      }   
-      
+    <div class="@Model.Name @Model.Company">
+        Pseudo Attributes value injection
+    </div>
+
     @{
-         ResultData = "Hello from the template";
-     }  
+    for (int i = 0; i < 10; i++)
+    {
+        Response.WriteLine(i + ".");
+        <div>@i</div>
+    }
+
+    @
+    {
+        ResultData = "Hello from the template " + DateTime.Now;
+    }        
+}
+    
+@ResultData
 </body>
 </html>
