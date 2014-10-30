@@ -57,7 +57,7 @@ namespace Westwind.RazorHosting
 
         public RazorBaseHostContainer()
         {
-            UseAppDomain = true;
+            UseAppDomain = false;
             GeneratedNamespace = "__RazorHost";
 
             ReferencedAssemblies = new List<string>();

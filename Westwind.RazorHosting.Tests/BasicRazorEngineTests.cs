@@ -85,6 +85,32 @@ The following comes from a helper.
             Console.WriteLine(host.LastGeneratedCode);
         }
 
+        [TestMethod]
+        public void InferredModelTest()
+        {
+            // this template includes some Linq expression which doesn't work with a 
+            // dynamic type. By using an inferred model LINQ should work.
+            string template = @"
+<div>@Model.Name
+<div>
+@foreach (var addr in Model.Addresses.OrderBy( ad=> ad.Street))
+{
+        <div>@addr.Street, @addr.Phone</div>    
+}
+</div>
+";            
+            var host = new RazorEngine();
+
+            string result = host.RenderTemplate(template, new Person { Name = "Joe Doe" },inferModelType: true);
+
+            Console.WriteLine(result);
+            Assert.IsNotNull(result, host.ErrorMessage);
+            Assert.IsTrue(result.Contains("32 Kaiea"),"Couldn't find City name in output");
+
+            Console.WriteLine(result);
+            Console.WriteLine(host.LastGeneratedCode);
+        }
+
 
         [TestMethod]
         public void SimplestRazorEngineWithCompileTest()

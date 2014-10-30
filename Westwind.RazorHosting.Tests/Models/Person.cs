@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Westwind.RazorHosting;
 using System.IO;
@@ -16,12 +17,17 @@ namespace RazorHostingTests
         public string Name { get; set; }
         public string Company { get; set; }
         public Address Address { get; set; }
+        public List<Address> Addresses {get; set;}        
         public DateTime Entered { get; set; }
 
         public Person()
         {
             Address = new Address();
-            Entered = DateTime.Now;
+            Addresses = new List<RazorHostingTests.Address>();
+            Addresses.Add(new Address() { Street="32 Kaiea", City="Paia", Phone="324-1231"});
+            Addresses.Add(new Address() {Street = "45 Null Ave", City = "Bullard", Phone = "121-1211"});
+            
+            Entered = DateTime.Now;            
         }
     }
 

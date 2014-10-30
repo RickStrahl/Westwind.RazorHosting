@@ -268,7 +268,7 @@ namespace Westwind.RazorHosting
         /// <param name="generatedNamespace">Name of the namespace that is generated</param>
         /// <param name="generatedClass">Name of the class that is generated</param>
         /// <param name="referencedAssemblies">Any assembly references required by template as a DLL names. Must be in execution path or GAC.</param>
-        /// <param name="model">Optional context available in the template as this.Context</param>
+        /// <param name="model">Optional model available in the template as this.Context</param>
         /// <param name="outputWriter">
         /// A text writer that receives the rendered template output. 
         /// Writer is closed after rendering. 
@@ -299,18 +299,25 @@ namespace Westwind.RazorHosting
         /// <param name="generatedNamespace">Name of the namespace that is generated</param>
         /// <param name="generatedClass">Name of the class that is generated</param>
         /// <param name="referencedAssemblies">Any assembly references required by template as a DLL names. Must be in execution path or GAC.</param>
-        /// <param name="model">Optional context available in the template as this.Context</param>
+        /// <param name="model">Optional model available in the template as this.Context</param>
         /// <param name="outputWriter">
         /// A text writer that receives the rendered template output. 
         /// Writer is closed after rendering. 
         /// When provided the result of this method is string.Empty (success) or null (failure)
         /// </param>
+        /// <param name="inferModelType">If true, tries to infer the model type when no @model or @inherits tags are defined for the template</param>
         /// <returns>output from template. If an outputWriter is passed in result is string.Empty on success, null on failure</returns>
         public string RenderTemplate(
                     string templateText,
                     object model = null,                    
-                    TextWriter outputWriter = null)
-        {            
+                    TextWriter outputWriter = null,
+                    bool inferModelType = false)
+        {
+            if (inferModelType && model != null && 
+                !templateText.Trim().StartsWith("@model") && 
+                !templateText.Trim().StartsWith("@inherits"))
+                templateText = "@model " + model.GetType().FullName + "\r\n"+ templateText ;
+
             TextReader templateReader = new StringReader(templateText);
             return RenderTemplate(templateReader, model, outputWriter);
         }
@@ -382,9 +389,6 @@ namespace Westwind.RazorHosting
                 //if (TemplatePerRequestConfigurationData != null)
                 instance.InitializeTemplate(model, TemplatePerRequestConfigurationData);
 
-                if (instance == null)
-                    return null;
-
                 if (outputWriter != null)
                     instance.Response.SetTextWriter(outputWriter);
 
@@ -444,26 +448,29 @@ namespace Westwind.RazorHosting
 
             // Generate the template class as CodeDom  
             GeneratorResults razorResults = engine.GenerateCode(reader);
+            
 
             reader.Close();
 
             // Create code from the codeDom and compile
-            CSharpCodeProvider codeProvider = new CSharpCodeProvider();
-            CodeGeneratorOptions options = new CodeGeneratorOptions();
-          
+            var codeProvider = new CSharpCodeProvider();
+            var options = new CodeGeneratorOptions();
+            
 
             // Capture Code Generated as a string for error info
             // and debugging
             LastGeneratedCode = null;
-            using (StringWriter writer = new StringWriter())
+            using (var writer = new StringWriter())
             {
                 codeProvider.GenerateCodeFromCompileUnit(razorResults.GeneratedCode, writer, options);
                 LastGeneratedCode = writer.ToString();
             }
 
-            CompilerParameters compilerParameters = new CompilerParameters(ReferencedAssemblies.ToArray());
-           
+            var compilerParameters = new CompilerParameters(ReferencedAssemblies.ToArray());
+            //compilerParameters.IncludeDebugInformation = true;           
             compilerParameters.GenerateInMemory = Configuration.CompileToMemory;
+            
+
             if (!Configuration.CompileToMemory)
                 compilerParameters.OutputAssembly = Path.Combine(Configuration.TempAssemblyPath, "_" + Guid.NewGuid().ToString("n") + ".dll");
 
@@ -592,20 +599,26 @@ namespace Westwind.RazorHosting
         /// </summary>
         /// <param name="instance">An instance of the generated template</param>
         /// <returns>true or false - check ErrorMessage for errors</returns>
-        protected virtual bool InvokeTemplateInstance(TBaseTemplateType instance, object context)
+        protected virtual bool InvokeTemplateInstance(TBaseTemplateType instance, object model)
         {
+            LastException = null;
             LastResultData = null;
 
             try
             {
-                instance.Model = context;
+                instance.Model = model;
                 
-                if (context != null)
+                if (model != null)
                 {
-                    // if there's a model property try to 
-                    // assign it from context                    
+                    //instance.Model = model;
+
+                    // USE DYNAMIC HERE TO AVOID TYPECASTING ERRORS OF THE MODEL
+                    // WHEN SERIALIZING
+
+                    //// if there's a model property try to 
+                    //// assign it from model                    
                     dynamic dynInstance = instance;
-                    dynamic dcontext = context;
+                    dynamic dcontext = model;
                     dynInstance.Model = dcontext;                                     
                 }
 
@@ -613,6 +626,7 @@ namespace Westwind.RazorHosting
             }
             catch (Exception ex)
             {
+                LastException = ex;
                 SetError(Resources.TemplateExecutionError + ex.Message);
                 return false;
             }
@@ -695,6 +709,8 @@ namespace Westwind.RazorHosting
         {
             SetError(null);
         }
+
+        public Exception LastException { get; set; }
     }
 
     public enum CodeProvider
@@ -703,9 +719,9 @@ namespace Westwind.RazorHosting
         VisualBasic
     }
 
-    public class Foo : MarshalByRefObject
-    {
-        public string Name { get; set; }
-    }
+    //public class Foo : MarshalByRefObject
+    //{
+    //    public string Name { get; set; }
+    //}
 
   }

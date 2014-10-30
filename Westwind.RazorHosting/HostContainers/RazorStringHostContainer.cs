@@ -55,7 +55,7 @@ namespace Westwind.RazorHosting
         {
             BaseBinaryFolder = Environment.CurrentDirectory;            
         }
-        
+
         /// <summary>
         /// Call this method to actually render a template to the specified outputfile
         /// </summary>"
@@ -63,10 +63,20 @@ namespace Westwind.RazorHosting
         /// <param name="model">
         /// Any object that will be available in the template as a dynamic of this.Context or
         /// if the type matches the template type this.Model.
-        /// </param>        
+        /// </param>
+        /// <param name="writer">Optional textwriter that output is written to</param>
+        /// <param name="inferModelType">If true infers the model type if no @model or @inherits tag is provided</param>
         /// <returns>rendering results or null on failure. If a writer is a passed string.Empty is returned or null for failure</returns>
-        public string RenderTemplate(string templateText, object model = null, TextWriter writer = null) 
+        public string RenderTemplate(string templateText, 
+                                        object model = null, 
+                                        TextWriter writer = null, 
+                                        bool inferModelType = false) 
         {
+            if (inferModelType && model != null &&
+                !templateText.Trim().StartsWith("@model ") &&
+                !templateText.Trim().StartsWith("@inherits "))
+                templateText = "@model " + model.GetType().FullName + "\r\n" + templateText;
+
             CompiledAssemblyItem assItem = GetAssemblyFromStringAndCache(templateText);
             if (assItem == null)
                 return null;
@@ -85,18 +95,24 @@ namespace Westwind.RazorHosting
             return result;
         }
 
-        
 
         /// <summary>
         /// Renders a template from a string input to a file output.
         /// Same text templates are compiled and cached for re-use.
         /// </summary>
         /// <param name="templateText">Text of the template to run</param>
-        /// <param name="context">Optional context to pass</param>
+        /// <param name="model">Optional model to pass</param>
         /// <param name="outputFile">Output file where output is sent to</param>
+        /// <param name="inferModelType">If true infers the model type if no @model or @inherits tag is provided</param>
         /// <returns></returns>
-        public bool RenderTemplateToFile(string templateText, object context, string outputFile) 
+        public bool RenderTemplateToFile(string templateText, object model, string outputFile, bool inferModelType = false) 
         {
+
+            if (inferModelType && model != null &&
+                !templateText.Trim().StartsWith("@model ") &&
+                !templateText.Trim().StartsWith("@inherits "))
+                            templateText = "@model " + model.GetType().FullName + "\r\n" + templateText;
+
             CompiledAssemblyItem assItem = GetAssemblyFromStringAndCache(templateText);
             if (assItem == null)
                 return false;
@@ -114,7 +130,7 @@ namespace Westwind.RazorHosting
                 return false;
             }
 
-            return RenderTemplateFromAssembly(assItem.AssemblyId, context, writer);
+            return RenderTemplateFromAssembly(assItem.AssemblyId, model, writer);
         }
 
         /// <summary>

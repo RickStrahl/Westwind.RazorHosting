@@ -155,7 +155,7 @@
             <param name="generatedNamespace">Name of the namespace that is generated</param>
             <param name="generatedClass">Name of the class that is generated</param>
             <param name="referencedAssemblies">Any assembly references required by template as a DLL names. Must be in execution path or GAC.</param>
-            <param name="model">Optional context available in the template as this.Context</param>
+            <param name="model">Optional model available in the template as this.Context</param>
             <param name="outputWriter">
             A text writer that receives the rendered template output. 
             Writer is closed after rendering. 
@@ -163,7 +163,7 @@
             </param>
             <returns>output from template. If an outputWriter is passed in result is string.Empty on success, null on failure</returns>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorEngine`1.RenderTemplate(System.String,System.Object,System.IO.TextWriter)">
+        <member name="M:Westwind.RazorHosting.RazorEngine`1.RenderTemplate(System.String,System.Object,System.IO.TextWriter,System.Boolean)">
             <summary>
             Execute a template based on a TextReader input into a provided TextWriter object.
             </summary>
@@ -171,12 +171,13 @@
             <param name="generatedNamespace">Name of the namespace that is generated</param>
             <param name="generatedClass">Name of the class that is generated</param>
             <param name="referencedAssemblies">Any assembly references required by template as a DLL names. Must be in execution path or GAC.</param>
-            <param name="model">Optional context available in the template as this.Context</param>
+            <param name="model">Optional model available in the template as this.Context</param>
             <param name="outputWriter">
             A text writer that receives the rendered template output. 
             Writer is closed after rendering. 
             When provided the result of this method is string.Empty (success) or null (failure)
             </param>
+            <param name="inferModelType">If true, tries to infer the model type when no @model or @inherits tags are defined for the template</param>
             <returns>output from template. If an outputWriter is passed in result is string.Empty on success, null on failure</returns>
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.RenderTemplateFromAssembly(System.String,System.Object,System.IO.TextWriter,System.String,System.String)">
@@ -772,7 +773,7 @@
             each template.
             </summary>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorStringHostContainer.RenderTemplate(System.String,System.Object,System.IO.TextWriter)">
+        <member name="M:Westwind.RazorHosting.RazorStringHostContainer.RenderTemplate(System.String,System.Object,System.IO.TextWriter,System.Boolean)">
             <summary>
             Call this method to actually render a template to the specified outputfile
             </summary>"
@@ -780,17 +781,20 @@
             <param name="model">
             Any object that will be available in the template as a dynamic of this.Context or
             if the type matches the template type this.Model.
-            </param>        
+            </param>
+            <param name="writer">Optional textwriter that output is written to</param>
+            <param name="inferModelType">If true infers the model type if no @model or @inherits tag is provided</param>
             <returns>rendering results or null on failure. If a writer is a passed string.Empty is returned or null for failure</returns>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorStringHostContainer.RenderTemplateToFile(System.String,System.Object,System.String)">
+        <member name="M:Westwind.RazorHosting.RazorStringHostContainer.RenderTemplateToFile(System.String,System.Object,System.String,System.Boolean)">
             <summary>
             Renders a template from a string input to a file output.
             Same text templates are compiled and cached for re-use.
             </summary>
             <param name="templateText">Text of the template to run</param>
-            <param name="context">Optional context to pass</param>
+            <param name="model">Optional model to pass</param>
             <param name="outputFile">Output file where output is sent to</param>
+            <param name="inferModelType">If true infers the model type if no @model or @inherits tag is provided</param>
             <returns></returns>
         </member>
         <member name="M:Westwind.RazorHosting.RazorStringHostContainer.GetAssemblyFromStringAndCache(System.String)">
@@ -1042,7 +1046,9 @@
         </member>
         <member name="M:Westwind.RazorHosting.RazorTemplateBase.Execute">
             <summary>
-            Razor Parser overrides this method
+            Razor Parser overrides this method, but this method is effectively
+            never called - it's just a placeholder in order to allow
+            invoking the template.
             </summary>
         </member>
         <member name="M:Westwind.RazorHosting.RazorTemplateBase.InitializeLifetimeService">

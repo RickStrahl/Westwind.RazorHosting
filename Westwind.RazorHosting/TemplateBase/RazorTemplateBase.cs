@@ -137,6 +137,9 @@ namespace Westwind.RazorHosting
         /// <param name="value"></param>
         public virtual void WriteLiteral(object value)
         {
+            if (value == null)
+                return;
+
             Response.Write(value);
         }
 
@@ -146,6 +149,9 @@ namespace Westwind.RazorHosting
         /// <param name="value"></param>
         public virtual void Write(object value = null)
         {
+            if (value == null)
+                return;
+
             if (value is RawString || value is IHtmlString)
             {
                 // Write as raw string without encoding
@@ -161,6 +167,9 @@ namespace Westwind.RazorHosting
 
         public virtual void WriteTo(TextWriter writer, object value)
         {
+            if (value == null)
+                return;
+
             writer.Write(HtmlEncode(value));
         }
 
@@ -171,6 +180,9 @@ namespace Westwind.RazorHosting
         /// <param name="value">The value that should be written as a literal.</param>
         public virtual void WriteLiteralTo(TextWriter writer, object value)
         {
+            if (value == null)
+                return;
+
             writer.Write(value);
         }
 
@@ -253,6 +265,9 @@ namespace Westwind.RazorHosting
 
         private void WritePositionTaggedLiteral(string value, int position)
         {
+            if (value == null)
+                return;
+
             WriteLiteral(value);
         }
 
@@ -306,9 +321,13 @@ namespace Westwind.RazorHosting
         }
 
         /// <summary>
-        /// Razor Parser overrides this method
+        /// Razor Parser overrides this method, but this method is effectively
+        /// never called - it's just a placeholder in order to allow
+        /// invoking the template.
         /// </summary>
-        public virtual void Execute() { }
+        public virtual void Execute()
+        {
+        }
 
 
         public virtual void Dispose()

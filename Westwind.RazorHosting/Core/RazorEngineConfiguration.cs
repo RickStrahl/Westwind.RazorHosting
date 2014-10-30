@@ -50,12 +50,7 @@ namespace Westwind.RazorHosting
         /// Determines if assemblies are compiled to disk or to memory.
         /// If compiling to disk generated assemblies are not cleaned up
         /// </summary>
-        public bool CompileToMemory
-        {
-            get { return _CompileToMemory; }
-            set { _CompileToMemory = value; }
-        }
-        private bool _CompileToMemory = true;
+        public bool CompileToMemory { get; set; }
 
         /// <summary>
         /// When compiling to disk use this Path to hold generated assemblies

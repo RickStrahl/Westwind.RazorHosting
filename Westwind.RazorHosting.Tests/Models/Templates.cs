@@ -31,7 +31,7 @@ Variable Text: @ResultData
 
 Base Type:
 @this.GetType().BaseType.ToString()
-
 ";
+        
     }
 }

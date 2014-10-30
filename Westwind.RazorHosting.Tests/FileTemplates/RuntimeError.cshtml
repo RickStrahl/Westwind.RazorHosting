@@ -1,0 +1,41 @@
+﻿@inherits Westwind.RazorHosting.RazorTemplateFolderHost<RazorHostingTests.Person>
+@{
+    var items = new int[3] {1, 2, 3};
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+    <body>        
+        <div>        
+            @Model.Name @Model.Company @Model.Address.City @Model.Entered
+        </div>
+    
+        @*<div class="@Model.Name @Model.Company">
+            Pseudo Attributes value injection
+        </div>
+
+        @for (int i = 0; i < 10; i++)
+            {
+                Response.WriteLine(i + ".");
+                <div>@i</div>
+            }
+
+            
+    @{
+        ResultData = "Hello from the template " + DateTime.Now;
+    }        
+        
+    
+        @ResultData*@
+        
+        RUNTIME ERROR HERE
+        @*@{
+            int y = 0;
+            int x = 10/y;
+        }
+        @x*@
+    </body>
+</html>

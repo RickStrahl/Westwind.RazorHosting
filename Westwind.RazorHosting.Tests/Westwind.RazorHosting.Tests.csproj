@@ -78,6 +78,7 @@
     <Compile Include="BasicRazorEngineTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="FileTemplates\RuntimeError.cshtml" />
     <None Include="FileTemplates\TestRenderTemplate.cshtml" />
     <None Include="FileTemplates\HelloWorld.cshtml" />
     <None Include="FileTemplates\TestPartial.cshtml" />
