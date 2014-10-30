@@ -1,7 +1,18 @@
-#Westwind.RazorHosting Change Log
+# Westwind.RazorHosting Change Log
 * * * 
 
-##Version 3.0
+## Version 3.1
+*not released yet*
+
+* **Add inferModelType option for string RenderTemplate() methods**
+Added option to allow inferring the model type if no @model or @inherits
+tags are provided in the template. If set this flag adds the model type
+to the template to force a strongly typed model. Note that this feature
+only works for string template rendering in RazorEngine.RenderTemplate()
+and StringHostContainer.RenderTemplate(). Stream and file based renderers
+do not have this feature and must explicitly specify the model type.
+
+## Version 3.0
 *July 8th, 2014*
 
 * **Update to Razor Version 3**<br />
