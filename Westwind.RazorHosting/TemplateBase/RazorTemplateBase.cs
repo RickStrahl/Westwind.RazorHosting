@@ -194,16 +194,29 @@ namespace Westwind.RazorHosting
         /// <param name="prefix"></param>
         /// <param name="suffix"></param>
         /// <param name="values"></param>
-        public virtual void WriteAttribute(string name, PositionTagged<string> prefix, 
-                                           PositionTagged<string> suffix, params AttributeValue[] values)
+        public virtual void WriteAttribute(string name, PositionTagged<string> prefix, PositionTagged<string> suffix, params AttributeValue[] values)
+        {
+            WriteAttributeTo(Response.Writer, name, prefix, suffix, values);
+        }
+
+        /// <summary>
+        /// WriteAttributeTo implementation lifted from ANurse's MicroRazor Implementation
+        /// and the AspWebStack source.
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="name"></param>
+        /// <param name="prefix"></param>
+        /// <param name="suffix"></param>
+        /// <param name="values"></param>
+        public virtual void WriteAttributeTo(TextWriter writer, string name, PositionTagged<string> prefix, PositionTagged<string> suffix, params AttributeValue[] values)
         {
             bool first = true;
             bool wroteSomething = false;
             if (values.Length == 0)
             {
                 // Explicitly empty attribute, so write the prefix and suffix
-                WritePositionTaggedLiteral(prefix);
-                WritePositionTaggedLiteral(suffix);
+                WritePositionTaggedLiteral(writer, prefix);
+                WritePositionTaggedLiteral(writer, suffix);
             }
             else
             {
@@ -236,12 +249,12 @@ namespace Westwind.RazorHosting
 
                         if (first)
                         {
-                            WritePositionTaggedLiteral(prefix);
+                            WritePositionTaggedLiteral(writer, prefix);
                             first = false;
                         }
                         else
                         {
-                            WritePositionTaggedLiteral(attrVal.Prefix);
+                            WritePositionTaggedLiteral(writer, attrVal.Prefix);
                         }
 
                         // Calculate length of the source span by the position of the next value (or suffix)
@@ -249,31 +262,30 @@ namespace Westwind.RazorHosting
 
                         if (attrVal.Literal)
                         {
-                            WriteLiteral(valStr);
+                            WriteLiteralTo(writer, valStr);
                         }
                         else
                         {
-                            Write(valStr); // Write value
+                            WriteTo(writer, valStr); // Write value
                         }
                         wroteSomething = true;
                     }
                 }
                 if (wroteSomething)
-                    WritePositionTaggedLiteral(suffix);
+                {
+                    WritePositionTaggedLiteral(writer, suffix);
+                }
             }
         }
 
-        private void WritePositionTaggedLiteral(string value, int position)
+        private void WritePositionTaggedLiteral(TextWriter writer, string value, int position)
         {
-            if (value == null)
-                return;
-
-            WriteLiteral(value);
+            WriteLiteralTo(writer, value);
         }
 
-        private void WritePositionTaggedLiteral(PositionTagged<string> value)
+        private void WritePositionTaggedLiteral(TextWriter writer, PositionTagged<string> value)
         {
-            WritePositionTaggedLiteral(value.Value, value.Position);
+            WritePositionTaggedLiteral(writer, value.Value, value.Position);
         }
 
 
