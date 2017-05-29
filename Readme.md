@@ -87,11 +87,70 @@ you can also use the @model tag:
 <h3>Hello @Model.Firstname.</h3>
 ```
 
-but if you will not get Intellisense in Visual Studio if you open the template there. For that reason we recommend the first syntax.
+but if you will not get IntelliSense in Visual Studio if you open the template there. For that reason we recommend the first syntax.
 
 If no `@model` or `@inherits` is specified, the Model is assumed to be of type `dynamic`.
 
+### A better Approach - Host Container and Application Wrapper
+I'm going to jump ahead a bit and offer a recommended approach for using this Razor Rendering tool by using a host container, and an application specific wrapper class. This way you can configure your Template renderer once in one place and be done with it.
 
+I like to wrap all template rendering logic into an application specific static class so I cache the host container and not have to worry about loading the container.
+
+The following uses the RazorFolderHost container that uses disk based templates out of a root folder. Here's what this small class looks like:
+
+```cs
+public class AppTemplates
+{
+    public static RazorFolderHostContainer RazorHost { get; set; }
+    
+    public static string RenderTemplate(string template, object model, out error)
+    {
+        if (RazorHost == null)
+            StartRazorHost();        
+        
+        string result = RazorHost.RenderTemplate(template,model);
+        if (result == null)
+            error = RazorHost.ErrorMessage;
+            
+        return result;
+    }
+    
+    public static void StartRazorHost()
+    {
+        var host = new RazorFolderHostContainer() 
+        {
+            // *** Set your Folder Path here - physical or relative ***
+            TemplatePath = Path.GetFullPath(@".\templates\"),
+            // *** Path to the Assembly path of your application
+            BaseBinaryFolder = Environment.CurrentDirectory
+        };
+        
+        // Add any assemblies that are referenced in your templates
+        host.AddAssemblyFromType(typeof(Person));
+        host.AddAssemblyFromType(this.GetType());
+  
+        // Always must start the host
+        host.Start();
+        
+        RazorHost = host;
+    }
+    
+    public static void StopRazorHost()
+    {
+        RazorHost?.Stop();
+    }
+}
+```
+
+This consolidates all the logic needed to load, shut down and render templates using the RazorHost. This also auto-loads the engine the first time you render a template, and this reduces the code to render a template in your application to a single line of code:
+
+```cs
+AppTemplates.RenderTemplate("~/header.cshtml",topic);
+```
+
+This method will start the host if it's not loaded and then render the template.
+
+If you wanted to use the StringHostContainer you can skip the path configuration.
 
 ### Using Host Containers
 Host Containers wrap the basic `RazorEngine` by providing automatic caching for templates, automatic template change detection and the ability to optionally run the Razor templates in a separate AppDomain.
@@ -335,24 +394,24 @@ public class AppTemplates
     
     public static string RenderTemplate(string template, object model, out error)
     {
-    
         if (RazorHost == null)
-        {
-            RazorHost = host;          
-        }
-
-        string result = host.RenderTemplate(template,model);
+            StartRazorHost();        
+        
+        string result = RazorHost.RenderTemplate(template,model);
         if (result == null)
-            error = host.ErrorMessage;
+            error = RazorHost.ErrorMessage;
             
         return result;
     }
     
     public static void StartRazorHost()
     {
-        var host = new RazorFolderHostContainer();
-        host.TemplatePath = Path.GetFullPath(@".\templates\");
-        host.BaseBinaryFolder = Environment.CurrentDirectory;
+        var host = new RazorFolderHostContainer() 
+        {
+            // *** Set your Folder Path here - physical or relative ***
+            TemplatePath = Path.GetFullPath(@".\templates\"),
+            BaseBinaryFolder = Environment.CurrentDirectory
+        };
         host.AddAssemblyFromType(typeof(Person));
         host.AddAssemblyFromType(this.GetType());
   
