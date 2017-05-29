@@ -1,7 +1,7 @@
 # Westwind.RazorHosting Change Log
 
 ## Version 3.1
-*not released yet*
+*May 29th, 2017*
 
 * **Support for Layout Pages with RazorFolderHostContainer**  
 You can now use the **Layout** property in your templates when using the RazorFolderHostContainer class to render Razor Views using `@{ Layout = " ~\_Layout.cshtml" }` relative to the folder root.
