@@ -6,8 +6,15 @@
     // Note this is explicitly required!
     Layout = "~/_Layout.cshtml";
 }
+@helper WriteBlockText(string text)
+{
+    <b>*** @text ***</b>
+}
 
 <h3>Hello World Content Page</h3>
+
+Helper output: @WriteBlockText("Help me!");
+
 <div>        
     @Model.Name @Model.Company @Model.Address.City @Model.Entered
 </div>
@@ -30,4 +37,3 @@
 @ResultData
 
 <b>--- End of Content Page ---</b>
-
