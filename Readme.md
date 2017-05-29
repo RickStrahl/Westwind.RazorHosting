@@ -1,8 +1,10 @@
 # Westwind.RazorHosting
 #### Hosting the Razor Runtime outside of ASP.NET MVC/WebPages
 
-This library allows you to host the Razor template engine found in ASP.NET MVC and ASP.NET WebPages 
-in your own applications and ASP.NET applications outside of MVC and Web Pages.
+<img src="razorhosting.png" size="200" style="height: 200px" />
+
+
+This library allows you to host the Razor template engine found in ASP.NET MVC and ASP.NET WebPages in your own applications and ASP.NET applications outside of MVC and Web Pages.
 
 Razor is a great tool for text templating using HTML like syntax mixed with C# code. The engine can
 be used for things like text merging for things like Mail Merge operations, HTML reports or HTML
@@ -14,26 +16,29 @@ as well as in any ASP.NET application that doesn't already have ready access to 
 * [Change Log](https://github.com/RickStrahl/Westwind.RazorHosting/blob/master/ChangeLog.md)
 * [Questions and Discussion of Westwind.RazorHosting](http://www.west-wind.com/wwThreads/default.asp?Forum=West+Wind+.NET+Tools+and+Demos)
 
-> **Note!**
-> The RazorHosting engine provides core templating functionality of the Razor sytnax engine. This means that
-> all C# language features and all of Razor's basic expression and logic parsing features work.
-> However, it does not provide full parity with either the MVC or WebPages implementation, since both
-> of these engines are closely tied to ASP.NET semantics. Things like HTML and URL Helpers, Sections and Layout
-> pages are not supported. Partials are supported only in the Folder Host implementation
+> #### Note
+> The RazorHosting engine provides core templating functionality of the Razor sytnax engine. This means that all C# language features and all of Razor's basic expression and logic parsing features work.
+>
+> It **does not** provide full parity with either the MVC or WebPages implementation, since both of these engines are closely tied to ASP.NET semantics. Things like HTML and URL Helpers, Sections, Partials and Layout pages are not natively supported. Partials, Helpers and Layout pages are supported only in the Folder Host implementation.
 >
 > RazorHosting only supports C# - there's no support for Visual Basic.
 
-## Basic Usage
-This library provides both a basic Razor Engine implementation and a couple of Razor Host Container implementations. 
-The host container implementations provide an environment for caching templates and hosting the Razor runtime in
-a separate AppDomain to allow for unloading, isolation of the script code from your application code.
- of generated assemblies to control memory usage and general process. The folder host container also supports 
-partial templates and accessing templates via virtual path syntax (~/folder/page.cshtml) from disk.
+### Installation
+The easiest way to install is via NuGet:
+
+```
+install-package westwind.razorhosting
+```
+
+The package requires .NET 4.5 or later.
+
+###  Basic Usage
+This library provides both a basic Razor Engine implementation and a couple of Razor Host Container implementations. The host container implementations provide an environment for caching templates and optionally hosting the Razor runtime in a separate AppDomain to allow for unloading, isolation of the script code from your application code and control memory usage and general process. The folder host container also supports partial templates and accessing templates via virtual path syntax (~/folder/page.cshtml) from disk.
+
+For real world applications where you repeatedly render the same templates you most definitely want to use a Host Container.
 
 ### Plain RazorEngine Usage
-Plain RazorEngine usage is easiest, but it also provides no caching so everytime you evaluate
-a template, the template is reparsed, recompiled and reloaded unless you explicitly compile
-a template and cache it yourself.
+Plain RazorEngine usage is easiest, but it also provides no caching so every time you evaluate a template, the template is re-parsed, recompiled and reloaded unless you explicitly compile a template and cache it yourself.
 
 To execute a template:
 
@@ -59,42 +64,31 @@ string result = host.RenderTemplateFromAssembly(compiledId,
 												new Person() { Name = "Rick Strahl" });
 ```
 
-The latter allows you to capture the compiled id which points to a cached assembly instance
-in the current RazorEngine instance. This avoids having to reparse and recompile the template
-each time it's executed and doesn't generate a new assembly in memory (or on disk) each time
-which saves memory.
+The latter allows you to capture the compiled id which points to a cached assembly instance in the current RazorEngine instance. This avoids having to reparse and recompile the template each time it's executed and doesn't generate a new assembly in memory (or on disk) each time which saves memory.
 
-All templates include a model property and the RenderTemplate method can pass in a model.
-By default models are of type _dynamic_, but the model can also be explicitly typed by
-using the Razor @inherits tag:
+All templates include a model property and the RenderTemplate method can pass in a model. By default models are of type _dynamic_, but the model can also be explicitly typed by using the Razor @inherits tag:
 
 ```c#
 @inherits RazorTemplateBase<RazorHostingTests.Person>
 ```
+> #### Intellisese and Models and `@model`
+> You can also use `@model MyModelType` just as an proper Razor, but note that Intellisense won't work on that model. By using the `@inherits` syntax you can open templates in Visual Studio and get Intellisense support for your model.
+
 This is equivalent to MVC's @model property and represents the native Razor syntax for
-determining the base class, which is RazorTemplateBase<T> here (or your custom subclass thereof).
-If no @inherits is specified RazorTemplateBase is used with a dynamic Model.
+determining the base class, which is `RazorTemplateBase<T>` here (or your custom subclass thereof). If no `@inherits` is specified, `RazorTemplateBase` is used with a `dynamic` Model.
 
 ### Using Host Containers
-Host Containers wrap the basic RazorEngine described above by providing the abililty to load
-into a separate AppDomain (optionally) and to provide automatic caching services so you don't
-have to track compiled assemblies. Host containers also figure out whether a template needs
-to be recreated if the template is changed. Because of this caching and reuse it's recommended
-that you use a host container for all but the lowest use scenarios.
-
-HostContainers are meant to be instantiated once and then left running for the duration
-of an application or long running operation, processing many template requests during
-their lifecycle.
+Host Containers wrap the basic `RazorEngine` by providing automatic caching for templates, automatic template change detection and the ability to optionally run the Razor templates in a separate AppDomain.
 
 There are two provided HostContainers:
 * RazorStringHostContainer
 * RazorFolderHostContainer
 
-#### RazorStringHostContainer####
-StringHostContainer executes templates from string, but caches the compiled templates based on
-the template's content. IOW, running the same exact template twice will automatically compile
-on the first run, and use the cached version on the second and subsequent runs. As long as the
-the template string is identical the cached assembly is used.
+HostContainers are meant to be reused, so you typically instantiate it once, then hang on to the reference and reuse it for subsequent requests. The template cache is associated with an instance so in order to get the caching benefit the instance needs to stay alive.
+
+
+### RazorStringHostContainer
+StringHostContainer executes templates from string, but caches the compiled templates based on the template's content. IOW, running the same exact template twice will automatically compile on the first run, and use the cached version on the second and subsequent runs. As long as the the template string is identical the cached assembly is used.
 
 To run a String Template Host:
 
@@ -145,10 +139,8 @@ host.Dispose();
 
 With a host container you typically will run many requests between the Start() and Stop() operations.
 
-####RazorFolderHostContainer####
-The RazorFolderHostContainer can be used to point to a folder on disk and treat it like a virtual directory
-for rendering templates from disk. Templates are loaded based on a virtual path (~/page.cshtml and ~/sub/page.cshtml)
-and support the abililty to use @RenderPartial() to render partials in the template.
+### RazorFolderHostContainer
+The RazorFolderHostContainer can be used to point to a folder on disk and treat it like a virtual directory for rendering templates from disk. Templates are loaded based on a virtual path (`~/page.cshtml` and `~/sub/page.cshtml`) relative to the base folder, and support usage for subpages via `@RenderPartial()` and layout pages via the `Layout` property.
 
 To run folder host templates:
 
@@ -226,20 +218,63 @@ where the template might look like this:
 </html>
 ```
 
-Note that you can render partials, by specifying the virtual path for the partial
-relative to the to TemplateBasePath specified.
+> #### @RenderPartial()
+> Note that you can render partials, by specifying the virtual path for the partial
+> relative to the to TemplateBasePath specified.
+> ```
+> @RenderPartial("~/Partials/PartialComponent.cshtml",model)
+> ```
 
-#### Running in a separate AppDomain wiht UseAppDomain####
+### Html Helpers
+You can also use HTML Helpers in your Razor views:
+
+```html
+@helper WriteBlockText(string text)
+{
+    <b>*** @text ***</b>
+}
+
+Helper output: @WriteBlockText("Help me!");
+```
+
+### Rendering Layout Pages
+You can also use Layout pages with the RazorFolderHostContainer by specifying the `Layout` property in your view/template.
+
+```html
+@inherits Westwind.RazorHosting.RazorTemplateFolderHost<RazorHostingTests.Person>
+@{
+    Layout = "~/_Layout.cshtml"
+}
+<h3>Hello @Model.Firstname</h3>
+<p>
+this is my page content rendered at @DateTime.Now.
+</p>
+```
+
+The View Page then:
+
+```html
+@inherits Westwind.RazorHosting.RazorTemplateFolderHost<RazorHostingTests.Person>
+
+<h1>Layout Page Header</h1>
+<hr />
+
+@RenderBody()
+
+<hr/>
+&copy; West Wind Technologies, 2010-@DateTime.Now.Year
+```
+
+Note that you should use the same model your are passing to the content page as a parameter in the layout page - if you plan on accessing model content.
+
+### Running in a separate AppDomain wiht UseAppDomain
 Note that you can choose to host the container in a separate AppDomain by using:
 
 ```c#
 host.UseAppDomain = true;
 ```
 
-If you do, make sure any models  passed to the host for rendering are marked serializable or inherit from MarshalByRefObject.
-Using an AppDomain is useful when loading lots of templates and allows for unloading the engine to reduce 
-memory usage. It also helps isolate template code from the rest of your application for security purposes, 
-since Razor templates essentially can execute any code in the context of the host.
+If you do, make sure any models  passed to the host for rendering are marked serializable or inherit from MarshalByRefObject. Using an AppDomain is useful when loading lots of templates and allows for unloading the engine to reduce memory usage. It also helps isolate template code from the rest of your application for security purposes, since Razor templates essentially can execute any code in the context of the host.
 
 ### Limitations
 Unlike MVC and/or WebPages the RazorHosting engine only supports core Razor functinonality
