@@ -163,9 +163,6 @@ AppTemplates.RenderTemplate("~/header.cshtml",topic);
 
 This method will start the host if it's not loaded and then render the template.
 
-
-
-
 ### RazorStringHostContainer
 StringHostContainer executes templates from string, but caches the compiled templates based on the template's content. IOW, running the same exact template twice will automatically compile on the first run, and use the cached version on the second and subsequent runs. As long as the the template string is identical the cached assembly is used.
 
@@ -219,7 +216,7 @@ host.Dispose();
 With a host container you typically will run many requests between the Start() and Stop() operations.
 
 ### RazorFolderHostContainer
-The RazorFolderHostContainer can be used to point to a folder on disk and treat it like a virtual directory for rendering templates from disk. Templates are loaded based on a virtual path (`~/page.cshtml` and `~/sub/page.cshtml`) relative to the base folder, and support usage for subpages via `@RenderPartial()` and layout pages via the `Layout` property.
+The RazorFolderHostContainer can be used to point to a folder on disk and treat it like a virtual directory for rendering templates from disk. Templates are loaded based on a virtual path (`~/page.cshtml` and `~/sub/page.cshtml`) relative to the base folder, and support usage for subpages via `@RenderPartial()` and layout pages via the `Layout` property. The template loading behavior is similar to ASP.NET MVC's path based View handling.
 
 To run folder host templates:
 
