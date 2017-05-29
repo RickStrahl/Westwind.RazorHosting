@@ -285,40 +285,24 @@ You can also use HTML Helpers in your Razor views:
 Helper output: @WriteBlockText("Help me!");
 ```
 
-### Running in a separate AppDomain wiht UseAppDomain
+### Running in a separate AppDomain with UseAppDomain
 Note that you can choose to host the container in a separate AppDomain by using:
 
 ```c#
 host.UseAppDomain = true;
 ```
 
-If you do, make sure any models  passed to the host for rendering are marked serializable or inherit from MarshalByRefObject. Using an AppDomain is useful when loading lots of templates and allows for unloading the engine to reduce memory usage. It also helps isolate template code from the rest of your application for security purposes, since Razor templates essentially can execute any code in the context of the host.
+If you do, make sure any models passed into the host for rendering are marked `[Serializable]` or inherit from `MarshalByRefObject`. Due to these limitations you have to ensure that all parameters and dependent members can be serialized when passing parameters from your application to the RazorEngine via AppDomains.
 
-### Limitations
-Unlike MVC and/or WebPages the RazorHosting engine only supports core Razor functinonality
-so it's not equivalent to the feature set provided by MVC or WebPages. As such many common
-features like HTML and URL helpers, @Section and @Layout directives are not available 
-in this implementation since these features are specific to MVC/WebPages and their close ties to 
-the HTTP features provided in ASP.NET. There is support for @helper though.
-
-Only the RazorFolderHostContainer supports partial rendering.
+Using an AppDomain is useful when loading lots of templates and allows for unloading the engine to reduce memory usage. It also helps isolate template code from the rest of your application for security purposes, since Razor templates essentially can execute any code in the context of the host.
 
 ## License
 This library is published under MIT license terms:
 
-Copyright &copy; 2012-2013 Rick Strahl, West Wind Technologies
+Copyright &copy; 2012-2017 Rick Strahl, West Wind Technologies
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
-associated documentation files (the "Software"), to deal in the Software without restriction, 
-including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial 
-portions of the Software.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
