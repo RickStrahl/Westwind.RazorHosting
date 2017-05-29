@@ -6,10 +6,7 @@
 
 This library allows you to host the Razor template engine found in ASP.NET MVC and ASP.NET WebPages in your own applications and ASP.NET applications outside of MVC and Web Pages.
 
-Razor is a great tool for text templating using HTML like syntax mixed with C# code. The engine can
-be used for things like text merging for things like Mail Merge operations, HTML reports or HTML
-displays in desktop applications, code generation and much more. You can use it in Desktop applications
-as well as in any ASP.NET application that doesn't already have ready access to the Razor View engine.
+Razor is a great tool for text templating using HTML like syntax mixed with C# code. The engine can be used for things like text merging for things like Mail Merge operations, HTML reports or HTML displays in desktop applications, code generation and much more. You can use it in Desktop applications as well as in any ASP.NET application that doesn't already have ready access to the Razor View engine.
 
 * [Install from NuGet (Westwind.RazorHosting)](http://nuget.org/packages/Westwind.RazorHosting)
 * [Westwind.RazorHosting Documentation](http://west-wind.com/files/tools/razorhosting/docs/)
@@ -19,7 +16,7 @@ as well as in any ASP.NET application that doesn't already have ready access to 
 > #### Note
 > The RazorHosting engine provides core templating functionality of the Razor sytnax engine. This means that all C# language features and all of Razor's basic expression and logic parsing features work.
 >
-> It **does not** provide full parity with either the MVC or WebPages implementation, since both of these engines are closely tied to ASP.NET semantics. Things like HTML and URL Helpers, Sections, Partials and Layout pages are not natively supported. Partials, Helpers and Layout pages are supported only in the Folder Host implementation.
+> It **does not** provide full parity with either the MVC or WebPages implementation, since both of these engines are closely tied to ASP.NET semantics. Things like HTML and URL Helpers, Sections, Partials and Layout pages are not natively supported by Razor. **Partials, Helpers and Layout pages are supported only in the Folder Host implementation**.
 >
 > RazorHosting only supports C# - there's no support for Visual Basic.
 
