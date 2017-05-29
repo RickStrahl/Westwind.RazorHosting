@@ -32,8 +32,8 @@ The package requires .NET 4.5 or later.
 ###  Basics
 This Razor Host library provides two distinct hosting models:
 
-* **Raw Razor Engine**
-A very easy to use template function. Useful for very simple one off Template rendering from strings. 
+* **Raw Razor Engine**  
+A very easy to use template function. Useful for very simple one off template rendering from strings, but not recommended for repeated rendering of the same templates.
 
 * **Razor Host Containers**   
 A wrapper around the base Razor Engine that provide cached templates, support for serving templates from a folder hierarchy (like ASP.NET) and optionally loading templates in a separate AppDomain. Folder containers provide additional functionality like support for partials and other non-native Razor features.
