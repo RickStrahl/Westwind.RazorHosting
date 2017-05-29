@@ -438,7 +438,7 @@ namespace Westwind.RazorHosting
                 generatedClassName = GetSafeClassName(generatedClassName);
 
             RazorTemplateEngine engine = CreateHost(generatedNamespace, generatedClassName);
-
+            
             string template = templateReader.ReadToEnd();
             templateReader.Close();
 

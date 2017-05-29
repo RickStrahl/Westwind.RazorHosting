@@ -1,0 +1,33 @@
+﻿@using System
+@inherits Westwind.RazorHosting.RazorTemplateFolderHost<RazorHostingTests.Person>
+@{
+    var items = new int[3] {1, 2, 3};
+
+    // Note this is explicitly required!
+    Layout = "~/_Layout.cshtml";
+}
+
+<h3>Hello World Content Page</h3>
+<div>        
+    @Model.Name @Model.Company @Model.Address.City @Model.Entered
+</div>
+    
+<div class="@Model.Name @Model.Company">
+    Pseudo Attributes value injection
+</div>
+
+@{
+    for (int i = 0; i < 10; i++)
+    {
+        Response.WriteLine(i + ".");
+        <div>@i</div>
+    }
+
+    
+    ResultData = "Hello from the template " + DateTime.Now;     
+}
+    
+@ResultData
+
+<b>--- End of Content Page ---</b>
+

@@ -1,10 +1,12 @@
 # Westwind.RazorHosting Change Log
-* * * 
 
 ## Version 3.1
 *not released yet*
 
-* **Add inferModelType option for string RenderTemplate() methods**
+* **Support for Layout Pages with RazorFolderHostContainer**  
+You can now use the **Layout** property in your templates when using the RazorFolderHostContainer class to render Razor Views using `@{ Layout = " ~\_Layout.cshtml" }` relative to the folder root.
+
+* **Add inferModelType option for string RenderTemplate() methods**  
 Added option to allow inferring the model type if no @model or @inherits
 tags are provided in the template. If set this flag adds the model type
 to the template to force a strongly typed model. Note that this feature
@@ -15,25 +17,25 @@ do not have this feature and must explicitly specify the model type.
 ## Version 3.0
 *July 8th, 2014*
 
-* **Update to Razor Version 3**<br />
+* **Update to Razor Version 3**  
   Updated to the latest version of the Razor Engine distributed
   with MVC 5. Fix various issues that are a result of the 
   new rendering engine.
 
-* **Require .NET 4.5 to run**<br/>
+* **Require .NET 4.5 to run**  
   The Razor Libraries version 3 requires .NET 4.5 so this library
   is updating to the same .NET version.
 
-* **Support for @helper**<br />
+* **Support for @helper**  
   You can now use Razor Helpers using the @helper syntax supported
   in core Razor. Helpers allow you to create small function like
   Razor snippets that can either act as functions or execute razor
   templates to provide reusability.
 
-* **Version numbers in Sync with Razor Version**<br />
+* **Version numbers in Sync with Razor Version**  
   Decided to keep the library version in sync with Razor version.
 
-* **RazorHostContainerBase now implements IDisposable**<br />
+* **RazorHostContainerBase now implements IDisposable**  
   Container hosts are now IDisposable which makes it easier to stop them when
   they are released. Default Dispose() behavior stops the engine and releases
   all cached assemblies.

@@ -300,8 +300,16 @@ namespace Westwind.RazorHosting
                 return "";
             return WebUtility.HtmlEncode(input.ToString());
         }
-   
 
+        public virtual RawString Raw(string text)
+        {
+            return new RawString(text);
+        }
+
+        public virtual RawString Raw(RawString text)
+        {
+            return text;
+        }
         /// <summary>
         /// Allows rendering a dynamic template from within the
         /// running template. The template passed must be a string
@@ -360,7 +368,7 @@ namespace Westwind.RazorHosting
             return null;
         }
 
-        #region Old_WriteAttribute_Implementations
+        #region Old_WriteAttribute_Implementations 
         #if false
         /// <summary>
         /// This method is used to write out attribute values using

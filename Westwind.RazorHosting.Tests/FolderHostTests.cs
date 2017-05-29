@@ -172,6 +172,70 @@ namespace RazorHostingTests
             host.Stop();
         }
 
+        [TestMethod]
+        public void FolderHostWithLayoutPageTest()
+        {
+            using (var host = new RazorFolderHostContainer())
+            {
+
+                host.TemplatePath = Path.GetFullPath(@"..\..\FileTemplates\");
+                host.BaseBinaryFolder = Environment.CurrentDirectory;
+                Console.WriteLine(host.TemplatePath);
+
+                // point at the folder where dependent assemblies can be found
+                // this applies only to separate AppDomain hosting
+                host.BaseBinaryFolder = Environment.CurrentDirectory;
+
+                // add model assembly - ie. this assembly
+                host.AddAssemblyFromType(typeof(Person));
+
+                // NOTE: If you use AppDomains you will need to add a /bin folder
+                //       with all dependencies OR run out of the current folder
+                //       and all models have to be serializable or MarshalByRefObj
+                host.UseAppDomain = false;
+
+                //host.Configuration.CompileToMemory = true;
+                //host.Configuration.TempAssemblyPath = Environment.CurrentDirectory;
+
+                // Always must start the host
+                host.Start();
+
+                // create a model to pass
+                Person person = new Person()
+                {
+                    Name = "John Doe",
+                    Company = "Doeboy Incorporated",
+                    Entered = DateTime.Now,
+                    Address = new Address()
+                    {
+                        Street = "32 Kaiea",
+                        City = "Paia"
+                    }
+                };
+
+                Console.WriteLine("-----Layout page only (rendered)");
+                // just show what a layout template looks like on its own
+                string layout = host.RenderTemplate("~/_Layout.cshtml", person);
+                Console.WriteLine(layout);
+
+
+                Console.WriteLine("----- Content page In Layout Container");
+                
+                // render a template and pass the model
+                string result = host.RenderTemplate("~/LayoutPageExample.cshtml", person);
+
+                //result = layout.Replace("@RenderBody", result);
+
+                //Assert.True(result != null, "Template didn't return any data: " + host.ErrorMessage);
+
+                Console.WriteLine("---");
+                Console.WriteLine(result);
+                Console.WriteLine("---");
+                
+                Assert.IsNotNull(result, host.ErrorMessage);
+            }
+        }
+
 
         /// <summary>
         /// Renders a page that contains a RenderTemplate() call used to

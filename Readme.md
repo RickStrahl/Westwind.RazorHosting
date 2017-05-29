@@ -1,10 +1,8 @@
-#Westwind.RazorHosting
-**Hosting the Razor Runtime outside of ASP.NET MVC/WebPages**
-* * * 
+# Westwind.RazorHosting
+#### Hosting the Razor Runtime outside of ASP.NET MVC/WebPages
 
 This library allows you to host the Razor template engine found in ASP.NET MVC and ASP.NET WebPages 
 in your own applications and ASP.NET applications outside of MVC and Web Pages.
-
 
 Razor is a great tool for text templating using HTML like syntax mixed with C# code. The engine can
 be used for things like text merging for things like Mail Merge operations, HTML reports or HTML
@@ -25,14 +23,14 @@ as well as in any ASP.NET application that doesn't already have ready access to 
 >
 > RazorHosting only supports C# - there's no support for Visual Basic.
 
-##Basic Usage
+## Basic Usage
 This library provides both a basic Razor Engine implementation and a couple of Razor Host Container implementations. 
 The host container implementations provide an environment for caching templates and hosting the Razor runtime in
 a separate AppDomain to allow for unloading, isolation of the script code from your application code.
  of generated assemblies to control memory usage and general process. The folder host container also supports 
 partial templates and accessing templates via virtual path syntax (~/folder/page.cshtml) from disk.
 
-###Plain RazorEngine Usage
+### Plain RazorEngine Usage
 Plain RazorEngine usage is easiest, but it also provides no caching so everytime you evaluate
 a template, the template is reparsed, recompiled and reloaded unless you explicitly compile
 a template and cache it yourself.
@@ -77,7 +75,7 @@ This is equivalent to MVC's @model property and represents the native Razor synt
 determining the base class, which is RazorTemplateBase<T> here (or your custom subclass thereof).
 If no @inherits is specified RazorTemplateBase is used with a dynamic Model.
 
-###Using Host Containers
+### Using Host Containers
 Host Containers wrap the basic RazorEngine described above by providing the abililty to load
 into a separate AppDomain (optionally) and to provide automatic caching services so you don't
 have to track compiled assemblies. Host containers also figure out whether a template needs
@@ -92,7 +90,7 @@ There are two provided HostContainers:
 * RazorStringHostContainer
 * RazorFolderHostContainer
 
-####RazorStringHostContainer####
+#### RazorStringHostContainer####
 StringHostContainer executes templates from string, but caches the compiled templates based on
 the template's content. IOW, running the same exact template twice will automatically compile
 on the first run, and use the cached version on the second and subsequent runs. As long as the
@@ -231,7 +229,7 @@ where the template might look like this:
 Note that you can render partials, by specifying the virtual path for the partial
 relative to the to TemplateBasePath specified.
 
-####Running in a separate AppDomain wiht UseAppDomain####
+#### Running in a separate AppDomain wiht UseAppDomain####
 Note that you can choose to host the container in a separate AppDomain by using:
 
 ```c#
@@ -243,7 +241,7 @@ Using an AppDomain is useful when loading lots of templates and allows for unloa
 memory usage. It also helps isolate template code from the rest of your application for security purposes, 
 since Razor templates essentially can execute any code in the context of the host.
 
-###Limitations
+### Limitations
 Unlike MVC and/or WebPages the RazorHosting engine only supports core Razor functinonality
 so it's not equivalent to the feature set provided by MVC or WebPages. As such many common
 features like HTML and URL helpers, @Section and @Layout directives are not available 
@@ -252,7 +250,7 @@ the HTTP features provided in ASP.NET. There is support for @helper though.
 
 Only the RazorFolderHostContainer supports partial rendering.
 
-##License
+## License
 This library is published under MIT license terms:
 
 Copyright &copy; 2012-2013 Rick Strahl, West Wind Technologies

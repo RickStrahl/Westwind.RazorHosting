@@ -204,7 +204,7 @@ namespace Westwind.RazorHosting
         /// <param name="model">Optional context to pass to template</param>
         /// <param name="writer">TextReader passed in that receives output</param>
         /// <returns></returns>
-        public bool RenderTemplate(TextReader reader, object model, TextWriter writer)
+        public virtual bool RenderTemplate(TextReader reader, object model, TextWriter writer)
         {
             string assemblyId = Engine.CompileTemplate(reader);
             if (assemblyId == null)

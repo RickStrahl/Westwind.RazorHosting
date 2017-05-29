@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Westwind.RazorHosting")]
-[assembly: AssemblyDescription("Host the Razor Runtime outside of ASP.NET MVC/WebPages")]
+[assembly: AssemblyDescription("Host the Razor runtime outside of ASP.NET with support for string and folder hosts.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("West Wind Technologies")]
 [assembly: AssemblyProduct("Westwind.RazorHosting")]
-[assembly: AssemblyCopyright("© Rick Strahl - Westwind Technologies, 2012-2013")]
+[assembly: AssemblyCopyright("© Rick Strahl - Westwind Technologies, 2012-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.00.0.0")]
-[assembly: AssemblyFileVersion("3.00.0.0")]
+[assembly: AssemblyVersion("3.1.0.0")]
+[assembly: AssemblyFileVersion("3.1.0.0")]

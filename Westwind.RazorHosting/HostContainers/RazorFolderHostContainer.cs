@@ -38,6 +38,8 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using Westwind.RazorHosting.Properties;
 
 namespace Westwind.RazorHosting
 {
@@ -129,6 +131,21 @@ namespace Westwind.RazorHosting
 
                 if (result == null)
                     SetError(Engine.ErrorMessage);
+
+
+                if (!string.IsNullOrEmpty(item.LayoutPage))
+                {
+                    string layout = RenderTemplate(item.LayoutPage, model, writer);
+                    if (layout == null)
+                    {
+                        SetError("Failed to render Layout Page: " + Engine.ErrorMessage);
+                        result = null;
+                    }
+                    else
+                    {
+                        result = layout.Replace("@RenderBody()", result);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -146,7 +163,8 @@ namespace Westwind.RazorHosting
             return result;
         }
 
-   
+       
+        
         /// <summary>
         /// Internally checks if a cached assembly exists and if it does uses it
         /// else creates and compiles one. Returns an assembly Id to be 
@@ -175,9 +193,10 @@ namespace Westwind.RazorHosting
             // Check for cached instance
             if (item != null)
             {
+                // Check against file time - if file is newer we need to recompile the template
                 var fileTime = File.GetLastWriteTimeUtc(fileName);
                 if (fileTime <= item.CompileTimeUtc)
-                    assemblyId = item.AssemblyId;
+                    assemblyId = item.AssemblyId;   // no change, used cached
             }
             else
                 item = new CompiledAssemblyItem();
@@ -194,7 +213,7 @@ namespace Westwind.RazorHosting
                 }
                 catch
                 {
-                    SetError(Westwind.RazorHosting.Properties.Resources.ErrorReadingTemplateFile + fileName);
+                    SetError(Resources.ErrorReadingTemplateFile + fileName);
                     return null;
                 }
                 assemblyId = Engine.CompileTemplate(template);
@@ -209,6 +228,8 @@ namespace Westwind.RazorHosting
                     return null;
                 }
 
+                ExtractLayoutPage(template, item);
+
                 item.AssemblyId = assemblyId;
                 item.CompileTimeUtc = DateTime.UtcNow;
                 item.FileName = fileName;
@@ -219,6 +240,25 @@ namespace Westwind.RazorHosting
 
             return item;
         }
+
+
+        private static Regex LayoutRegEx = new Regex("@{.*?Layout = \"(.*?)\";.*?}", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+
+        private static void ExtractLayoutPage(string template, CompiledAssemblyItem item)
+        {
+
+            if (string.IsNullOrEmpty(template))
+                return;
+
+            var matches = LayoutRegEx.Match(template);
+            if (matches.Length > 0)
+            {
+                if (matches.Groups.Count > 1)
+                    item.LayoutPage = matches.Groups[1].Value;
+            }
+        }
+
+
 
 
         /// <summary>
@@ -267,5 +307,7 @@ namespace Westwind.RazorHosting
         public string FileName { get; set; }
         public string SafeClassName { get; set; }
         public string Namespace { get; set; }
+
+        public string LayoutPage { get; set;  }
     }
 }

@@ -22,6 +22,10 @@ namespace Westwind.RazorHosting
         /// </summary>
         public new TModel Model { get; set; }
 
+
+        public string Layout { get; set;  }
+        
+
         public override void InitializeTemplate(object context, object configurationData)
         {
             Html = new HtmlHelper();
@@ -116,5 +120,16 @@ namespace Westwind.RazorHosting
             // return result as raw output
             return new RawString(output);
         }
+        
+        /// <summary>
+        /// Overridden so that we don't fail if this encountered
+        /// in the body. Echo'd back out by default. HostContainers
+        /// may do something withe @RenderBody() result.
+        /// </summary>
+        /// <returns></returns>
+        public virtual RawString RenderBody()
+        {
+            return new RawString("@RenderBody()");
+        }        
     }    
 }
