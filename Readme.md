@@ -1,7 +1,7 @@
 # Westwind.RazorHosting
 #### Hosting the Razor Runtime outside of ASP.NET MVC/WebPages
 
-<img src="razorhosting.png" size="200" style="height: 200px" />
+<img src="razorhosting.png" height="200" style="height: 200px" />
 
 
 This library allows you to host the Razor template engine found in ASP.NET MVC and ASP.NET WebPages in your own applications and ASP.NET applications outside of MVC and Web Pages.
