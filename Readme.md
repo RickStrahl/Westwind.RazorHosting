@@ -296,6 +296,87 @@ If you do, make sure any models passed into the host for rendering are marked `[
 
 Using an AppDomain is useful when loading lots of templates and allows for unloading the engine to reduce memory usage. It also helps isolate template code from the rest of your application for security purposes, since Razor templates essentially can execute any code in the context of the host.
 
+### Caching the Host Container in a Static or Singleton
+The easiest way to cache a host container is via static variable declared in a relevant location of your application.
+
+For example you can do this:
+
+```cs
+public class AppUtils 
+{
+    public static RazorFolderHostContainer RazorHost { get; set; }
+    ...
+}
+```
+
+and then to use it:
+
+```cs
+RazorFolderHostContainer host;
+
+if (AppUtils.RazorHost == null)
+{
+    var host = new RazorFolderHostContainer();
+    // ... set up the host
+    AppUtils.RazorHost = host;
+}
+
+AppUtils.RenderTemplate("~/topic.cshtml",topic);
+```
+### Put it all together: Application Integration
+I like to wrap all template rendering logic into an application specific static class so I cache the host container and not have to worry about loading the container.
+
+Here's what this small class looks like:
+
+```cs
+public class AppTemplates
+{
+    public static RazorFolderHostContainer RazorHost { get; set; }
+    
+    public static string RenderTemplate(string template, object model, out error)
+    {
+    
+        if (RazorHost == null)
+        {
+            RazorHost = host;          
+        }
+
+        string result = host.RenderTemplate(template,model);
+        if (result == null)
+            error = host.ErrorMessage;
+            
+        return result;
+    }
+    
+    public static void StartRazorHost()
+    {
+        var host = new RazorFolderHostContainer();
+        host.TemplatePath = Path.GetFullPath(@".\templates\");
+        host.BaseBinaryFolder = Environment.CurrentDirectory;
+        host.AddAssemblyFromType(typeof(Person));
+        host.AddAssemblyFromType(this.GetType());
+  
+        // Always must start the host
+        host.Start();
+        
+        RazorHost = host;
+    }
+    
+    public static void StopRazorHost()
+    {
+        RazorHost?.Stop();
+    }
+}
+```
+
+This consolidates all the logic needed to load, shut down and render templates using the RazorHost. This reduces the code to render a template to a single line of code now:
+
+```cs
+AppTemplates.RenderTemplate("~/header.cshtml",topic);
+```
+
+This method will start the host if it's not loaded and then go ahead and render the template.
+
 ## License
 This library is published under MIT license terms:
 
