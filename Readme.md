@@ -91,6 +91,19 @@ but if you will not get IntelliSense in Visual Studio if you open the template t
 
 If no `@model` or `@inherits` is specified, the Model is assumed to be of type `dynamic`.
 
+### Using Host Containers
+Host Containers wrap the basic `RazorEngine` by providing automatic caching for templates, automatic template change detection and the ability to optionally run the Razor templates in a separate AppDomain.
+
+There are two provided HostContainers:
+
+* **RazorStringHostContainer**  
+Renders templates from strings. Templates are cached based on the template's text.
+
+* **RazorFolderHostContainer**  
+Renders templates from the file system by pointing at a template on disk. Templates are cached based on file timestamps. Folder hosted templates support Partial Layout and Layout pages.
+
+HostContainers are meant to be **reused**, so you typically instantiate it once, then hang on to the reference and reuse it for subsequent requests. The template cache is associated with an instance so in order to get the caching benefit the instance needs to stay alive.
+
 ### A better Approach - Host Container and Application Wrapper
 I'm going to jump ahead a bit and offer a recommended approach for using this Razor Rendering tool by using a host container, and an application specific wrapper class. This way you can configure your Template renderer once in one place and be done with it.
 
@@ -150,17 +163,7 @@ AppTemplates.RenderTemplate("~/header.cshtml",topic);
 
 This method will start the host if it's not loaded and then render the template.
 
-If you wanted to use the StringHostContainer you can skip the path configuration.
 
-### Using Host Containers
-Host Containers wrap the basic `RazorEngine` by providing automatic caching for templates, automatic template change detection and the ability to optionally run the Razor templates in a separate AppDomain.
-
-There are two provided HostContainers:
-
-* RazorStringHostContainer
-* RazorFolderHostContainer
-
-HostContainers are meant to be **reused**, so you typically instantiate it once, then hang on to the reference and reuse it for subsequent requests. The template cache is associated with an instance so in order to get the caching benefit the instance needs to stay alive.
 
 
 ### RazorStringHostContainer
