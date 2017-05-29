@@ -40,7 +40,7 @@ A wrapper around the base Razor Engine that provide cached templates, support fo
 
 For real world applications you almost always use a Host Container.
 
-### Plain RazorEngine Usage
+### Simple RazorEngine Usage
 RazorEngine is the base template parsing engine. It's very easy to use but provides no internal caching or fixup of templates.
 
 To execute a template:
@@ -51,7 +51,7 @@ var host = new RazorEngine();
 string result = host.RenderTemplate(template,new { Name="Joe Doe" });
 ```
 
-You can also create a template, compile it and then cache it yourself:
+You can also create a template, compile it and then cache it so you can reuse it later:
 
 ```c#
 string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
@@ -67,27 +67,31 @@ string result = host.RenderTemplateFromAssembly(compiledId,
 												new Person() { Name = "Rick Strahl" });
 ```
 
-The latter allows you to capture the compiled id which points to a cached template assembly in the current RazorEngine instance. This avoids  reparsing and recompiling the template each time it's executed.
+The latter allows you to capture the compiled id which points to a cached template assembly in the current RazorEngine instance. Running an already compile template is considerably faster and saves resources as no new assembly is created each time you run the same template.
 
 > #### Caching is Important
 > Razor compiles every template into code and compiles the template into an assembly. Without caching, templates are constantly recreated and new assemblies are created which wastes resources. Since assemblies can't unload this basically means you have a memory leak. Cache your templates either as described above, or use one of the host containers which automatically cache templates/assemblies and detect when they change.
 
 
-All templates include a `Model` property and the `RenderTemplate()` method can pass in a model. By default models are of type `dynamic`, but the model can also be explicitly typed by using the Razor @inherits tag:
+All templates include a `Model` property and the `RenderTemplate()` method can pass in a model. By default models are of type `dynamic`, but the model can also be explicitly typed by using the Razor `@inherits` tag:
 
-```
+```html
 @inherits RazorTemplateBase<RazorHostingTests.Person>
+<h3>Hello @Model.Firstname.</h3>
 ```
 
 you can also use the @model tag:
 
-```
+```html
 @model RazorHostingTests.Person
+<h3>Hello @Model.Firstname.</h3>
 ```
 
 but if you will not get Intellisense in Visual Studio if you open the template there. For that reason we recommend the first syntax.
 
 If no `@model` or `@inherits` is specified, the Model is assumed to be of type `dynamic`.
+
+
 
 ### Using Host Containers
 Host Containers wrap the basic `RazorEngine` by providing automatic caching for templates, automatic template change detection and the ability to optionally run the Razor templates in a separate AppDomain.
@@ -238,17 +242,6 @@ where the template might look like this:
 > @RenderPartial("~/Partials/PartialComponent.cshtml",model)
 > ```
 
-### Html Helpers
-You can also use HTML Helpers in your Razor views:
-
-```html
-@helper WriteBlockText(string text)
-{
-    <b>*** @text ***</b>
-}
-
-Helper output: @WriteBlockText("Help me!");
-```
 
 ### Rendering Layout Pages
 You can also use Layout pages with the RazorFolderHostContainer by specifying the `Layout` property in your view/template.
@@ -279,6 +272,18 @@ The View Page then:
 ```
 
 Note that you should use the same model your are passing to the content page as a parameter in the layout page - if you plan on accessing model content.
+
+### Html Helpers
+You can also use HTML Helpers in your Razor views:
+
+```html
+@helper WriteBlockText(string text)
+{
+    <b>*** @text ***</b>
+}
+
+Helper output: @WriteBlockText("Help me!");
+```
 
 ### Running in a separate AppDomain wiht UseAppDomain
 Note that you can choose to host the container in a separate AppDomain by using:
