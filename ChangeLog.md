@@ -14,6 +14,9 @@ only works for string template rendering in RazorEngine.RenderTemplate()
 and StringHostContainer.RenderTemplate(). Stream and file based renderers
 do not have this feature and must explicitly specify the model type.
 
+* **[Updated Documentation Site](https://west-wind.com/files/tools/razorhosting/docs/https://west-wind.com/files/tools/razorhosting/docs/)**   
+Updated the documentation site to use the latest [Help Builder](https://helpuilder.west-wind.com) templates from old very outdated old MSDN style templates. Yikes! :smile: Updated content for version 3.0 improvements and added latest generated class documentation.
+
 ## Version 3.0
 *July 8th, 2014*
 
@@ -41,7 +44,7 @@ they are released. Default Dispose() behavior stops the engine and releases
 all cached assemblies.
 
 
-##Version 1.01
+## Version 1.01
 *December 20th, 2012*
 
 * **Changed default bin folder location**  
