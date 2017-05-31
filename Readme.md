@@ -3,19 +3,36 @@
 
 <img src="razorhosting.png" height="200" style="height: 200px" />
 
-This library allows you to host the Razor template engine found in ASP.NET MVC and ASP.NET WebPages in your own applications and ASP.NET applications outside of MVC and Web Pages.
 
-Razor is a great tool for text templating using HTML like syntax mixed with C# code. The engine can be used for things like text merging for things like Mail Merge operations, HTML reports or HTML displays in desktop applications, code generation and much more. You can use it in Desktop applications as well as in any ASP.NET application that doesn't already have ready access to the Razor View engine.
+This library wraps the .NET Razor engine for use as a **standalone template engine outside of ASP.NET MVC**. Using this library you can host the Razor engine in desktop, console, service or any kind of full framework .NET application and render pages from strings or the file system.
 
+### Features
+* Standalone Razor Template Rendering
+* Use in desktop, console, service or even Web applications
+* No dependencies on ASP.NET or MVC
+* Render templates from string content
+* Render templates from a folder structure
+* Support for Partial Pages and Layout Pages (FolderHostContainer)
+* Provides HostContainers for template caching and change detection
+* Support for execution in separate AppDomain
+
+### Use Cases
+* Creating HTML output in desktop applications
+* Creating text merge documents: Email confirmations, merge letters etc.
+* Creating HTML reports
+* Code and template generation
+* Dynamic code execution (Razor Templates can execute arbitrary code after all)
+
+### More Information
 * [Install from NuGet (Westwind.RazorHosting)](http://nuget.org/packages/Westwind.RazorHosting)
-* [Westwind.RazorHosting Documentation](http://west-wind.com/files/tools/razorhosting/docs/)
+* [Documentation](http://west-wind.com/files/tools/razorhosting/docs)
 * [Change Log](https://github.com/RickStrahl/Westwind.RazorHosting/blob/master/ChangeLog.md)
-* [Questions and Discussion of Westwind.RazorHosting](http://www.west-wind.com/wwThreads/default.asp?Forum=West+Wind+.NET+Tools+and+Demos)
+* [Report an Issue or Enhancement Request](https://github.com/RickStrahl/Westwind.RazorHosting/issues)
 
-> #### Note
-> The RazorHosting engine provides core templating functionality of the Razor sytnax engine. This means that all C# language features and all of Razor's basic expression and logic parsing features work.
+> #### Similar to MVC Razor but not MVC Razor!
+> The RazorHosting engine provides core templating functionality of the raw Razor sytnax engine. This means that all C# language features and all of Razor's basic expression and logic parsing features work.
 >
-> It **does not** provide full parity with either the MVC or WebPages implementation, since both of these engines are closely tied to ASP.NET semantics. Things like HTML and URL Helpers, Sections, Partials and Layout pages are not natively supported by Razor. **Partials, Helpers and Layout pages are supported only in the Folder Host implementation**.
+> It **does not** provide full parity with either the MVC or WebPages implementations however, since both of these engines are closely tied to ASP.NET semantics. Things like HTML and URL Helpers, Sections, Partials and Layout pages are not natively supported by Razor. **Partials, Helpers and Layout pages are supported only in the `RazorFolderHost` implementation of this library**.
 >
 > RazorHosting only supports C# - there's no support for Visual Basic.
 
@@ -59,13 +76,12 @@ host.AddAssembly("System.Data.dll");  // add any assemblies you need in template
     
 string compiledId = host.CompileTemplate(template);    
 string result = host.RenderTemplateFromAssembly(compiledId,
-												new Person() { Name = "Joe Doe" });
-
+                            new Person() { Name = "Joe Doe" });
 ...
 
 // Run again later without recompilation
 string result = host.RenderTemplateFromAssembly(compiledId,
-												new Person() { Name = "Rick Strahl" });
+                            new Person() { Name = "Rick Strahl" });
 ```
 
 The latter example lets you capture a compilation id which points to a cached template assembly in the current RazorEngine instance. Running an already compiled template is considerably faster and saves resources as no new assembly is created each time you run the same template.
