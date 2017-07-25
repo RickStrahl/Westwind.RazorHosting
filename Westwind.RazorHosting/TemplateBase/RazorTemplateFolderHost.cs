@@ -46,7 +46,7 @@ namespace Westwind.RazorHosting
             // Just use the entire ConfigData as the model, but in theory 
             // configData could contain many objects or values to set on
             // template properties
-            Model = config.ConfigData as TModel;
+            Model = config.ModelData as TModel;
         }
     }
 

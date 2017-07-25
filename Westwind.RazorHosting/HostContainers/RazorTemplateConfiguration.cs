@@ -46,7 +46,7 @@ namespace Westwind.RazorHosting
         /// <summary>
         /// Use this object to pass configuration data to the template
         /// </summary>
-        public object ConfigData;
+        public object ModelData { get; set; }
     }
 
     /// <summary>
@@ -55,9 +55,9 @@ namespace Westwind.RazorHosting
     [Serializable]
     public class RazorFolderHostTemplateConfiguration : RazorTemplateConfiguration
     {
-        public string TemplatePath = string.Empty;
-        public string TemplateRelativePath = string.Empty;
-        public string PhysicalPath = string.Empty;
+        public string TemplatePath { get; set; } = string.Empty;
+        public string TemplateRelativePath { get; set; }  = string.Empty;
+        public string PhysicalPath { get; set; }  = string.Empty;
         public string LayoutPage { get; set; }
         public bool IsLayoutPage { get; set; }
     }

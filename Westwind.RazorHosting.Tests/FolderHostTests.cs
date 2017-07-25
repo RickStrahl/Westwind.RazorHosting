@@ -367,7 +367,73 @@ namespace RazorHostingTests
             Console.WriteLine(host.Engine.LastGeneratedCode);
 
             host.Stop();
+
+            Assert.IsNull(result);
+            Assert.IsTrue(!string.IsNullOrEmpty(host.ErrorMessage));
         }
-   
+
+        [TestMethod]
+        public void RuntimeErrorWithExceptionTest()
+        {
+            var host = new RazorFolderHostContainer();
+            host.ThrowExceptions = true;
+
+            host.TemplatePath = Path.GetFullPath(@"..\..\FileTemplates\");
+            host.BaseBinaryFolder = Environment.CurrentDirectory;
+
+            // add model assembly - ie. this assembly
+            host.AddAssemblyFromType(typeof(Person));
+            host.UseAppDomain = false;
+
+            // these are implicitly set
+            host.Configuration.CompileToMemory = false;
+            //host.Configuration.TempAssemblyPath = Environment.CurrentDirectory;
+
+            host.Start();
+
+            Person person = new Person()
+            {
+                Name = "Rick",
+                Company = "West Wind",
+                Entered = DateTime.Now,
+                Address = new Address()
+                {
+                    Street = "32 Kaiea",
+                    City = "Paia"
+                }
+            };
+
+            bool exception = false;
+            try
+            {
+                string result = host.RenderTemplate("~/RuntimeError.cshtml", person);
+            }
+            catch(RazorHostContainerException ex)
+            {
+                Console.WriteLine(ex.InnerException.Message);
+                Console.WriteLine(ex.InnerException.Source);
+                Console.WriteLine(ex.InnerException.StackTrace);
+                Console.WriteLine(ex.GeneratedSourceCode);
+                var config = ex.RequestConfigurationData as RazorFolderHostTemplateConfiguration;
+                if (config != null)
+                {
+                    Console.WriteLine(config.PhysicalPath);
+                    Console.WriteLine(config.TemplatePath);
+                    Console.WriteLine(config.TemplateRelativePath);
+                    Console.WriteLine(config.LayoutPage);
+                    
+                }
+
+
+                exception = true;
+            } 
+
+            Assert.IsTrue(exception, "Exception should have been thrown.");
+
+            host.Stop();
+
+
+        }
+
     }
 }

@@ -540,6 +540,12 @@
             resources.
             </summary>
         </member>
+        <member name="P:Westwind.RazorHosting.RazorBaseHostContainer`1.ThrowExceptions">
+            <summary>
+            Determines whether errors throw exceptions or 
+            return error status messages.
+            </summary>
+        </member>
         <member name="P:Westwind.RazorHosting.RazorBaseHostContainer`1.BaseBinaryFolder">
             <summary>
             Base folder location where the AppDomain 
@@ -621,7 +627,7 @@
             rendering.
             </summary>
             <param name="reader">TextReader that points at the template to compile</param>
-            <param name="model">Optional context to pass to template</param>
+            <param name="model">Optional model data to pass to template</param>
             <param name="writer">TextReader passed in that receives output</param>
             <returns></returns>
         </member>
@@ -631,7 +637,7 @@
             caching assemblies by their assembly Id.
             </summary>
             <param name="assemblyId">Id of a previously compiled assembly</param>
-            <param name="context">Optional context object</param>
+            <param name="model">Optional model data object</param>
             <param name="writer">Output writer</param>
             <param name="nameSpace">Namespace for compiled template to execute</param>
             <param name="className">Class name for compiled template to execute</param>
@@ -720,7 +726,7 @@
             file.
             </summary>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorFolderHostContainer`1.RenderTemplate(System.String,System.Object,System.IO.TextWriter)">
+        <member name="M:Westwind.RazorHosting.RazorFolderHostContainer`1.RenderTemplate(System.String,System.Object,System.IO.TextWriter,System.Boolean)">
             <summary>
             Renders a template to a TextWriter. Useful to write output into a stream or
             the Response object. Used for partial rendering.
@@ -729,6 +735,7 @@
             <param name="context">Optional context object or null</param>
             <param name="model">Optional parameter that is set as the Model property in generic versions</param>
             <param name="writer">The textwriter to write output into</param>
+            <param name="isLayoutPage"></param>
             <returns></returns>
         </member>
         <member name="M:Westwind.RazorHosting.RazorFolderHostContainer`1.GetAssemblyFromFileAndCache(System.String)">
@@ -762,6 +769,22 @@
             Item that stores information about a cached assembly
             that keeps track of templates that have been compiled
             and cached.
+            </summary>
+        </member>
+        <member name="T:Westwind.RazorHosting.RazorHostContainerException">
+            <summary>
+            Exception thrown when rendering or compiling of a folder host
+            render or initialization occurs
+            </summary>
+        </member>
+        <member name="P:Westwind.RazorHosting.RazorHostContainerException.GeneratedSourceCode">
+            <summary>
+            Source code for the template if available
+            </summary>
+        </member>
+        <member name="P:Westwind.RazorHosting.RazorHostContainerException.RequestConfigurationData">
+            <summary>
+            Template Engine Configuration Data
             </summary>
         </member>
         <member name="T:Westwind.RazorHosting.RazorStringHostContainer">
@@ -812,7 +835,7 @@
             information down to the templates from a Host container
             </summary>
         </member>
-        <member name="F:Westwind.RazorHosting.RazorTemplateConfiguration.ConfigData">
+        <member name="P:Westwind.RazorHosting.RazorTemplateConfiguration.ModelData">
             <summary>
             Use this object to pass configuration data to the template
             </summary>
@@ -1148,6 +1171,17 @@
             <summary>
             Custom template implementation for the FolderHostContainer that supports 
             relative path based partial rendering.    
+            </summary>
+        </member>
+        <member name="P:Westwind.RazorHosting.RazorTemplateFolderHost.Layout">
+            <summary>
+            The layout page for this template
+            </summary>
+        </member>
+        <member name="P:Westwind.RazorHosting.RazorTemplateFolderHost.TemplateConfigData">
+            <summary>
+            Hold template configuration data. for this implementation the
+            Layout page and template paths are important.
             </summary>
         </member>
         <member name="M:Westwind.RazorHosting.RazorTemplateFolderHost.RenderPartial(System.String,System.Object)">

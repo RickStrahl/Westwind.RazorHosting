@@ -88,7 +88,7 @@ namespace Westwind.RazorHosting
 
             if (result == null)
             {
-                ErrorMessage = Engine.ErrorMessage;
+                SetError(Engine.ErrorMessage);
                 return null;     
             }               
 
@@ -163,7 +163,7 @@ namespace Westwind.RazorHosting
 
                 if (assemblyId == null)
                 {
-                    ErrorMessage = Engine.ErrorMessage;
+                    SetError(Engine.ErrorMessage);
                     return null;
                 }
 

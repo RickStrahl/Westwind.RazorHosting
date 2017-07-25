@@ -55,6 +55,7 @@
     <Compile Include="Core\Utilities.cs" />
     <Compile Include="HostContainers\RazorBaseHostContainer.cs" />
     <Compile Include="HostContainers\RazorFolderHostContainer.cs" />
+    <Compile Include="HostContainers\RazorHostContainerException.cs" />
     <Compile Include="HostContainers\RazorStringHostContainer.cs" />
     <Compile Include="HostContainers\RazorTemplateConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

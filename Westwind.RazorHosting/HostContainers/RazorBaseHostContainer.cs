@@ -74,6 +74,12 @@ namespace Westwind.RazorHosting
         /// </summary>
         public bool UseAppDomain { get; set; }
 
+        /// <summary>
+        /// Determines whether errors throw exceptions or 
+        /// return error status messages.
+        /// </summary>
+        public bool ThrowExceptions { get; set; }
+
 
         /// <summary>
         /// Base folder location where the AppDomain 
@@ -153,7 +159,7 @@ namespace Westwind.RazorHosting
 
                 if (Engine == null)
                 {
-                    ErrorMessage = RazorEngineFactory<TBaseTemplateType>.Current.ErrorMessage;
+                    SetError(RazorEngineFactory<TBaseTemplateType>.Current.ErrorMessage);
                     return false;
                 }
 
@@ -201,7 +207,7 @@ namespace Westwind.RazorHosting
         /// rendering.
         /// </summary>
         /// <param name="reader">TextReader that points at the template to compile</param>
-        /// <param name="model">Optional context to pass to template</param>
+        /// <param name="model">Optional model data to pass to template</param>
         /// <param name="writer">TextReader passed in that receives output</param>
         /// <returns></returns>
         public virtual bool RenderTemplate(TextReader reader, object model, TextWriter writer)
@@ -209,7 +215,7 @@ namespace Westwind.RazorHosting
             string assemblyId = Engine.CompileTemplate(reader);
             if (assemblyId == null)
             {
-                ErrorMessage = Engine.ErrorMessage;
+               SetError(Engine.ErrorMessage);
                 return false;
             }
 
@@ -221,21 +227,21 @@ namespace Westwind.RazorHosting
         /// caching assemblies by their assembly Id.
         /// </summary>
         /// <param name="assemblyId">Id of a previously compiled assembly</param>
-        /// <param name="context">Optional context object</param>
+        /// <param name="model">Optional model data object</param>
         /// <param name="writer">Output writer</param>
         /// <param name="nameSpace">Namespace for compiled template to execute</param>
         /// <param name="className">Class name for compiled template to execute</param>
         /// <returns></returns>
-        protected virtual bool RenderTemplateFromAssembly(string assemblyId, object context, TextWriter writer)
+        protected virtual bool RenderTemplateFromAssembly(string assemblyId, object model, TextWriter writer)
         {
             // String result will be empty as output will be rendered into the
             // Response object's stream output. However a null result denotes
             // an error 
-            string result = Engine.RenderTemplateFromAssembly(assemblyId, context, writer);
+            string result = Engine.RenderTemplateFromAssembly(assemblyId, model, writer);
 
             if (result == null)
             {
-                ErrorMessage = Engine.ErrorMessage;
+                SetError(Engine.ErrorMessage);
                 return false;
             }
 
@@ -291,18 +297,23 @@ namespace Westwind.RazorHosting
         /// Sets an error message consistently
         /// </summary>
         /// <param name="message"></param>
-        protected void SetError(string message)
+        protected virtual void SetError(string message)
         {
             if (message == null)
                 ErrorMessage = string.Empty;
 
             ErrorMessage = message;
+            if (ThrowExceptions)
+                throw new RazorHostContainerException(ErrorMessage, 
+                    Engine?.LastGeneratedCode, 
+                    Engine?.LastException,
+                    Engine?.TemplatePerRequestConfigurationData);
         }
 
         /// <summary>
         /// Sets an error message consistently
         /// </summary>
-        protected void SetError()
+        protected virtual void SetError()
         {
             SetError(null);
         }

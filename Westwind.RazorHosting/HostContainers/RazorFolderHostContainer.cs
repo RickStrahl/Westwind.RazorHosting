@@ -297,8 +297,6 @@ namespace Westwind.RazorHosting
             return Path.GetFileNameWithoutExtension(fileName).Replace("\\", "_");
         }
 
-     
-     
     }
 
     /// <summary>
