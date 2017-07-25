@@ -6,7 +6,6 @@
 * **Host Container ThrowExceptions Option**  
 You can now have the Razor Host Containers throw exceptions when an error occurs rather than returning error information on the error message property. A custom exception is thrown that provides more information about the current request and engine.
 
-
 ### Version 3.1
 *May 29th, 2017*
 
