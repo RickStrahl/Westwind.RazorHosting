@@ -22,7 +22,7 @@ and StringHostContainer.RenderTemplate(). Stream and file based renderers
 do not have this feature and must explicitly specify the model type.
 
 * **[Updated Documentation Site](https://west-wind.com/files/tools/razorhosting/docs/)**   
-Updated the documentation site to use the latest [Help Builder](https://helpuilder.west-wind.com) templates from old very outdated old MSDN style templates. Yikes! :smile: Updated content for version 3.0 improvements and added latest generated class documentation.
+Updated the documentation site to use the latest [Help Builder](https://helpbuilder.west-wind.com) templates from old very outdated old MSDN style templates. Yikes! :smile: Updated content for version 3.0 improvements and added latest generated class documentation.
 
 ### Version 3.0
 *July 8th, 2014*
