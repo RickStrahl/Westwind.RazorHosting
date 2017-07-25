@@ -103,8 +103,9 @@ namespace Westwind.RazorHosting
         /// <param name="context">Optional context object or null</param>
         /// <param name="model">Optional parameter that is set as the Model property in generic versions</param>
         /// <param name="writer">The textwriter to write output into</param>
+        /// <param name="isLayoutPage"></param>
         /// <returns></returns>
-        public string RenderTemplate(string relativePath, object model = null, TextWriter writer = null)
+        public string RenderTemplate(string relativePath, object model = null, TextWriter writer = null, bool isLayoutPage = false)
         {
             CompiledAssemblyItem item = GetAssemblyFromFileAndCache(relativePath);
             if (item == null)
@@ -118,7 +119,9 @@ namespace Westwind.RazorHosting
             Engine.TemplatePerRequestConfigurationData = new RazorFolderHostTemplateConfiguration()
             {
                 TemplatePath = Path.Combine(TemplatePath, relativePath),
-                TemplateRelativePath = relativePath
+                TemplateRelativePath = relativePath,
+                LayoutPage = null,
+                IsLayoutPage = isLayoutPage
             };
 
             string result = null;
@@ -132,10 +135,14 @@ namespace Westwind.RazorHosting
                 if (result == null)
                     SetError(Engine.ErrorMessage);
 
+                var config = Engine.TemplatePerRequestConfigurationData as RazorFolderHostTemplateConfiguration;
 
-                if (!string.IsNullOrEmpty(item.LayoutPage))
+                if (config != null && !config.IsLayoutPage  && !string.IsNullOrEmpty(config.LayoutPage))
                 {
-                    string layout = RenderTemplate(item.LayoutPage, model, writer);
+                    string layoutTemplate = config.LayoutPage;
+                    config.LayoutPage = null;
+                    
+                    string layout = RenderTemplate(layoutTemplate, model, writer,isLayoutPage: true);
                     if (layout == null)
                     {
                         SetError("Failed to render Layout Page: " + Engine.ErrorMessage);
@@ -152,9 +159,8 @@ namespace Westwind.RazorHosting
                 SetError(ex.Message);
             }
             finally
-            {
-                if (writer != null)
-                    writer.Close();
+            {                
+                writer?.Close();
 
                 // Clear out the per request cache
                 Engine.TemplatePerRequestConfigurationData = null;
@@ -228,7 +234,7 @@ namespace Westwind.RazorHosting
                     return null;
                 }
 
-                ExtractLayoutPage(template, item);
+                //ExtractLayoutPage(template, item);
 
                 item.AssemblyId = assemblyId;
                 item.CompileTimeUtc = DateTime.UtcNow;
@@ -244,19 +250,19 @@ namespace Westwind.RazorHosting
 
         private static Regex LayoutRegEx = new Regex("@{.*?Layout = \"(.*?)\";.*?}", RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
-        private static void ExtractLayoutPage(string template, CompiledAssemblyItem item)
-        {
+        //private static void ExtractLayoutPage(string template, CompiledAssemblyItem item)
+        //{
 
-            if (string.IsNullOrEmpty(template))
-                return;
+        //    if (string.IsNullOrEmpty(template))
+        //        return;
 
-            var matches = LayoutRegEx.Match(template);
-            if (matches.Length > 0)
-            {
-                if (matches.Groups.Count > 1)
-                    item.LayoutPage = matches.Groups[1].Value;
-            }
-        }
+        //    var matches = LayoutRegEx.Match(template);
+        //    if (matches.Length > 0)
+        //    {
+        //        if (matches.Groups.Count > 1)
+        //            item.LayoutPage = matches.Groups[1].Value;
+        //    }
+        //}
 
 
 

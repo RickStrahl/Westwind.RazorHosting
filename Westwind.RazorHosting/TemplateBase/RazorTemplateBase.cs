@@ -107,8 +107,23 @@ namespace Westwind.RazorHosting
         /// <summary>
         /// Instance of the RazorEngine object.
         /// </summary>
-        public object Engine { get; set; }        
+        public object Engine { get; set; }
 
+
+        public RazorTemplateConfiguration TemplateConfigData
+        {
+            get
+            {
+                if (_templateConfigData != null)
+                    return _templateConfigData;
+
+                var engine = Engine as RazorEngine;
+                var config = engine?.TemplatePerRequestConfigurationData as RazorTemplateConfiguration;
+                _templateConfigData = config;
+                return config;
+            }
+        }
+        private RazorTemplateConfiguration _templateConfigData;
 
         /// <summary>
         /// This method is called upon instantiation

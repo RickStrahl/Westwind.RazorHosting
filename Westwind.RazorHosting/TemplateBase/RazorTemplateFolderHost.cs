@@ -23,7 +23,6 @@ namespace Westwind.RazorHosting
         public new TModel Model { get; set; }
 
 
-        public string Layout { get; set;  }
         
 
         public override void InitializeTemplate(object context, object configurationData)
@@ -42,6 +41,7 @@ namespace Westwind.RazorHosting
 
             Request.TemplatePath = config.TemplatePath;
             Request.TemplateRelativePath = config.TemplateRelativePath;
+            
 
             // Just use the entire ConfigData as the model, but in theory 
             // configData could contain many objects or values to set on
@@ -56,8 +56,48 @@ namespace Westwind.RazorHosting
     /// relative path based partial rendering.    
     /// </summary>
     public class RazorTemplateFolderHost : RazorTemplateBase        
-    {                
-      
+    {
+        private string _layout;
+
+        /// <summary>
+        /// The layout page for this template
+        /// </summary>
+        public string Layout
+        {
+            get { return _layout; }
+            set
+            {
+                _layout = value;
+
+                dynamic engine = Engine;
+                var config = engine?.TemplatePerRequestConfigurationData as RazorTemplateConfiguration;
+                if (config != null)
+                {
+                    ((RazorFolderHostTemplateConfiguration) config).LayoutPage = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Hold template configuration data. for this implementation the
+        /// Layout page and template paths are important.
+        /// </summary>
+        public new RazorFolderHostTemplateConfiguration TemplateConfigData
+        {
+            get
+            {
+                if (_templateConfigData != null)
+                    return _templateConfigData;
+
+                var engine = Engine as RazorEngine;
+                var config = engine?.TemplatePerRequestConfigurationData as RazorFolderHostTemplateConfiguration;
+                _templateConfigData = config;
+                return config;
+            }
+        }
+        private RazorFolderHostTemplateConfiguration _templateConfigData;
+
+
         public override void InitializeTemplate(object model, object configurationData)
         {
             Html = new HtmlHelper();

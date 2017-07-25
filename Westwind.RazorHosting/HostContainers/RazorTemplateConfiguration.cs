@@ -58,6 +58,8 @@ namespace Westwind.RazorHosting
         public string TemplatePath = string.Empty;
         public string TemplateRelativePath = string.Empty;
         public string PhysicalPath = string.Empty;
+        public string LayoutPage { get; set; }
+        public bool IsLayoutPage { get; set; }
     }
     
 
