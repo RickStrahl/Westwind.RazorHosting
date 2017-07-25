@@ -129,7 +129,7 @@ public class AppTemplates
 {
     public static RazorFolderHostContainer RazorHost { get; set; }
     
-    public static string RenderTemplate(string template, object model, out error)
+    public static string RenderTemplate(string template, object model, out string error)
     {
         if (RazorHost == null)
             StartRazorHost();        
@@ -153,7 +153,8 @@ public class AppTemplates
         
         // Add any assemblies that are referenced in your templates
         host.AddAssemblyFromType(typeof(Person));
-        host.AddAssemblyFromType(this.GetType());
+        host.AddAssemblyFromType(typeof(AppConfiguration));
+        
   
         // Always must start the host
         host.Start();
