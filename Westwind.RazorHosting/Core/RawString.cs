@@ -16,8 +16,26 @@ namespace Westwind.RazorHosting
 
         public RawString(string text)
         {
-            _Text = text;
+            _Text = text ?? string.Empty;
         }
+
+        public RawString()
+        {
+            _Text = string.Empty;
+        }
+
+        public RawString(StringBuilder sb)
+        {
+            _Text = sb.ToString();
+        }
+
+
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public static RawString Empty => _empty;
+        private static readonly RawString _empty = new RawString();
 
         public override string ToString()
         {
@@ -25,7 +43,7 @@ namespace Westwind.RazorHosting
         }
 
         public string ToHtmlString()
-        {
+        {            
             return WebUtility.HtmlEncode(_Text);
         }
     }
