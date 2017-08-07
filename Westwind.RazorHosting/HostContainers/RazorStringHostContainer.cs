@@ -40,7 +40,7 @@ using System.Reflection;
 
 namespace Westwind.RazorHosting
 {
-    
+
     /// <summary>
     /// Razor Host container to execute Razor Templates from string input.
     /// 
@@ -48,12 +48,24 @@ namespace Westwind.RazorHosting
     /// to avoid re-compilation and allocation of new resources for 
     /// each template.
     /// </summary>
-    public class RazorStringHostContainer : RazorBaseHostContainer<RazorTemplateBase>
-    {        
+    public class RazorStringHostContainer : RazorStringHostContainer<RazorTemplateBase>
+    {
+    }
+
+    /// <summary>
+    /// Razor Host container to execute Razor Templates from string input.
+    /// 
+    /// Can run templates in a separate AppDomain and caches templates
+    /// to avoid re-compilation and allocation of new resources for 
+    /// each template.
+    /// </summary>
+    public class RazorStringHostContainer<TBaseTemplate> : RazorBaseHostContainer<TBaseTemplate>
+        where TBaseTemplate : RazorTemplateBase, new()
+    {
 
         public RazorStringHostContainer()
         {
-            BaseBinaryFolder = Environment.CurrentDirectory;            
+            BaseBinaryFolder = Environment.CurrentDirectory;
         }
 
         /// <summary>
@@ -67,10 +79,10 @@ namespace Westwind.RazorHosting
         /// <param name="writer">Optional textwriter that output is written to</param>
         /// <param name="inferModelType">If true infers the model type if no @model or @inherits tag is provided</param>
         /// <returns>rendering results or null on failure. If a writer is a passed string.Empty is returned or null for failure</returns>
-        public string RenderTemplate(string templateText, 
-                                        object model = null, 
-                                        TextWriter writer = null, 
-                                        bool inferModelType = false) 
+        public string RenderTemplate(string templateText,
+            object model = null,
+            TextWriter writer = null,
+            bool inferModelType = false)
         {
             if (inferModelType && model != null &&
                 !templateText.Trim().StartsWith("@model ") &&
@@ -89,8 +101,8 @@ namespace Westwind.RazorHosting
             if (result == null)
             {
                 SetError(Engine.ErrorMessage);
-                return null;     
-            }               
+                return null;
+            }
 
             return result;
         }
@@ -105,26 +117,27 @@ namespace Westwind.RazorHosting
         /// <param name="outputFile">Output file where output is sent to</param>
         /// <param name="inferModelType">If true infers the model type if no @model or @inherits tag is provided</param>
         /// <returns></returns>
-        public bool RenderTemplateToFile(string templateText, object model, string outputFile, bool inferModelType = false) 
+        public bool RenderTemplateToFile(string templateText, object model, string outputFile,
+            bool inferModelType = false)
         {
 
             if (inferModelType && model != null &&
                 !templateText.Trim().StartsWith("@model ") &&
                 !templateText.Trim().StartsWith("@inherits "))
-                            templateText = "@model " + model.GetType().FullName + "\r\n" + templateText;
+                templateText = "@model " + model.GetType().FullName + "\r\n" + templateText;
 
             CompiledAssemblyItem assItem = GetAssemblyFromStringAndCache(templateText);
             if (assItem == null)
                 return false;
-            
+
             StreamWriter writer = null;
             try
             {
-                writer = new StreamWriter(outputFile, false, 
-                    Engine.Configuration.OutputEncoding, 
+                writer = new StreamWriter(outputFile, false,
+                    Engine.Configuration.OutputEncoding,
                     Engine.Configuration.StreamBufferSize);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 SetError("Unable to write template output to " + outputFile + ": " + ex.Message);
                 return false;
