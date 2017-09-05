@@ -11,7 +11,7 @@ namespace Westwind.RazorHosting
     /// <summary>
     /// This class handles special non-public types - anonymous types
     /// and allows returning property values from them.
-    /// 
+    ///
     /// Requires Reflection permissions for internal,private properties
     /// </summary>
     public class AnonymousDynamicType : DynamicObject

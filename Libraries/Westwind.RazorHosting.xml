@@ -5,12 +5,12 @@
     </assembly>
     <members>
         <member name="T:Westwind.RazorHosting.AnonymousDynamicType">
-            <summary>
-            This class handles special non-public types - anonymous types
-            and allows returning property values from them.
+             <summary>
+             This class handles special non-public types - anonymous types
+             and allows returning property values from them.
             
-            Requires Reflection permissions for internal,private properties
-            </summary>
+             Requires Reflection permissions for internal,private properties
+             </summary>
         </member>
         <member name="F:Westwind.RazorHosting.AnonymousDynamicType.Instance">
             <summary>
@@ -72,24 +72,29 @@
             non-encoded string.
             </summary>
         </member>
-        <member name="T:Westwind.RazorHosting.RazorEngine">
+        <member name="P:Westwind.RazorHosting.RawString.Empty">
             <summary>
-            Razor Hosting Engine that allows execution of Razor templates outside of
-            ASP.NET. You can execute templates from string or a textreader and output
-            to string or a text reader.
             
-            This implementation only supports C#.
             </summary>
         </member>
-        <member name="T:Westwind.RazorHosting.RazorEngine`1">
-            <summary>
-            Razor Hosting Engine that allows execution of Razor templates outside of
-            ASP.NET. You can execute templates from string or a textreader and output
-            to string or a text reader.
+        <member name="T:Westwind.RazorHosting.RazorEngine">
+             <summary>
+             Razor Hosting Engine that allows execution of Razor templates outside of
+             ASP.NET. You can execute templates from string or a textreader and output
+             to string or a text reader.
             
-            This implementation only supports C#.
-            </summary>
-            <typeparam name="TBaseTemplateType">RazorTemplateHost based type</typeparam>
+             This implementation only supports C#.
+             </summary>
+        </member>
+        <member name="T:Westwind.RazorHosting.RazorEngine`1">
+             <summary>
+             Razor Hosting Engine that allows execution of Razor templates outside of
+             ASP.NET. You can execute templates from string or a textreader and output
+             to string or a text reader.
+            
+             This implementation only supports C#.
+             </summary>
+             <typeparam name="TBaseTemplateType">RazorTemplateHost based type</typeparam>
         </member>
         <member name="P:Westwind.RazorHosting.RazorEngine`1.ErrorMessage">
             <summary>
@@ -113,48 +118,48 @@
             </summary>
         </member>
         <member name="P:Westwind.RazorHosting.RazorEngine`1.HostContainer">
-            <summary>
-            Provide a reference to a RazorHost container so that it
-            can be passed to a template.
+             <summary>
+             Provide a reference to a RazorHost container so that it
+             can be passed to a template.
             
-            This may be null, but if a container is available this value
-            is set and passed on to the template as HostContainer.
-            </summary>
+             This may be null, but if a container is available this value
+             is set and passed on to the template as HostContainer.
+             </summary>
         </member>
         <member name="P:Westwind.RazorHosting.RazorEngine`1.ReferencedNamespaces">
-            <summary>
-            A list of default namespaces to include
+             <summary>
+             A list of default namespaces to include
             
-            Defaults already included:
-            System, System.Text, System.IO, System.Collections.Generic, System.Linq
-            </summary>
+             Defaults already included:
+             System, System.Text, System.IO, System.Collections.Generic, System.Linq
+             </summary>
         </member>
         <member name="P:Westwind.RazorHosting.RazorEngine`1.ReferencedAssemblies">
-            <summary>
-            A list of default assemblies referenced during compilation
+             <summary>
+             A list of default assemblies referenced during compilation
             
-            Defaults already included:
-            System, System.Text, System.IO, System.Collections.Generic, System.Linq
-            </summary>
+             Defaults already included:
+             System, System.Text, System.IO, System.Collections.Generic, System.Linq
+             </summary>
         </member>
         <member name="P:Westwind.RazorHosting.RazorEngine`1.AssemblyCache">
             <summary>
-            Internally cache assemblies loaded with ParseAndCompileTemplate.        
+            Internally cache assemblies loaded with ParseAndCompileTemplate.
             Assemblies are cached in the EngineHost so they don't have
             to cross AppDomains for invocation when running in a separate AppDomain
             </summary>
         </member>
         <member name="P:Westwind.RazorHosting.RazorEngine`1.TemplatePerRequestConfigurationData">
-            <summary>
-            A property that holds any per request configuration 
-            data that is to be passed to the template. This object
-            is passed to InitializeTemplate after the instance was
-            created.
+             <summary>
+             A property that holds any per request configuration
+             data that is to be passed to the template. This object
+             is passed to InitializeTemplate after the instance was
+             created.
             
-            This object must be serializable. 
-            This object should be set on every request and cleared out after 
-            each request       
-            </summary>
+             This object must be serializable.
+             This object should be set on every request and cleared out after
+             each request
+             </summary>
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.#ctor">
             <summary>
@@ -165,12 +170,12 @@
         <member name="M:Westwind.RazorHosting.RazorEngine`1.AddAssembly(System.String,System.String[])">
             <summary>
             Method to add assemblies to the referenced assembly list.
-            Use the DLL name or strongly typed name. Assembly added HAS 
+            Use the DLL name or strongly typed name. Assembly added HAS
             to be accessible via GAC or in bin/privatebin path
             </summary>
             <param name="assemblyName">
             Path to the assembly. GAC'd assemblies or assemblies in current path
-            can be provided without a path. All others should contain a fully qualified OS path. 
+            can be provided without a path. All others should contain a fully qualified OS path.
             Note that Razor does not look in the PrivateBin path for the AppDomain.
             </param>
         </member>
@@ -186,31 +191,31 @@
             Adds an assembly to the ReferenceAssemblies based on an object instance.
             Easy way to add a model's assembly.
             </summary>
-            <param name="instance">any object instance</param>        
+            <param name="instance">any object instance</param>
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.AddNamespace(System.String,System.String[])">
-            <summary>
-            Method to add namespaces to the compiled code.
-            Add namespaces to minimize explicit namespace
-            requirements in your Razor template code.
+             <summary>
+             Method to add namespaces to the compiled code.
+             Add namespaces to minimize explicit namespace
+             requirements in your Razor template code.
             
-            Make sure that any required assemblies are
-            loaded first.
-            </summary>
-            <param name="ns">First namespace</param>
-            <param name="additionalNamespaces">additional namespaces</param>
+             Make sure that any required assemblies are
+             loaded first.
+             </summary>
+             <param name="ns">First namespace</param>
+             <param name="additionalNamespaces">additional namespaces</param>
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.AddNamespace(System.String[])">
-            <summary>
-            Method to add namespaces to the compiled code.
-            Add namespaces to minimize explicit namespace
-            requirements in your Razor template code.
+             <summary>
+             Method to add namespaces to the compiled code.
+             Add namespaces to minimize explicit namespace
+             requirements in your Razor template code.
             
-            Make sure that any required assemblies are
-            loaded first.
-            </summary>
-            <param name="ns">First namespace</param>
-            <param name="additionalNamespaces">additional namespaces</param>
+             Make sure that any required assemblies are
+             loaded first.
+             </summary>
+             <param name="ns">First namespace</param>
+             <param name="additionalNamespaces">additional namespaces</param>
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.RenderTemplate(System.IO.TextReader,System.Object,System.IO.TextWriter)">
             <summary>
@@ -222,8 +227,8 @@
             <param name="referencedAssemblies">Any assembly references required by template as a DLL names. Must be in execution path or GAC.</param>
             <param name="model">Optional model available in the template as this.Context</param>
             <param name="outputWriter">
-            A text writer that receives the rendered template output. 
-            Writer is closed after rendering. 
+            A text writer that receives the rendered template output.
+            Writer is closed after rendering.
             When provided the result of this method is string.Empty (success) or null (failure)
             </param>
             <returns>output from template. If an outputWriter is passed in result is string.Empty on success, null on failure</returns>
@@ -238,8 +243,8 @@
             <param name="referencedAssemblies">Any assembly references required by template as a DLL names. Must be in execution path or GAC.</param>
             <param name="model">Optional model available in the template as this.Context</param>
             <param name="outputWriter">
-            A text writer that receives the rendered template output. 
-            Writer is closed after rendering. 
+            A text writer that receives the rendered template output.
+            Writer is closed after rendering.
             When provided the result of this method is string.Empty (success) or null (failure)
             </param>
             <param name="inferModelType">If true, tries to infer the model type when no @model or @inherits tags are defined for the template</param>
@@ -258,42 +263,42 @@
             <returns>output from template. If an outputWriter is passed in result is string.Empty on success, null on failure</returns>
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.CompileTemplate(System.IO.TextReader,System.String,System.String)">
-            <summary>
-            Parses and compiles a markup template into an assembly and returns
-            an assembly name. The name is an ID that can be passed to 
-            ExecuteTemplateByAssembly which picks up a cached instance of the
-            loaded assembly.
+             <summary>
+             Parses and compiles a markup template into an assembly and returns
+             an assembly name. The name is an ID that can be passed to
+             ExecuteTemplateByAssembly which picks up a cached instance of the
+             loaded assembly.
             
-            </summary>
-            <param name="referencedAssemblies">Any referenced assemblies by dll name only. Assemblies must be in execution path of host or in GAC.</param>
-            <param name="templateReader">Textreader that loads the template</param>
-            <param name="generatedNamespace">The namespace of the class to generate from the template. null generates name.</param>
-            <param name="generatedClassName">The name of the class to generate from the template. null generates name.</param>
-            <remarks>
-            The actual assembly isn't returned here to allow for cross-AppDomain
-            operation. If the assembly was returned it would fail for cross-AppDomain
-            calls.
-            </remarks>
-            <returns>An assembly Id. The Assembly is cached in memory and can be used with RenderFromAssembly.</returns>
+             </summary>
+             <param name="referencedAssemblies">Any referenced assemblies by dll name only. Assemblies must be in execution path of host or in GAC.</param>
+             <param name="templateReader">Textreader that loads the template</param>
+             <param name="generatedNamespace">The namespace of the class to generate from the template. null generates name.</param>
+             <param name="generatedClassName">The name of the class to generate from the template. null generates name.</param>
+             <remarks>
+             The actual assembly isn't returned here to allow for cross-AppDomain
+             operation. If the assembly was returned it would fail for cross-AppDomain
+             calls.
+             </remarks>
+             <returns>An assembly Id. The Assembly is cached in memory and can be used with RenderFromAssembly.</returns>
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.CompileTemplate(System.String,System.String,System.String)">
-            <summary>
-            Parses and compiles a markup template into an assembly and returns
-            an assembly name. The name is an ID that can be passed to 
-            ExecuteTemplateByAssembly which picks up a cached instance of the
-            loaded assembly.
+             <summary>
+             Parses and compiles a markup template into an assembly and returns
+             an assembly name. The name is an ID that can be passed to
+             ExecuteTemplateByAssembly which picks up a cached instance of the
+             loaded assembly.
             
-            </summary>
-            <param name="templateText">Text of the template to render</param>
-            <param name="generatedNamespace">Namespace for the generated class. If not passed will be __RazorHosting</param>
-            <param name="generatedClassName">Classname for the generated class. If not passed will be a generated unique name based on GUID</param>
-            <param name="modelType">Optional type of the model passed with this template - used for @model fixup</param>
-            <remarks>
-            The actual assembly isn't returned here to allow for cross-AppDomain
-            operation. If the assembly was returned it would fail for cross-AppDomain
-            calls.
-            </remarks>
-            <returns>An assembly Id. The Assembly is cached in memory and can be used with RenderFromAssembly.</returns>
+             </summary>
+             <param name="templateText">Text of the template to render</param>
+             <param name="generatedNamespace">Namespace for the generated class. If not passed will be __RazorHosting</param>
+             <param name="generatedClassName">Classname for the generated class. If not passed will be a generated unique name based on GUID</param>
+             <param name="modelType">Optional type of the model passed with this template - used for @model fixup</param>
+             <remarks>
+             The actual assembly isn't returned here to allow for cross-AppDomain
+             operation. If the assembly was returned it would fail for cross-AppDomain
+             calls.
+             </remarks>
+             <returns>An assembly Id. The Assembly is cached in memory and can be used with RenderFromAssembly.</returns>
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.CreateHost(System.String,System.String,System.Type)">
             <summary>
@@ -313,15 +318,15 @@
             <param name="assemblyId"></param>
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.InstantiateTemplateClass(System.Type)">
-            <summary>
-            Overridable instance creation routine for the host. 
+             <summary>
+             Overridable instance creation routine for the host.
             
-            Handle custom template base classes (derived from RazorTemplateBase)
-            and setting of properties on the instance in subclasses by overriding
-            this method.
-            </summary>
-            <param name="type"></param>
-            <returns></returns>
+             Handle custom template base classes (derived from RazorTemplateBase)
+             and setting of properties on the instance in subclasses by overriding
+             this method.
+             </summary>
+             <param name="type"></param>
+             <returns></returns>
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.InvokeTemplateInstance(`0,System.Object)">
             <summary>
@@ -345,15 +350,15 @@
             <returns></returns>
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.GetSafeClassName(System.Object)">
-            <summary>
-            Returns a unique ClassName for a template to execute
-            Optionally pass in an objectId on which the code is based
-            or null to get default behavior.
+             <summary>
+             Returns a unique ClassName for a template to execute
+             Optionally pass in an objectId on which the code is based
+             or null to get default behavior.
             
-            Default implementation just returns Guid as string
-            </summary>
-            <param name="objectId"></param>
-            <returns></returns>
+             Default implementation just returns Guid as string
+             </summary>
+             <param name="objectId"></param>
+             <returns></returns>
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngine`1.SetError(System.String)">
             <summary>
@@ -518,58 +523,58 @@
             <returns></returns>
         </member>
         <member name="T:Westwind.RazorHosting.RazorBaseHostContainer`1">
-            <summary>
-            Based Host implementation for hosting the RazorEngine. This base
-            acts as a host wrapper for implementing high level host services around
-            the RazorEngine class. 
+             <summary>
+             Based Host implementation for hosting the RazorEngine. This base
+             acts as a host wrapper for implementing high level host services around
+             the RazorEngine class.
             
-            Provides the ability to run in a separate AppDomain and to cache
-            and store generated assemblies to avoid constant parsing and recompilation.
+             Provides the ability to run in a separate AppDomain and to cache
+             and store generated assemblies to avoid constant parsing and recompilation.
             
             
-            For example implementations can provide assembly
-            template caching so assemblies don't recompile for each access.
-            </summary>
-            <typeparam name="TBaseTemplateType">The RazorTemplateBase class that templates will be based on</typeparam>    
+             For example implementations can provide assembly
+             template caching so assemblies don't recompile for each access.
+             </summary>
+             <typeparam name="TBaseTemplateType">The RazorTemplateBase class that templates will be based on</typeparam>
         </member>
         <member name="P:Westwind.RazorHosting.RazorBaseHostContainer`1.UseAppDomain">
             <summary>
             Determines whether the Container hosts Razor
-            in a separate AppDomain. Seperate AppDomain 
-            hosting allows unloading and releasing of 
+            in a separate AppDomain. Seperate AppDomain
+            hosting allows unloading and releasing of
             resources.
             </summary>
         </member>
         <member name="P:Westwind.RazorHosting.RazorBaseHostContainer`1.ThrowExceptions">
             <summary>
-            Determines whether errors throw exceptions or 
+            Determines whether errors throw exceptions or
             return error status messages.
             </summary>
         </member>
         <member name="P:Westwind.RazorHosting.RazorBaseHostContainer`1.BaseBinaryFolder">
-            <summary>
-            Base folder location where the AppDomain 
-            is hosted. By default uses the same folder
-            as the host application.
+             <summary>
+             Base folder location where the AppDomain
+             is hosted. By default uses the same folder
+             as the host application.
             
-            Determines where binary dependencies are
-            found for assembly references.
-            </summary>
+             Determines where binary dependencies are
+             found for assembly references.
+             </summary>
         </member>
         <member name="P:Westwind.RazorHosting.RazorBaseHostContainer`1.ReferencedAssemblies">
             <summary>
             List of referenced assemblies as string values.
             Must be in GAC or in the current folder of the host app/
-            base BinaryFolder        
+            base BinaryFolder
             </summary>
         </member>
         <member name="P:Westwind.RazorHosting.RazorBaseHostContainer`1.ReferencedNamespaces">
-            <summary>
-            List of additional namespaces to add to all templates.
+             <summary>
+             List of additional namespaces to add to all templates.
             
-            By default:
-            System, System.Text, System.IO, System.Linq
-            </summary>
+             By default:
+             System, System.Text, System.IO, System.Linq
+             </summary>
         </member>
         <member name="P:Westwind.RazorHosting.RazorBaseHostContainer`1.GeneratedNamespace">
             <summary>
@@ -588,13 +593,13 @@
             </summary>
         </member>
         <member name="F:Westwind.RazorHosting.RazorBaseHostContainer`1.LoadedAssemblies">
-            <summary>
-            Keep track of each compiled assembly
-            and when it was compiled.
+             <summary>
+             Keep track of each compiled assembly
+             and when it was compiled.
             
-            Use a hash of the string to identify string
-            changes.
-            </summary>
+             Use a hash of the string to identify string
+             changes.
+             </summary>
         </member>
         <member name="P:Westwind.RazorHosting.RazorBaseHostContainer`1.Configuration">
             <summary>
@@ -603,7 +608,7 @@
         </member>
         <member name="M:Westwind.RazorHosting.RazorBaseHostContainer`1.Start">
             <summary>
-            Call to start the Host running. Follow by a calls to RenderTemplate to 
+            Call to start the Host running. Follow by a calls to RenderTemplate to
             render individual templates. Call Stop when done.
             </summary>
             <returns>true or false - check ErrorMessage on false </returns>
@@ -616,20 +621,20 @@
             <returns>true or false</returns>
         </member>
         <member name="M:Westwind.RazorHosting.RazorBaseHostContainer`1.RenderTemplate(System.IO.TextReader,System.Object,System.IO.TextWriter)">
-            <summary>
-            Stock implementation of RenderTemplate that doesn't allow for 
-            any sort of assembly caching. Instead it creates and re-renders
-            templates read from the reader each time.
+             <summary>
+             Stock implementation of RenderTemplate that doesn't allow for
+             any sort of assembly caching. Instead it creates and re-renders
+             templates read from the reader each time.
             
-            Custom implementations of RenderTemplate should be created that
-            allow for caching by examing a filename or string hash to determine
-            whether a template needs to be re-generated and compiled before
-            rendering.
-            </summary>
-            <param name="reader">TextReader that points at the template to compile</param>
-            <param name="model">Optional model data to pass to template</param>
-            <param name="writer">TextReader passed in that receives output</param>
-            <returns></returns>
+             Custom implementations of RenderTemplate should be created that
+             allow for caching by examing a filename or string hash to determine
+             whether a template needs to be re-generated and compiled before
+             rendering.
+             </summary>
+             <param name="reader">TextReader that points at the template to compile</param>
+             <param name="model">Optional model data to pass to template</param>
+             <param name="writer">TextReader passed in that receives output</param>
+             <returns></returns>
         </member>
         <member name="M:Westwind.RazorHosting.RazorBaseHostContainer`1.RenderTemplateFromAssembly(System.String,System.Object,System.IO.TextWriter)">
             <summary>
@@ -644,15 +649,15 @@
             <returns></returns>
         </member>
         <member name="M:Westwind.RazorHosting.RazorBaseHostContainer`1.GetSafeClassName(System.Object)">
-            <summary>
-            Returns a unique ClassName for a template to execute
-            Optionally pass in an objectId on which the code is based
-            or null to get default behavior.
+             <summary>
+             Returns a unique ClassName for a template to execute
+             Optionally pass in an objectId on which the code is based
+             or null to get default behavior.
             
-            Default implementation just returns Guid as string
-            </summary>
-            <param name="objectId"></param>
-            <returns></returns>
+             Default implementation just returns Guid as string
+             </summary>
+             <param name="objectId"></param>
+             <returns></returns>
         </member>
         <member name="M:Westwind.RazorHosting.RazorBaseHostContainer`1.AddAssemblyFromType(System.Type)">
             <summary>
@@ -796,7 +801,16 @@
             each template.
             </summary>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorStringHostContainer.RenderTemplate(System.String,System.Object,System.IO.TextWriter,System.Boolean)">
+        <member name="T:Westwind.RazorHosting.RazorStringHostContainer`1">
+            <summary>
+            Razor Host container to execute Razor Templates from string input.
+            
+            Can run templates in a separate AppDomain and caches templates
+            to avoid re-compilation and allocation of new resources for 
+            each template.
+            </summary>
+        </member>
+        <member name="M:Westwind.RazorHosting.RazorStringHostContainer`1.RenderTemplate(System.String,System.Object,System.IO.TextWriter,System.Boolean)">
             <summary>
             Call this method to actually render a template to the specified outputfile
             </summary>"
@@ -809,7 +823,7 @@
             <param name="inferModelType">If true infers the model type if no @model or @inherits tag is provided</param>
             <returns>rendering results or null on failure. If a writer is a passed string.Empty is returned or null for failure</returns>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorStringHostContainer.RenderTemplateToFile(System.String,System.Object,System.String,System.Boolean)">
+        <member name="M:Westwind.RazorHosting.RazorStringHostContainer`1.RenderTemplateToFile(System.String,System.Object,System.String,System.Boolean)">
             <summary>
             Renders a template from a string input to a file output.
             Same text templates are compiled and cached for re-use.
@@ -820,7 +834,7 @@
             <param name="inferModelType">If true infers the model type if no @model or @inherits tag is provided</param>
             <returns></returns>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorStringHostContainer.GetAssemblyFromStringAndCache(System.String)">
+        <member name="M:Westwind.RazorHosting.RazorStringHostContainer`1.GetAssemblyFromStringAndCache(System.String)">
             <summary>
             Internally tries to retrieve a previously compiled template from cache
             if not found compiles a template into an assembly
@@ -1153,9 +1167,9 @@
         </member>
         <member name="T:Westwind.RazorHosting.RazorTemplateFolderHost`1">
              <summary>
-             Custom template implementation for the FolderHostContainer that supports 
-             relative path based partial rendering.    
-             
+             Custom template implementation for the FolderHostContainer that supports
+             relative path based partial rendering.
+            
              </summary>
             <typeparam name="TModel">Type parameter that determines the type of the Model
              property on this template. Note that the host container is responsible for
@@ -1169,8 +1183,8 @@
         </member>
         <member name="T:Westwind.RazorHosting.RazorTemplateFolderHost">
             <summary>
-            Custom template implementation for the FolderHostContainer that supports 
-            relative path based partial rendering.    
+            Custom template implementation for the FolderHostContainer that supports
+            relative path based partial rendering.
             </summary>
         </member>
         <member name="P:Westwind.RazorHosting.RazorTemplateFolderHost.Layout">

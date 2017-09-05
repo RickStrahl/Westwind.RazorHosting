@@ -1,10 +1,11 @@
 #region License
+
 /*
  **************************************************************
- *  Author: Rick Strahl 
+ *  Author: Rick Strahl
  *          © West Wind Technologies, 2010-2011
  *          http://www.west-wind.com/
- * 
+ *
  * Created: 1/4/2010
  *
  * Permission is hereby granted, free of charge, to any person
@@ -15,10 +16,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -27,34 +28,33 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
- **************************************************************  
+ **************************************************************
 */
-#endregion
+
+#endregion License
 
 using System;
-using System.Diagnostics;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Westwind.RazorHosting
 {
     /// <summary>
     /// Based Host implementation for hosting the RazorEngine. This base
     /// acts as a host wrapper for implementing high level host services around
-    /// the RazorEngine class. 
-    /// 
+    /// the RazorEngine class.
+    ///
     /// Provides the ability to run in a separate AppDomain and to cache
     /// and store generated assemblies to avoid constant parsing and recompilation.
-    /// 
-    /// 
+    ///
+    ///
     /// For example implementations can provide assembly
     /// template caching so assemblies don't recompile for each access.
     /// </summary>
-    /// <typeparam name="TBaseTemplateType">The RazorTemplateBase class that templates will be based on</typeparam>    
+    /// <typeparam name="TBaseTemplateType">The RazorTemplateBase class that templates will be based on</typeparam>
     public abstract class RazorBaseHostContainer<TBaseTemplateType> : MarshalByRefObject, IDisposable
             where TBaseTemplateType : RazorTemplateBase, new()
     {
-
         public RazorBaseHostContainer()
         {
             UseAppDomain = false;
@@ -68,24 +68,23 @@ namespace Westwind.RazorHosting
 
         /// <summary>
         /// Determines whether the Container hosts Razor
-        /// in a separate AppDomain. Seperate AppDomain 
-        /// hosting allows unloading and releasing of 
+        /// in a separate AppDomain. Seperate AppDomain
+        /// hosting allows unloading and releasing of
         /// resources.
         /// </summary>
         public bool UseAppDomain { get; set; }
 
         /// <summary>
-        /// Determines whether errors throw exceptions or 
+        /// Determines whether errors throw exceptions or
         /// return error status messages.
         /// </summary>
         public bool ThrowExceptions { get; set; }
 
-
         /// <summary>
-        /// Base folder location where the AppDomain 
+        /// Base folder location where the AppDomain
         /// is hosted. By default uses the same folder
         /// as the host application.
-        /// 
+        ///
         /// Determines where binary dependencies are
         /// found for assembly references.
         /// </summary>
@@ -94,13 +93,13 @@ namespace Westwind.RazorHosting
         /// <summary>
         /// List of referenced assemblies as string values.
         /// Must be in GAC or in the current folder of the host app/
-        /// base BinaryFolder        
+        /// base BinaryFolder
         /// </summary>
         public List<string> ReferencedAssemblies { get; set; }
 
         /// <summary>
         /// List of additional namespaces to add to all templates.
-        /// 
+        ///
         /// By default:
         /// System, System.Text, System.IO, System.Linq
         /// </summary>
@@ -131,7 +130,7 @@ namespace Westwind.RazorHosting
         /// <summary>
         /// Keep track of each compiled assembly
         /// and when it was compiled.
-        /// 
+        ///
         /// Use a hash of the string to identify string
         /// changes.
         /// </summary>
@@ -142,9 +141,8 @@ namespace Westwind.RazorHosting
         /// </summary>
         public RazorEngineConfiguration Configuration { get; set; }
 
-
         /// <summary>
-        /// Call to start the Host running. Follow by a calls to RenderTemplate to 
+        /// Call to start the Host running. Follow by a calls to RenderTemplate to
         /// render individual templates. Call Stop when done.
         /// </summary>
         /// <returns>true or false - check ErrorMessage on false </returns>
@@ -197,10 +195,10 @@ namespace Westwind.RazorHosting
         }
 
         /// <summary>
-        /// Stock implementation of RenderTemplate that doesn't allow for 
+        /// Stock implementation of RenderTemplate that doesn't allow for
         /// any sort of assembly caching. Instead it creates and re-renders
         /// templates read from the reader each time.
-        /// 
+        ///
         /// Custom implementations of RenderTemplate should be created that
         /// allow for caching by examing a filename or string hash to determine
         /// whether a template needs to be re-generated and compiled before
@@ -215,7 +213,7 @@ namespace Westwind.RazorHosting
             string assemblyId = Engine.CompileTemplate(reader);
             if (assemblyId == null)
             {
-               SetError(Engine.ErrorMessage);
+                SetError(Engine.ErrorMessage);
                 return false;
             }
 
@@ -236,7 +234,7 @@ namespace Westwind.RazorHosting
         {
             // String result will be empty as output will be rendered into the
             // Response object's stream output. However a null result denotes
-            // an error 
+            // an error
             string result = Engine.RenderTemplateFromAssembly(assemblyId, model, writer);
 
             if (result == null)
@@ -252,7 +250,7 @@ namespace Westwind.RazorHosting
         /// Returns a unique ClassName for a template to execute
         /// Optionally pass in an objectId on which the code is based
         /// or null to get default behavior.
-        /// 
+        ///
         /// Default implementation just returns Guid as string
         /// </summary>
         /// <param name="objectId"></param>
@@ -261,7 +259,6 @@ namespace Westwind.RazorHosting
         {
             return "_" + Guid.NewGuid().ToString().Replace("-", "_");
         }
-
 
         /// <summary>
         /// Adds an assembly to the referenced assemblies from an existing
@@ -283,7 +280,6 @@ namespace Westwind.RazorHosting
             AddAssemblyFromType(instance.GetType());
         }
 
-
         /// <summary>
         /// Force this host to stay alive indefinitely
         /// </summary>
@@ -304,8 +300,8 @@ namespace Westwind.RazorHosting
 
             ErrorMessage = message;
             if (ThrowExceptions)
-                throw new RazorHostContainerException(ErrorMessage, 
-                    Engine?.LastGeneratedCode, 
+                throw new RazorHostContainerException(ErrorMessage,
+                    Engine?.LastGeneratedCode,
                     Engine?.LastException,
                     Engine?.TemplatePerRequestConfigurationData);
         }
