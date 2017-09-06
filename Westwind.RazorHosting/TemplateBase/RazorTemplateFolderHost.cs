@@ -121,7 +121,8 @@ namespace Westwind.RazorHosting
             if (HostContainer == null)
                 return null;
 
-            relativePath = Path.ChangeExtension(relativePath,"cshtml");
+            if(!Path.HasExtension(relativePath))
+                relativePath = Path.ChangeExtension(relativePath,"cshtml");
 
             // we don't know the exact type since it can be generic so make dynamic
             // execution possible with dynamic type
