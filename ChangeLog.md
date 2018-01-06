@@ -1,10 +1,15 @@
 # Westwind.RazorHosting Change Log
 
 ### Version 3.2
-*not released yet*
+*January 7th, 2018*
 
-* **Host Container ThrowExceptions Option**  
-You can now have the Razor Host Containers throw exceptions when an error occurs rather than returning error information on the error message property. A custom exception is thrown that provides more information about the current request and engine.
+* **Host Container ThrowExceptions Option** You can now have the Razor Host Containers throw exceptions when an error occurs rather than returning error information on the error message property. A custom exception is thrown that provides more information about the current request and engine.
+
+* **StringHostContainer to match constructor format**   
+Add overload to generic type overload of the StringHostContainer in the same way you can overload FolderHostContainer. Makes it easier to create application level hosts derived from a specific template.
+
+* **RawString Default and Empty Property**  
+Added `RawString.Empty` property which returns a new empty RawString instance. Default instance now also returns `string.Empty` (rather than null before).
 
 ### Version 3.1
 *May 29th, 2017*
