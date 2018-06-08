@@ -32,6 +32,7 @@
 #endregion
 
 using System;
+using System.Globalization;
 using System.Reflection;
 using System.IO;
 using Microsoft.CSharp;
@@ -147,7 +148,8 @@ namespace Westwind.RazorHosting
                 var templateType = typeof(RazorEngine<TBaseTemplateType>);
                 
                 object instance = LocalAppDomain.CreateInstanceFrom(AssemblyPath,
-                                                                    templateType.FullName)
+                                                                    templateType.FullName,false,BindingFlags.Default,null,
+                                                                    new object [] {codeProvider}, CultureInfo.CurrentCulture, null)
                                                 .Unwrap();
 
                 host = instance as RazorEngine<TBaseTemplateType>;

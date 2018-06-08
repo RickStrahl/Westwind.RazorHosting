@@ -473,6 +473,8 @@ namespace Westwind.RazorHosting
             // Create code from the codeDom and compile
             // var codeProvider = new Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider();
             var codeProvider = CodeProvider;
+            if (codeProvider == null)
+                codeProvider = new CSharpCodeProvider();
             
             var options = new CodeGeneratorOptions();
             

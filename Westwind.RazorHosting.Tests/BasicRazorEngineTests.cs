@@ -172,11 +172,10 @@ Hello World, @name. Time is: @($""{DateTime.Now}"").";
         public void SimplestRazorEngineTestWithAppDomain()
         {            
             string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
-
-            var codeProvider = new Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider();
+            
 
             // Load engine into new AppDomain
-            var host = RazorEngineFactory<RazorTemplateBase>.CreateRazorHostInAppDomain(codeProvider);
+            var host = RazorEngineFactory<RazorTemplateBase>.CreateRazorHostInAppDomain();
             
             // Note: You can't use anonymouse types for cross-AppDomain calls
             //       Models passed must inherit MarshalByRefObject or be [Serializable]
