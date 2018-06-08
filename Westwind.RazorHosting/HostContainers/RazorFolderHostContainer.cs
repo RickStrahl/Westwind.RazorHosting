@@ -36,6 +36,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Microsoft.CSharp;
 using Westwind.RazorHosting.Properties;
 
 namespace Westwind.RazorHosting

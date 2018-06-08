@@ -34,6 +34,7 @@
 using System;
 using System.Reflection;
 using System.IO;
+using Microsoft.CSharp;
 
 namespace Westwind.RazorHosting
 {
@@ -77,12 +78,12 @@ namespace Westwind.RazorHosting
         /// AppDomain. No special handling...
         /// </summary>
         /// <returns></returns>
-        public static RazorEngine<TBaseTemplateType> CreateRazorHost()
+        public static RazorEngine<TBaseTemplateType> CreateRazorHost(CSharpCodeProvider codeProvider = null)
         {
             if (Current == null)
                 Current = new RazorEngineFactory<TBaseTemplateType>(); 
             
-            return Current.GetRazorHost();
+            return Current.GetRazorHost(codeProvider);
         }
 
         /// <summary>
@@ -91,16 +92,17 @@ namespace Westwind.RazorHosting
         /// can call UnloadRazorHostInAppDomain to unload it.
         /// </summary>
         /// <returns></returns>
-        public static RazorEngine<TBaseTemplateType> CreateRazorHostInAppDomain()
+        public static RazorEngine<TBaseTemplateType> CreateRazorHostInAppDomain(CSharpCodeProvider codeProvider = null)
         {
             if (Current == null)            
                 Current = new RazorEngineFactory<TBaseTemplateType>();
 
-            return Current.GetRazorHostInAppDomain();
+            return Current.GetRazorHostInAppDomain(codeProvider);
         }
 
         /// <summary>
-        /// 
+        /// Unloads the Razor host if running in a separate appdomain by
+        /// unloading the AppDomain.
         /// </summary>
         public static void UnloadRazorHostInAppDomain()
         {
@@ -112,10 +114,11 @@ namespace Westwind.RazorHosting
         /// <summary>
         /// Create a new instance of Razor Host in the current AppDomain.
         /// </summary>
+        /// <param name="codeProvider"></param>
         /// <returns></returns>
-        public  RazorEngine<TBaseTemplateType> GetRazorHost()
+        public RazorEngine<TBaseTemplateType> GetRazorHost(CSharpCodeProvider codeProvider = null)
         {
-            return new RazorEngine<TBaseTemplateType>();
+            return new RazorEngine<TBaseTemplateType>(codeProvider);
         }
 
 
@@ -124,8 +127,9 @@ namespace Westwind.RazorHosting
         /// This method requires that you keep the Factory around in
         /// order to keep the AppDomain alive and be able to unload it.
         /// </summary>
+        /// <param name="codeProvider"></param>
         /// <returns></returns>
-        public RazorEngine<TBaseTemplateType> GetRazorHostInAppDomain()
+        public RazorEngine<TBaseTemplateType> GetRazorHostInAppDomain(CSharpCodeProvider codeProvider = null)
         {                        
             LocalAppDomain = CreateAppDomain(null);
             if (LocalAppDomain  == null)

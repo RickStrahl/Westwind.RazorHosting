@@ -1,5 +1,11 @@
 # Westwind.RazorHosting Change Log
 
+### Version 3.3
+*not released yet*
+
+* **Support for latest CSharp Features**  
+You can now provide the CSharpCodeProvider that is used to compile Razor templates. This requires adding the `Microsoft.CodeDom.Providers.DotNetCompilerPlatform` and adding a `<codeDom>` section to the host project. We don't provide this in-box due to the large size of the compiler, so you get the lightweight CSharp 5.0 implementation out of box, and you can add Roslyn based compilation (~17meg package!) explicitly to your own application.
+
 ### Version 3.2
 *January 7th, 2018*
 

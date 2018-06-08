@@ -37,7 +37,9 @@ using System.Text;
 using System.Linq;
 using System.Web.Razor.Generator;
 using Microsoft.CSharp;
+
 using System.CodeDom.Compiler;
+
 using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
@@ -59,6 +61,11 @@ namespace Westwind.RazorHosting
     {
         public RazorEngine() : base()
         { }
+
+        public RazorEngine(CSharpCodeProvider codeProvider) :base(codeProvider)
+        {
+
+        }
     }
     
     /// <summary>
@@ -102,6 +109,12 @@ namespace Westwind.RazorHosting
         /// </summary>
         public object HostContainer {get; set; }
 
+
+        /// <summary>
+        /// The code provider used with this instance
+        /// </summary>
+        internal CSharpCodeProvider CodeProvider { get; set; }
+
         /// <summary>
         /// A list of default namespaces to include
         /// 
@@ -142,7 +155,7 @@ namespace Westwind.RazorHosting
         /// Creates an instance of the host and performs basic configuration
         /// Optionally pass in any required namespaces and assemblies by name
         /// </summary>
-        public RazorEngine()
+        public RazorEngine(CSharpCodeProvider codeProvider = null)
         {
             Configuration = new RazorEngineConfiguration();
             AssemblyCache = new Dictionary<string, Assembly>();
@@ -164,6 +177,10 @@ namespace Westwind.RazorHosting
             
             ReferencedAssemblies.Add(typeof(RazorEngineHost).Assembly.Location);            
             ReferencedAssemblies.Add(typeof(RazorEngine).Assembly.Location);
+
+            CodeProvider = codeProvider;
+            if (CodeProvider == null)
+                CodeProvider = new CSharpCodeProvider();
         }
 
         /// <summary>
@@ -452,11 +469,13 @@ namespace Westwind.RazorHosting
 
             reader.Close();
 
+
             // Create code from the codeDom and compile
-            var codeProvider = new CSharpCodeProvider();
+            // var codeProvider = new Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider();
+            var codeProvider = CodeProvider;
+            
             var options = new CodeGeneratorOptions();
             
-
             // Capture Code Generated as a string for error info
             // and debugging
             LastGeneratedCode = null;

@@ -1,4 +1,6 @@
-﻿@inherits Westwind.RazorHosting.RazorTemplateFolderHost<RazorHostingTests.Person>
+﻿@using System
+@using RazorHostingTests
+@inherits Westwind.RazorHosting.RazorTemplateFolderHost<RazorHostingTests.Person>
 @{
     var items = new int[3] {1, 2, 3};
 }<!DOCTYPE html>
@@ -12,11 +14,14 @@
             @Model.Name @Model.Company @Model.Address.City @Model.Entered
         </div>
     
-        <div class="@Model.Name @Model.Company">
-            Pseudo Attributes value injection
-        </div>
+    <div class="@Model.Name @Model.Company">
+        Pseudo Attributes value injection
+    </div>
+    
+    <h3>CSharp Roslyn Features</h3>
+    <p><small></small></p>
 
-        @{
+    @{
             for (int i = 0; i < 10; i++)
             {
                 Response.WriteLine(i + ".");

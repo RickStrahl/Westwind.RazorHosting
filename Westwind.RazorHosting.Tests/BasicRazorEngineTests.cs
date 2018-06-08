@@ -135,13 +135,48 @@ The following comes from a helper.
             
         }
 
+
+        [TestMethod]
+        public void SimplestRazorEngineWithRoslynCompileTest()
+        {
+
+            //contrived, but demonstrates C# 7.x features
+            string template = @"
+@{
+    var name = Model?.Name; 
+}
+Hello World, @name. Time is: @($""{DateTime.Now}"").";
+
+
+            var host = new RazorEngine(new Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider());
+
+            string assemblyId = host.CompileTemplate(template);
+
+            string result = null;
+
+            // this will now reuse the same compile template           
+            for (int i = 0; i < 10; i++)
+            {
+                
+                result += host.RenderTemplateFromAssembly(assemblyId, new Person { Name = "Joe Doe" }) + "\r\n";
+            }
+
+            Assert.IsNotNull(result, host.ErrorMessage);
+            Assert.IsTrue(result.Contains("Joe Doe"),result);
+
+            Console.WriteLine(result);
+
+        }
+
         [TestMethod]
         public void SimplestRazorEngineTestWithAppDomain()
         {            
             string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
-            
+
+            var codeProvider = new Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider();
+
             // Load engine into new AppDomain
-            var host = RazorEngineFactory<RazorTemplateBase>.CreateRazorHostInAppDomain();
+            var host = RazorEngineFactory<RazorTemplateBase>.CreateRazorHostInAppDomain(codeProvider);
             
             // Note: You can't use anonymouse types for cross-AppDomain calls
             //       Models passed must inherit MarshalByRefObject or be [Serializable]

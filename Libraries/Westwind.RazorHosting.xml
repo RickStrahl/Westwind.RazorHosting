@@ -126,6 +126,11 @@
             is set and passed on to the template as HostContainer.
             </summary>
         </member>
+        <member name="P:Westwind.RazorHosting.RazorEngine`1.CodeProvider">
+            <summary>
+            The code provider used with this instance
+            </summary>
+        </member>
         <member name="P:Westwind.RazorHosting.RazorEngine`1.ReferencedNamespaces">
             <summary>
             A list of default namespaces to include
@@ -161,7 +166,7 @@
             each request       
             </summary>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorEngine`1.#ctor">
+        <member name="M:Westwind.RazorHosting.RazorEngine`1.#ctor(Microsoft.CSharp.CSharpCodeProvider)">
             <summary>
             Creates an instance of the host and performs basic configuration
             Optionally pass in any required namespaces and assemblies by name
@@ -424,14 +429,14 @@
             methods.
             </summary>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorEngineFactory`1.CreateRazorHost">
+        <member name="M:Westwind.RazorHosting.RazorEngineFactory`1.CreateRazorHost(Microsoft.CSharp.CSharpCodeProvider)">
             <summary>
             Create an instance of the RazorHost in the current
             AppDomain. No special handling...
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorEngineFactory`1.CreateRazorHostInAppDomain">
+        <member name="M:Westwind.RazorHosting.RazorEngineFactory`1.CreateRazorHostInAppDomain(Microsoft.CSharp.CSharpCodeProvider)">
             <summary>
             Creates an instance of the RazorHost in a new AppDomain. This 
             version creates a static singleton that that is cached and you
@@ -441,21 +446,24 @@
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngineFactory`1.UnloadRazorHostInAppDomain">
             <summary>
-            
+            Unloads the Razor host if running in a separate appdomain by
+            unloading the AppDomain.
             </summary>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorEngineFactory`1.GetRazorHost">
+        <member name="M:Westwind.RazorHosting.RazorEngineFactory`1.GetRazorHost(Microsoft.CSharp.CSharpCodeProvider)">
             <summary>
             Create a new instance of Razor Host in the current AppDomain.
             </summary>
+            <param name="codeProvider"></param>
             <returns></returns>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorEngineFactory`1.GetRazorHostInAppDomain">
+        <member name="M:Westwind.RazorHosting.RazorEngineFactory`1.GetRazorHostInAppDomain(Microsoft.CSharp.CSharpCodeProvider)">
             <summary>
             Instance method that creates a RazorHost in a new AppDomain.
             This method requires that you keep the Factory around in
             order to keep the AppDomain alive and be able to unload it.
             </summary>
+            <param name="codeProvider"></param>
             <returns></returns>
         </member>
         <member name="M:Westwind.RazorHosting.RazorEngineFactory`1.CreateAppDomain(System.String)">
@@ -549,6 +557,13 @@
             <summary>
             Determines whether errors throw exceptions or 
             return error status messages.
+            </summary>
+        </member>
+        <member name="P:Westwind.RazorHosting.RazorBaseHostContainer`1.CodeProvider">
+            <summary>
+            Optionally provide a CSharpCodeProvider code
+            Default uses System.CSharp.CSharpCodeProvider
+            
             </summary>
         </member>
         <member name="P:Westwind.RazorHosting.RazorBaseHostContainer`1.BaseBinaryFolder">

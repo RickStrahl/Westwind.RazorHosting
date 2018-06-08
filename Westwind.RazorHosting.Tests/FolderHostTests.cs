@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
+using Microsoft.CodeDom.Providers.DotNetCompilerPlatform;
 using Westwind.RazorHosting;
 
 namespace RazorHostingTests
@@ -14,13 +15,11 @@ namespace RazorHostingTests
     [TestClass]
     public class FolderHostTests
     {
-   
-
         [TestMethod]
         public void BasicFolderTest()
         {
-            var host = new RazorFolderHostContainer();
 
+            var host = new RazorFolderHostContainer();
             host.TemplatePath = Path.GetFullPath(@"..\..\FileTemplates\");
             host.BaseBinaryFolder = Environment.CurrentDirectory;
 
@@ -63,6 +62,60 @@ namespace RazorHostingTests
             Assert.IsTrue(result.Contains("West Wind"));
         }
 
+
+        /// <summary>
+        /// In order for this to work you need to add:
+        /// * Add Microsoft.CodeDom.Providers.DotNetCompilerPlatform to your project
+        /// * add CodeDom section from this projects app.config into an app.config for your app
+        /// </summary>
+        [TestMethod]
+        public void BasicFolderWithRoslynCompilerTest()
+        {
+
+            var host = new RazorFolderHostContainer();
+            host.CodeProvider = new Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider();
+
+            host.TemplatePath = Path.GetFullPath(@"..\..\FileTemplates\");
+            host.BaseBinaryFolder = Environment.CurrentDirectory;
+
+            // add model assembly - ie. this assembly
+            host.AddAssemblyFromType(typeof(Person));
+            host.UseAppDomain = false;
+
+            // these are implicitly set
+            //host.Configuration.CompileToMemory = true;
+            //host.Configuration.TempAssemblyPath = Environment.CurrentDirectory;
+
+            host.Start();
+
+            Person person = new Person()
+            {
+                Name = "Rick",
+                Company = "West Wind",
+                Entered = DateTime.Now,
+                Address = new Address()
+                {
+                    Street = "32 Kaiea",
+                    City = "Paia"
+                }
+            };
+
+            string result = host.RenderTemplate("~/HelloWorldCSharpLatest.cshtml", person);
+
+
+
+            Console.WriteLine(result);
+            Console.WriteLine("---");
+            Console.WriteLine(host.ErrorMessage);
+            Console.WriteLine(host.Engine.LastGeneratedCode);
+
+            host.Stop();
+
+            if (result == null)
+                Assert.Fail(host.ErrorMessage);
+
+            Assert.IsTrue(result.Contains("West Wind"));
+        }
 
         /// <summary>
         /// Demonstrates using @model syntax in the template

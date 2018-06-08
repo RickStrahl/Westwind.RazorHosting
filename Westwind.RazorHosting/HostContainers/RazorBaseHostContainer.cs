@@ -35,6 +35,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
+using Microsoft.CSharp;
 
 namespace Westwind.RazorHosting
 {
@@ -54,7 +55,7 @@ namespace Westwind.RazorHosting
     public abstract class RazorBaseHostContainer<TBaseTemplateType> : MarshalByRefObject, IDisposable
             where TBaseTemplateType : RazorTemplateBase, new()
     {
-
+    
         public RazorBaseHostContainer()
         {
             UseAppDomain = false;
@@ -79,6 +80,14 @@ namespace Westwind.RazorHosting
         /// return error status messages.
         /// </summary>
         public bool ThrowExceptions { get; set; }
+
+
+        /// <summary>
+        /// Optionally provide a CSharpCodeProvider code
+        /// Default uses System.CSharp.CSharpCodeProvider
+        /// 
+        /// </summary>
+        public CSharpCodeProvider CodeProvider { get; set; }
 
 
         /// <summary>
@@ -153,9 +162,9 @@ namespace Westwind.RazorHosting
             if (Engine == null)
             {
                 if (UseAppDomain)
-                    Engine = RazorEngineFactory<TBaseTemplateType>.CreateRazorHostInAppDomain();
+                    Engine = RazorEngineFactory<TBaseTemplateType>.CreateRazorHostInAppDomain(CodeProvider);
                 else
-                    Engine = RazorEngineFactory<TBaseTemplateType>.CreateRazorHost();
+                    Engine = RazorEngineFactory<TBaseTemplateType>.CreateRazorHost(CodeProvider);
 
                 if (Engine == null)
                 {
