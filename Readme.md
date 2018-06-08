@@ -446,6 +446,50 @@ AppTemplates.RenderTemplate("~/header.cshtml",topic);
 
 This method will start the host if it's not loaded and then go ahead and render the template.
 
+### Using Latest C# Language Features
+The library by default uses the .NET Runtime built in CSharp code provider which supports only C# 5.x. It's possible to use later versions of C# by explicitly adding the new .NET Compiler platform libraries to the host project and explicitly providing the CSharpProvider.  We don't provide this in the box because the Roslyn compiler package is very large (17megs) so we provide an opt-in mechanism that lets you decide if you need the newer language features and extra deployment requirements for your host application.
+
+To add C# 7.x support:
+
+* Add `Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider` Nuget Package to your Project
+* Add `<system.codedom>` section to host app's app.config
+* Provide CSharpCodeProvider to RazorEngine or HostContainer
+
+Here are the required `app.config` settings that ensures that the compiler binaries can be found:
+
+```xml
+<configuration>
+	<appSettings>
+		<add key="aspnet:RoslynCompilerLocation" value="roslyn"/>
+	</appSettings>
+	<system.codedom>
+		<compilers>
+			<compiler language="c#;cs;csharp" extension=".cs"
+				type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+				warningLevel="4" compilerOptions="/langversion:default /nowarn:1659;1699;1701"/>
+			<compiler language="vb;vbs;visualbasic;vbscript" extension=".vb"
+				type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.VBCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+				warningLevel="4" compilerOptions="/langversion:default /nowarn:41008 /define:_MYTYPE=\&quot;Web\&quot; /optionInfer+"/>
+		</compilers>
+	</system.codedom>
+</configuration>
+```
+
+To use the compiler with your Razor code use one of the following approaches to pass the `CSharpCodeProvider`:
+
+##### Basic RazorEngine
+```cs
+var cs = new Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider()
+var engine = new RazorEngine(cs);
+```
+
+##### Using a HostContainer
+```cs
+var host = new RazorFolderHostContainer();
+host.CodeProvider = new Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider();
+```
+
+
 ## License
 This library is published under MIT license terms:
 
