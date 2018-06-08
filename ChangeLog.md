@@ -9,7 +9,8 @@ You can now provide the CSharpCodeProvider that is used to compile Razor templat
 ### Version 3.2
 *January 7th, 2018*
 
-* **Host Container ThrowExceptions Option** You can now have the Razor Host Containers throw exceptions when an error occurs rather than returning error information on the error message property. A custom exception is thrown that provides more information about the current request and engine.
+* **Host Container ThrowExceptions Option**  
+You can now have the Razor Host Containers throw exceptions when an error occurs rather than returning error information on the error message property. A custom exception is thrown that provides more information about the current request and engine.
 
 * **StringHostContainer to match constructor format**   
 Add overload to generic type overload of the StringHostContainer in the same way you can overload FolderHostContainer. Makes it easier to create application level hosts derived from a specific template.

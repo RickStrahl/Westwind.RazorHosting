@@ -172,7 +172,7 @@ public class AppTemplates
 This consolidates all the logic needed to load, shut down and render templates using the RazorHost. Now you can use a single line to render any template out of the folder structure.
 
 ```cs
-AppTemplates.RenderTemplate("~/header.cshtml",topic);
+AppTemplates.RenderTemplate("~/header.cshtml",topic, out string error);
 ```
 
 This method will start the host if it's not loaded and then render the template.
