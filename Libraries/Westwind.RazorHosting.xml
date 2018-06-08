@@ -72,6 +72,11 @@
             non-encoded string.
             </summary>
         </member>
+        <member name="P:Westwind.RazorHosting.RawString.Empty">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:Westwind.RazorHosting.RazorEngine">
             <summary>
             Razor Hosting Engine that allows execution of Razor templates outside of
@@ -796,7 +801,16 @@
             each template.
             </summary>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorStringHostContainer.RenderTemplate(System.String,System.Object,System.IO.TextWriter,System.Boolean)">
+        <member name="T:Westwind.RazorHosting.RazorStringHostContainer`1">
+            <summary>
+            Razor Host container to execute Razor Templates from string input.
+            
+            Can run templates in a separate AppDomain and caches templates
+            to avoid re-compilation and allocation of new resources for 
+            each template.
+            </summary>
+        </member>
+        <member name="M:Westwind.RazorHosting.RazorStringHostContainer`1.RenderTemplate(System.String,System.Object,System.IO.TextWriter,System.Boolean)">
             <summary>
             Call this method to actually render a template to the specified outputfile
             </summary>"
@@ -809,7 +823,7 @@
             <param name="inferModelType">If true infers the model type if no @model or @inherits tag is provided</param>
             <returns>rendering results or null on failure. If a writer is a passed string.Empty is returned or null for failure</returns>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorStringHostContainer.RenderTemplateToFile(System.String,System.Object,System.String,System.Boolean)">
+        <member name="M:Westwind.RazorHosting.RazorStringHostContainer`1.RenderTemplateToFile(System.String,System.Object,System.String,System.Boolean)">
             <summary>
             Renders a template from a string input to a file output.
             Same text templates are compiled and cached for re-use.
@@ -820,7 +834,7 @@
             <param name="inferModelType">If true infers the model type if no @model or @inherits tag is provided</param>
             <returns></returns>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorStringHostContainer.GetAssemblyFromStringAndCache(System.String)">
+        <member name="M:Westwind.RazorHosting.RazorStringHostContainer`1.GetAssemblyFromStringAndCache(System.String)">
             <summary>
             Internally tries to retrieve a previously compiled template from cache
             if not found compiles a template into an assembly

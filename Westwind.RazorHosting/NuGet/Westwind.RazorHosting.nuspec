@@ -5,18 +5,18 @@
     <version>3.2.0.0</version>
     <authors>Rick Strahl, West Wind Technologies</authors>
     <title>West Wind RazorHosting Library (Westwind.RazorHosting)</title> 
-    <summary>Hosting the Razor Runtime outside of ASP.NET MVC/WebPages</summary>
+    <summary>Hosting the Razor Runtime for templating outside of ASP.NET for non-Web applications</summary>
     <description>This library allows you to host the Razor template engine found in ASP.NET MVC and ASP.NET WebPages in your own applications. Use it in desktop applications, or non-System.Web based applications that need template rendering independent of ASP.NET MVC. Support for base Razor rendering engine and a caching StringHost and FolderHost containers are provided, with the host providing AppDomain isolation, template/assembly caching and support.
     </description>
     <language>en-US</language>
     <licenseUrl>https://github.com/RickStrahl/Westwind.RazorHosting#license</licenseUrl>
     <projectUrl>https://github.com/RickStrahl/Westwind.RazorHosting</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/RickStrahl/Westwind.RazorHosting/master/razorhosting.png</iconUrl>
-    <copyright>Rick Strahl, West Wind Technologies 2007-2018</copyright>
-    <tags>Razor,Templating,Scripting,Hosting,CSharp</tags>
+    <copyright>Rick Strahl, West Wind Technologies 2007-2017</copyright>
+    <tags>razor,templating,scripting,desktop,csharp</tags>
     <releaseNotes></releaseNotes>
    	<dependencies>
-	  <dependency id="Microsoft.AspNet.Razor" version="[3.1,4.0)" />
+	  <dependency id="Microsoft.AspNet.Razor" version="[3.2.3,4.0)" />
 	</dependencies>
   </metadata> 
 </package>
