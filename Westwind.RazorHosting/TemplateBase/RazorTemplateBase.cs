@@ -304,11 +304,21 @@ namespace Westwind.RazorHosting
         }
 
 
+        /// <summary>
+        /// Encodes HTML to safe html
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public virtual string HtmlEncode(string input)
         {
             return WebUtility.HtmlEncode(input);
         }
 
+        /// <summary>
+        /// Encodes HTML to safe HTML
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public virtual string HtmlEncode(object input)
         {
             if (input == null)
@@ -316,11 +326,23 @@ namespace Westwind.RazorHosting
             return WebUtility.HtmlEncode(input.ToString());
         }
 
+
+        /// <summary>
+        /// Produces raw unencoded output in razor
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public virtual RawString Raw(string text)
         {
             return new RawString(text);
         }
 
+
+        /// <summary>
+        /// Produces raw unencoded output in Razor code
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public virtual RawString Raw(RawString text)
         {
             return text;

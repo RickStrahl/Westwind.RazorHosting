@@ -162,7 +162,7 @@ namespace Westwind.RazorHosting
             if (Engine == null)
             {
                 if (UseAppDomain)
-                    Engine = RazorEngineFactory<TBaseTemplateType>.CreateRazorHostInAppDomain(CodeProvider);
+                    Engine = RazorEngineFactory<TBaseTemplateType>.CreateRazorHostInAppDomain();
                 else
                     Engine = RazorEngineFactory<TBaseTemplateType>.CreateRazorHost(CodeProvider);
 

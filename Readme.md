@@ -489,11 +489,13 @@ var host = new RazorFolderHostContainer();
 host.CodeProvider = new Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider();
 ```
 
+> #### Does not work with Out of Process Hosting
+> This approach of providing the CSharp code provider does not work with AppDomain loading of the Razor engine in host containers. For AppDomain loaded instances only the stock C# 5 provider is used.
 
 ## License
 This library is published under MIT license terms:
 
-Copyright &copy; 2012-2017 Rick Strahl, West Wind Technologies
+Copyright &copy; 2012-2018 Rick Strahl, West Wind Technologies
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

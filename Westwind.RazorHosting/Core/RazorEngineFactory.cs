@@ -93,12 +93,12 @@ namespace Westwind.RazorHosting
         /// can call UnloadRazorHostInAppDomain to unload it.
         /// </summary>
         /// <returns></returns>
-        public static RazorEngine<TBaseTemplateType> CreateRazorHostInAppDomain(CSharpCodeProvider codeProvider = null)
+        public static RazorEngine<TBaseTemplateType> CreateRazorHostInAppDomain()
         {
             if (Current == null)            
                 Current = new RazorEngineFactory<TBaseTemplateType>();
 
-            return Current.GetRazorHostInAppDomain(codeProvider);
+            return Current.GetRazorHostInAppDomain();
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace Westwind.RazorHosting
         /// </summary>
         /// <param name="codeProvider"></param>
         /// <returns></returns>
-        public RazorEngine<TBaseTemplateType> GetRazorHostInAppDomain(CSharpCodeProvider codeProvider = null)
+        public RazorEngine<TBaseTemplateType> GetRazorHostInAppDomain()
         {                        
             LocalAppDomain = CreateAppDomain(null);
             if (LocalAppDomain  == null)
@@ -147,9 +147,8 @@ namespace Westwind.RazorHosting
 
                 var templateType = typeof(RazorEngine<TBaseTemplateType>);
                 
-                object instance = LocalAppDomain.CreateInstanceFrom(AssemblyPath,
-                                                                    templateType.FullName,false,BindingFlags.Default,null,
-                                                                    new object [] {codeProvider}, CultureInfo.CurrentCulture, null)
+                object instance = LocalAppDomain.CreateInstanceFrom(AssemblyPath,templateType.FullName,false,BindingFlags.Default,null,
+                                                                    new object [] {null}, CultureInfo.CurrentCulture, null)
                                                 .Unwrap();
 
                 host = instance as RazorEngine<TBaseTemplateType>;

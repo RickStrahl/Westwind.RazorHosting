@@ -436,7 +436,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorEngineFactory`1.CreateRazorHostInAppDomain(Microsoft.CSharp.CSharpCodeProvider)">
+        <member name="M:Westwind.RazorHosting.RazorEngineFactory`1.CreateRazorHostInAppDomain">
             <summary>
             Creates an instance of the RazorHost in a new AppDomain. This 
             version creates a static singleton that that is cached and you
@@ -457,7 +457,7 @@
             <param name="codeProvider"></param>
             <returns></returns>
         </member>
-        <member name="M:Westwind.RazorHosting.RazorEngineFactory`1.GetRazorHostInAppDomain(Microsoft.CSharp.CSharpCodeProvider)">
+        <member name="M:Westwind.RazorHosting.RazorEngineFactory`1.GetRazorHostInAppDomain">
             <summary>
             Instance method that creates a RazorHost in a new AppDomain.
             This method requires that you keep the Factory around in
@@ -1151,6 +1151,34 @@
             <param name="prefix"></param>
             <param name="suffix"></param>
             <param name="values"></param>
+        </member>
+        <member name="M:Westwind.RazorHosting.RazorTemplateBase.HtmlEncode(System.String)">
+            <summary>
+            Encodes HTML to safe html
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.RazorHosting.RazorTemplateBase.HtmlEncode(System.Object)">
+            <summary>
+            Encodes HTML to safe HTML
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.RazorHosting.RazorTemplateBase.Raw(System.String)">
+            <summary>
+            Produces raw unencoded output in razor
+            </summary>
+            <param name="text"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.RazorHosting.RazorTemplateBase.Raw(Westwind.RazorHosting.RawString)">
+            <summary>
+            Produces raw unencoded output in Razor code
+            </summary>
+            <param name="text"></param>
+            <returns></returns>
         </member>
         <member name="M:Westwind.RazorHosting.RazorTemplateBase.RenderTemplate(System.String,System.Object)">
             <summary>
