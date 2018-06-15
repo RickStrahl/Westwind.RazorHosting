@@ -66,6 +66,11 @@
             </summary>
             <returns>An HTML-encoded string.</returns>
         </member>
+        <member name="T:Westwind.RazorHosting.Core.LineEndingType">
+            <summary>
+            Enumerations for Line Ending Types
+            </summary>
+        </member>
         <member name="T:Westwind.RazorHosting.RawString">
             <summary>
             Class that wraps a string and returns it as a raw
@@ -397,6 +402,11 @@
         <member name="P:Westwind.RazorHosting.RazorEngineConfiguration.StreamBufferSize">
             <summary>
             Buffer size for streamed template output when using filenames
+            </summary>
+        </member>
+        <member name="P:Westwind.RazorHosting.RazorEngineConfiguration.LineEndingType">
+            <summary>
+            Get/Set line ending type
             </summary>
         </member>
         <member name="T:Westwind.RazorHosting.RazorEngineFactory`1">

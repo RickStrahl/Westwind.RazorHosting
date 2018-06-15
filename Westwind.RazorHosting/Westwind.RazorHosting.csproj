@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Core\AnonymousDynamicType.cs" />
     <Compile Include="Core\HelperResult.cs" />
+    <Compile Include="Core\LineEndingType.cs" />
     <Compile Include="Core\RawString.cs" />
     <Compile Include="Core\RazorEngine.cs" />
     <Compile Include="Core\RazorEngineConfiguration.cs" />

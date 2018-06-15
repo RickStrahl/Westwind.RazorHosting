@@ -687,7 +687,7 @@ namespace Westwind.RazorHosting
             if (template.Contains("@model "))
             {
                 int at = template.IndexOf("@model ");
-                int at2 = template.IndexOf("\n", at);
+                int at2 = template.IndexOf(Configuration.LineEnding, at);
                 var line = template.Substring(at, at2 - at);
                 var modelClass = line.Replace("@model ", "").Trim();
                 var templateType = typeof(TBaseTemplateType);

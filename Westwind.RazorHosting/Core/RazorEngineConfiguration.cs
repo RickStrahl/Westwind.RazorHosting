@@ -34,6 +34,7 @@
 using System;
 using System.Text;
 using System.IO;
+using Westwind.RazorHosting.Core;
 
 namespace Westwind.RazorHosting
 {
@@ -44,6 +45,9 @@ namespace Westwind.RazorHosting
     /// </summary>        
     public class RazorEngineConfiguration : MarshalByRefObject
     {
+        private const string UnixLineEnding = "\n";
+        private const string WindowsLineEnding = "\r\n";
+
         /// <summary>
         /// Determines if assemblies are compiled to disk or to memory.
         /// If compiling to disk generated assemblies are not cleaned up
@@ -55,28 +59,30 @@ namespace Westwind.RazorHosting
         /// </summary>
         public string TempAssemblyPath
         {
-            get 
-            { 
+            get
+            {
                 if (!string.IsNullOrEmpty(_TempAssemblyPath))
-                    return _TempAssemblyPath; 
-                   
-                return Path.GetTempPath();            
+                    return _TempAssemblyPath;
+
+                return Path.GetTempPath();
             }
             set { _TempAssemblyPath = value; }
         }
+
         private string _TempAssemblyPath = null;
 
-         /// <summary>
-         /// Encoding to be used when generating output to file
-         /// </summary>
+        /// <summary>
+        /// Encoding to be used when generating output to file
+        /// </summary>
         public Encoding OutputEncoding
         {
-          get { return _OutputEncoding; }
-          set { _OutputEncoding = value; }
+            get { return _OutputEncoding; }
+            set { _OutputEncoding = value; }
         }
+
         private Encoding _OutputEncoding = Encoding.UTF8;
 
-        
+
         /// <summary>
         /// Buffer size for streamed template output when using filenames
         /// </summary>
@@ -85,7 +91,14 @@ namespace Westwind.RazorHosting
             get { return _StreamBufferSize; }
             set { _StreamBufferSize = value; }
         }
+
         private int _StreamBufferSize = 2048;
 
+        internal string LineEnding => LineEndingType == LineEndingType.WindowsStyle ? WindowsLineEnding : UnixLineEnding;
+
+        /// <summary>
+        /// Get/Set line ending type
+        /// </summary>
+        public LineEndingType LineEndingType { get; set; } = LineEndingType.WindowsStyle;
     }
 }
