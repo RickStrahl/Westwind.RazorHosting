@@ -91,6 +91,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="FileTemplates\HelloWorldCSharpLatest.cshtml" />
+    <None Include="FileTemplates\LayoutPageWithPartialExample.cshtml" />
     <None Include="FileTemplates\_Layout.cshtml" />
     <None Include="FileTemplates\LayoutPageExample.cshtml" />
     <None Include="FileTemplates\RuntimeError.cshtml" />

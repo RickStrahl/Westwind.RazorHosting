@@ -280,8 +280,21 @@ namespace RazorHostingTests
                 Console.WriteLine("---");
                 Console.WriteLine(result);
                 Console.WriteLine("---");
-                
+
+
+                Console.WriteLine("----- Content page In Layout Container with Partial view");
+
+                string resultWithPartial = host.RenderTemplate("~/LayoutPageWithPartialExample.cshtml", person);
+
+                Console.WriteLine("---");
+                Console.WriteLine(resultWithPartial);
+                Console.WriteLine("---");
+
                 Assert.IsNotNull(result, host.ErrorMessage);
+                Assert.IsNotNull(resultWithPartial, host.ErrorMessage);
+                Assert.IsTrue(resultWithPartial.Contains("Layout Page Header"));
+                Assert.IsTrue(resultWithPartial.Contains("Hello World Content Page"));
+                Assert.IsTrue(resultWithPartial.Contains("Refresh"));
             }
         }
 
