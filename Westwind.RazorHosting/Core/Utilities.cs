@@ -34,13 +34,14 @@
 using System;
 using System.Text;
 using System.Globalization;
+using System.Linq;
 
 namespace Westwind.RazorHosting
 {
     /// <summary>
     /// Helper class that provides a few simple utilitity functions to the project
     /// </summary>
-    public class Utilities
+    public static class Utilities
     {
         /// <summary>
         /// Returns a relative path based on a base path.
@@ -133,6 +134,26 @@ namespace Westwind.RazorHosting
                 return string.Empty;
 
             return HtmlEncode(value.ToString());
+        }
+
+        /// <summary>
+        /// Parses a string into an array of lines broken
+        /// by \r\n or \n
+        /// </summary>
+        /// <param name="s">String to check for lines</param>
+        /// <param name="maxLines">Optional - max number of lines to return</param>
+        /// <returns>array of strings, or null if the string passed was a null</returns>
+        public static string[] GetLines(this string s, int maxLines = 0)
+        {
+            if (s == null)
+                return null;
+
+            s = s.Replace("\r\n", "\n");
+
+            if (maxLines < 1)
+                return s.Split(new char[] { '\n' });
+
+            return s.Split(new char[] { '\n' }).Take(maxLines).ToArray();
         }
     }
 }

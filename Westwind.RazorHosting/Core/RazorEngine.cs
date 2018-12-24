@@ -500,12 +500,12 @@ namespace Westwind.RazorHosting
             {
                 var compileErrors = new StringBuilder();
                 foreach (CompilerError compileError in compilerResults.Errors)
-                    compileErrors.Append(String.Format("Line: {0}, Column: {1}, Error: {2}", 
+                    compileErrors.AppendLine(String.Format("Line: {0}, Column: {1}, Error: {2}", 
                                         compileError.Line, 
                                         compileError.Column, 
                                         compileError.ErrorText));
 
-                SetError(compileErrors.ToString() + "\r\n" + LastGeneratedCode);
+                SetError(compileErrors.ToString());
                 return null;
             }
 

@@ -35,6 +35,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
+using System.Text;
 using Microsoft.CSharp;
 
 namespace Westwind.RazorHosting
@@ -75,12 +76,6 @@ namespace Westwind.RazorHosting
         /// </summary>
         public bool UseAppDomain { get; set; }
 
-        /// <summary>
-        /// Determines whether errors throw exceptions or 
-        /// return error status messages.
-        /// </summary>
-        public bool ThrowExceptions { get; set; }
-
 
         /// <summary>
         /// Optionally provide a CSharpCodeProvider code
@@ -120,10 +115,30 @@ namespace Westwind.RazorHosting
         /// </summary>
         public string GeneratedNamespace { get; set; }
 
+        
         /// <summary>
         /// Any error messages
         /// </summary>
-        public string ErrorMessage { get; set; }
+        public string ErrorMessage
+        {
+            get { return Exception.Message; }            
+        }
+
+
+        /// <summary>
+        /// An error object that contains additional information about the current request
+        /// </summary>
+        public RazorHostContainerException Exception { get; set; } = new RazorHostContainerException();
+
+        /// <summary>
+        /// Determines whether errors throw exceptions or 
+        /// return error status messages.
+        ///
+        /// By default exceptions are not fired and the error is instead
+        /// captured and returned in the ErrorMessage and Exception properties.
+        /// </summary>
+        public bool ThrowExceptions { get; set; }
+
 
         /// <summary>
         /// Cached instance of the Host. Required to keep the
@@ -250,11 +265,47 @@ namespace Westwind.RazorHosting
 
             if (result == null)
             {
-                SetError(Engine.ErrorMessage);
+                SetError(Engine.ErrorMessage);                
                 return false;
             }
 
             return true;
+        }
+
+
+        /// <summary>
+        /// Renders an unformatted self contained error page that can be displayed in the
+        /// the browser.
+        /// </summary>
+        /// <param name="noTemplateSourceCode"></param>
+        /// <returns></returns>
+        public virtual string RenderHtmlErrorPage(bool noTemplateSourceCode = false)
+        {
+            if (string.IsNullOrEmpty(ErrorMessage))
+                return null;
+
+            var code = new StringBuilder();
+            if (Engine?.LastGeneratedCode != null)
+            {
+                var lines = Utilities.GetLines(Engine.LastGeneratedCode);
+                for (var index = 1; index <= lines.Length; index++)
+                {
+                    code.AppendLine(index.ToString().PadLeft(4, ' ') + ".  " + lines[index - 1]);
+                }
+            }
+            
+            StringBuilder result = new StringBuilder(200);
+            result.AppendLine($@"<html><body>
+<h3>Template Rendering Error</h3>
+<hr/>
+<pre>{Utilities.HtmlEncode(ErrorMessage)}</pre>");
+
+            if (!noTemplateSourceCode)
+                result.AppendLine($"<pre>{Utilities.HtmlEncode(code.ToString())}</pre>");
+
+            result.AppendLine("</body></html>");
+            
+            return result.ToString();
         }
 
         /// <summary>
@@ -309,14 +360,15 @@ namespace Westwind.RazorHosting
         protected virtual void SetError(string message)
         {
             if (message == null)
-                ErrorMessage = string.Empty;
+                Exception = new RazorHostContainerException();
 
-            ErrorMessage = message;
+            Exception = new RazorHostContainerException(message,
+                Engine?.LastGeneratedCode,
+                Engine?.LastException,
+                Engine?.TemplatePerRequestConfigurationData);
+
             if (ThrowExceptions)
-                throw new RazorHostContainerException(ErrorMessage, 
-                    Engine?.LastGeneratedCode, 
-                    Engine?.LastException,
-                    Engine?.TemplatePerRequestConfigurationData);
+                throw Exception;
         }
 
         /// <summary>
@@ -342,4 +394,5 @@ namespace Westwind.RazorHosting
             Stop();
         }
     }
+
 }

@@ -130,20 +130,34 @@ namespace Westwind.RazorHosting
                 // an error 
                 result = Engine.RenderTemplateFromAssembly(item.AssemblyId, model, writer);
 
-                if (result == null)
-                    SetError(Engine.ErrorMessage);
-
                 var config = Engine.TemplatePerRequestConfigurationData as RazorFolderHostTemplateConfiguration;
+                
+                if (result == null)
+                {
+                    Exception = new RazorHostContainerException($"Failed to render Page {relativePath}: " +
+                                                                Engine.ErrorMessage,
+                        Engine.LastGeneratedCode,
+                        Engine.LastException,
+                        config.TemplatePath,
+                        config);
+                    return null;
+                }
+
 
                 if (config != null && !config.IsLayoutPage  && !string.IsNullOrEmpty(config.LayoutPage))
                 {
-                    string layoutTemplate = config.LayoutPage;
-                    config.LayoutPage = null;
+                    string layoutTemplate = config.LayoutPage;                    
+                    config.IsLayoutPage = false;
                     
                     string layout = RenderTemplate(layoutTemplate, model, writer,isLayoutPage: true);
                     if (layout == null)
                     {
-                        SetError("Failed to render Layout Page: " + Engine.ErrorMessage);
+                        Exception = new RazorHostContainerException($"Failed to render Layout Page {layoutTemplate}: " +
+                                                        Engine.ErrorMessage, 
+                            Engine.LastGeneratedCode,
+                            Engine.LastException, 
+                            Path.Combine(TemplatePath,layoutTemplate),
+                            config);                        
                         result = null;
                     }
                     else
@@ -167,8 +181,29 @@ namespace Westwind.RazorHosting
             return result;
         }
 
-       
-        
+
+        /// <summary>
+        /// Renders an HTML 
+        /// </summary>
+        /// <param name="noTemplateSourceCode"></param>
+        /// <returns></returns>
+        public override string RenderHtmlErrorPage(bool noTemplateSourceCode = false)
+        {
+            string result = base.RenderHtmlErrorPage(noTemplateSourceCode);
+
+            var requestConfig = Exception.RequestConfigurationData as RazorFolderHostTemplateConfiguration;
+
+            if (!string.IsNullOrEmpty(Exception.ActiveTemplate))
+                result = result.Replace("</body></html>",
+                "<hr />" +
+                "<small>Source template: <b><a target='_newwindow' href='file:///" + Exception.ActiveTemplate + "'>" + Exception.ActiveTemplate +"</b>" +
+                "</small></body></html>");
+                
+            return result;
+        }
+
+
+
         /// <summary>
         /// Internally checks if a cached assembly exists and if it does uses it
         /// else creates and compiles one. Returns an assembly Id to be 
