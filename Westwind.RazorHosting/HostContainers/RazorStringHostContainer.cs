@@ -80,6 +80,8 @@ namespace Westwind.RazorHosting
             TextWriter writer = null,
             bool inferModelType = false)
         {
+            LastException = null;
+
             if (inferModelType && model != null &&
                 !templateText.Trim().StartsWith("@model ") &&
                 !templateText.Trim().StartsWith("@inherits "))
@@ -95,8 +97,12 @@ namespace Westwind.RazorHosting
             string result = Engine.RenderTemplateFromAssembly(assItem.AssemblyId, model, writer);
 
             if (result == null)
-            {
-                SetError(Engine.ErrorMessage);
+            {                
+                SetErrorException(new RazorHostContainerException(Engine.ErrorMessage,
+                    Engine.LastGeneratedCode,
+                    Engine.LastException,
+                    null,
+                    null));
                 return null;
             }
 
@@ -116,6 +122,7 @@ namespace Westwind.RazorHosting
         public bool RenderTemplateToFile(string templateText, object model, string outputFile,
             bool inferModelType = false)
         {
+            LastException = null;
 
             if (inferModelType && model != null &&
                 !templateText.Trim().StartsWith("@model ") &&
@@ -135,7 +142,12 @@ namespace Westwind.RazorHosting
             }
             catch (Exception ex)
             {
-                SetError("Unable to write template output to " + outputFile + ": " + ex.Message);
+                SetError();
+                SetErrorException(new RazorHostContainerException("Unable to write template output to " + outputFile + ": " + ex.Message,
+                    Engine.LastGeneratedCode,
+                    Engine.LastException,
+                    null,
+                    null));
                 return false;
             }
 
@@ -151,6 +163,8 @@ namespace Westwind.RazorHosting
         /// <returns>assembly id as a string or null on error</returns>
         protected virtual CompiledAssemblyItem GetAssemblyFromStringAndCache(string templateText)
         {
+            LastException = null;
+
             int hash = templateText.GetHashCode();
 
             CompiledAssemblyItem item = null;
@@ -172,7 +186,11 @@ namespace Westwind.RazorHosting
 
                 if (assemblyId == null)
                 {
-                    SetError(Engine.ErrorMessage);
+                    SetErrorException(new RazorHostContainerException(Engine.ErrorMessage,
+                        Engine.LastGeneratedCode,
+                        Engine.LastException,
+                        null,
+                        null));
                     return null;
                 }
 

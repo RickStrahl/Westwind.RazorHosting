@@ -121,21 +121,21 @@ namespace Westwind.RazorHosting
         /// </summary>
         public string ErrorMessage
         {
-            get { return Exception.Message; }            
+            get { return LastException?.Message; }            
         }
 
 
         /// <summary>
         /// An error object that contains additional information about the current request
         /// </summary>
-        public RazorHostContainerException Exception { get; set; } = new RazorHostContainerException();
+        public RazorHostContainerException LastException { get; set; } 
 
         /// <summary>
         /// Determines whether errors throw exceptions or 
         /// return error status messages.
         ///
         /// By default exceptions are not fired and the error is instead
-        /// captured and returned in the ErrorMessage and Exception properties.
+        /// captured and returned in the ErrorMessage and LastException properties.
         /// </summary>
         public bool ThrowExceptions { get; set; }
 
@@ -236,10 +236,17 @@ namespace Westwind.RazorHosting
         /// <returns></returns>
         public virtual bool RenderTemplate(TextReader reader, object model, TextWriter writer)
         {
+            LastException = null;
+
             string assemblyId = Engine.CompileTemplate(reader);
             if (assemblyId == null)
-            {
-               SetError(Engine.ErrorMessage);
+            {               
+               SetErrorException(new RazorHostContainerException(Engine.ErrorMessage,
+                   Engine.LastGeneratedCode,
+                   Engine.LastException,                   
+                   null,
+                   null));
+
                 return false;
             }
 
@@ -258,6 +265,8 @@ namespace Westwind.RazorHosting
         /// <returns></returns>
         protected virtual bool RenderTemplateFromAssembly(string assemblyId, object model, TextWriter writer)
         {
+            LastException = null;
+
             // String result will be empty as output will be rendered into the
             // Response object's stream output. However a null result denotes
             // an error 
@@ -265,7 +274,11 @@ namespace Westwind.RazorHosting
 
             if (result == null)
             {
-                SetError(Engine.ErrorMessage);                
+                SetErrorException(new RazorHostContainerException(Engine.ErrorMessage,
+                    Engine.LastGeneratedCode,
+                    Engine.LastException,
+                    null,
+                    null));
                 return false;
             }
 
@@ -359,16 +372,32 @@ namespace Westwind.RazorHosting
         /// <param name="message"></param>
         protected virtual void SetError(string message)
         {
-            if (message == null)
-                Exception = new RazorHostContainerException();
+            if (string.IsNullOrEmpty(message))
+            {
+                LastException = null;
+                return;
+            }
 
-            Exception = new RazorHostContainerException(message,
+            LastException = new RazorHostContainerException(message,
                 Engine?.LastGeneratedCode,
                 Engine?.LastException,
                 Engine?.TemplatePerRequestConfigurationData);
 
             if (ThrowExceptions)
-                throw Exception;
+                throw LastException;
+        }
+
+
+        /// <summary>
+        /// Sets the LastException of the host from an existing
+        /// RazorHostContainer exception
+        /// </summary>
+        /// <param name="ex"></param>
+        protected virtual void SetErrorException(RazorHostContainerException ex)
+        {
+            LastException = ex;
+            if (ThrowExceptions && LastException != null)
+                throw LastException;
         }
 
         /// <summary>
@@ -376,7 +405,7 @@ namespace Westwind.RazorHosting
         /// </summary>
         protected virtual void SetError()
         {
-            SetError(null);
+            SetErrorException(null);
         }
 
         public override string ToString()

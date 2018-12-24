@@ -370,8 +370,13 @@ namespace RazorHostingTests
             string result = host.RenderTemplate("~/NotThere.cshtml", person);
 
             Assert.IsTrue(host.ErrorMessage.Contains("Template File doesn't exist"));
+            Assert.IsNotNull(host.LastException);
+
 
             Console.WriteLine(host.ErrorMessage);
+
+            Console.WriteLine("template: " + host.LastException.ActiveTemplate);            
+
 
             host.Stop();
             
@@ -409,11 +414,19 @@ namespace RazorHostingTests
 
             string result = host.RenderTemplate("~/RuntimeError.cshtml", person);
 
-            Console.WriteLine(result);
-            Console.WriteLine("---");
-            Console.WriteLine(host.ErrorMessage);
+            Assert.IsNull(result, "result should be null on error");
+            Console.WriteLine(host.ErrorMessage);  // simple message
+
+            Assert.IsNotNull(host.LastException, "Last exception should be set");
+
             Console.WriteLine("---"); 
-            Console.WriteLine(host.Engine.LastGeneratedCode);
+            Console.WriteLine(host.LastException.Message);
+            Console.WriteLine(host.LastException.ActiveTemplate);
+            //Console.WriteLine(host.LastException.GeneratedSourceCode);
+            Console.WriteLine("---");
+
+            // Render HTML output of the error with source code and line numbers for errros
+            Console.WriteLine(host.RenderHtmlErrorPage());
 
             host.Stop();
 

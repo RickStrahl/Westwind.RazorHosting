@@ -3,7 +3,7 @@
 namespace Westwind.RazorHosting
 {
     /// <summary>
-    /// Exception thrown when rendering or compiling of a folder host
+    /// LastException thrown when rendering or compiling of a folder host
     /// render or initialization occurs
     /// </summary>
     public class RazorHostContainerException : Exception

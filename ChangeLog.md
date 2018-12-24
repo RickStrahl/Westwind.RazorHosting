@@ -1,10 +1,13 @@
 # Westwind.RazorHosting Change Log
 
-### Version 3.3
-*not released yet*
+### Version 3.4
+*December 24th, 2018*
 
 * **Support for latest CSharp Features**  
 You can now provide the CSharpCodeProvider that is used to compile Razor templates. This requires adding the `Microsoft.CodeDom.Providers.DotNetCompilerPlatform` and adding a `<codeDom>` section to the host project. We don't provide this in-box due to the large size of the compiler, so you get the lightweight CSharp 5.0 implementation out of box, and you can add Roslyn based compilation (~17meg package!) explicitly to your own application.
+
+* **Better Error Handling for Host Containers**  
+Host containers now render an error page on failures and set a `LastException` property on errors. Error page shows the error plus the error information with line numbers as well as the source code with line numbers to look up errors in templates more easily.
 
 ### Version 3.2
 *January 7th, 2018*

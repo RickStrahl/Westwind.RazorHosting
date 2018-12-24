@@ -127,7 +127,7 @@ namespace RazorHostingTests
                Entered = DateTime.Now,
                Address = new Address()
                {
-                   Street = "32 Kaiea",
+                   Street = "50 HoHaia",
                    City = "Paia"
                }
            };

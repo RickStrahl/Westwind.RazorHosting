@@ -342,6 +342,35 @@ The View Page then:
 
 Note that you should use the same model your are passing to the content page as a parameter in the layout page - if you plan on accessing model content.
 
+
+### Error Handling in Host Containers
+Host containers tend to render to string values and will return **null** on error. You can also check the `LastException` property for non `null` to check for the presence of an error.
+
+The following demonstrates typical host error logic:
+
+```cs
+string result = host.RenderTemplate("~/RuntimeError.cshtml", person);
+
+Assert.IsNull(result, "result should be null on error");
+Console.WriteLine(host.ErrorMessage);  // simple message
+
+Assert.IsNotNull(host.LastException, "Last exception should be set");
+
+Console.WriteLine("---"); 
+Console.WriteLine(host.LastException.Message);
+Console.WriteLine(host.LastException.ActiveTemplate); // only in RazorFolderHost
+//Console.WriteLine(host.LastException.GeneratedSourceCode);
+Console.WriteLine("---");
+
+// Render HTML output of the error
+// For RazorFolderHost also renders the template source code and line numbers
+Console.WriteLine(host.RenderHtmlErrorPage());
+```            
+            
+
+
+
+
 ### Html Helpers
 You can also use HTML Helpers in your Razor views:
 
@@ -353,6 +382,8 @@ You can also use HTML Helpers in your Razor views:
 
 Helper output: @WriteBlockText("Help me!");
 ```
+
+
 
 ### Running in a separate AppDomain with UseAppDomain
 Note that you can choose to host the container in a separate AppDomain by using:
@@ -493,12 +524,15 @@ host.CodeProvider = new Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CShar
 > This approach of providing the CSharp code provider does not work with AppDomain loading of the Razor engine in host containers. For AppDomain loaded instances only the stock C# 5 provider is used.
 
 ## License
-This library is published under MIT license terms:
+This library is published under **MIT license** terms:
 
-Copyright &copy; 2012-2018 Rick Strahl, West Wind Technologies
+**Copyright &copy; 2012-2019 Rick Strahl, West Wind Technologies**
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+## Give back
+

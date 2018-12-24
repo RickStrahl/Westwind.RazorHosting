@@ -530,6 +530,15 @@
             <param name="value"></param>
             <returns></returns>
         </member>
+        <member name="M:Westwind.RazorHosting.Utilities.GetLines(System.String,System.Int32)">
+            <summary>
+            Parses a string into an array of lines broken
+            by \r\n or \n
+            </summary>
+            <param name="s">String to check for lines</param>
+            <param name="maxLines">Optional - max number of lines to return</param>
+            <returns>array of strings, or null if the string passed was a null</returns>
+        </member>
         <member name="T:Westwind.RazorHosting.RazorBaseHostContainer`1">
             <summary>
             Based Host implementation for hosting the RazorEngine. This base
@@ -551,12 +560,6 @@
             in a separate AppDomain. Seperate AppDomain 
             hosting allows unloading and releasing of 
             resources.
-            </summary>
-        </member>
-        <member name="P:Westwind.RazorHosting.RazorBaseHostContainer`1.ThrowExceptions">
-            <summary>
-            Determines whether errors throw exceptions or 
-            return error status messages.
             </summary>
         </member>
         <member name="P:Westwind.RazorHosting.RazorBaseHostContainer`1.CodeProvider">
@@ -600,6 +603,20 @@
             <summary>
             Any error messages
             </summary>
+        </member>
+        <member name="P:Westwind.RazorHosting.RazorBaseHostContainer`1.LastException">
+            <summary>
+            An error object that contains additional information about the current request
+            </summary>
+        </member>
+        <member name="P:Westwind.RazorHosting.RazorBaseHostContainer`1.ThrowExceptions">
+             <summary>
+             Determines whether errors throw exceptions or 
+             return error status messages.
+            
+             By default exceptions are not fired and the error is instead
+             captured and returned in the ErrorMessage and LastException properties.
+             </summary>
         </member>
         <member name="F:Westwind.RazorHosting.RazorBaseHostContainer`1.Engine">
             <summary>
@@ -663,6 +680,14 @@
             <param name="className">Class name for compiled template to execute</param>
             <returns></returns>
         </member>
+        <member name="M:Westwind.RazorHosting.RazorBaseHostContainer`1.RenderHtmlErrorPage(System.Boolean)">
+            <summary>
+            Renders an unformatted self contained error page that can be displayed in the
+            the browser.
+            </summary>
+            <param name="noTemplateSourceCode"></param>
+            <returns></returns>
+        </member>
         <member name="M:Westwind.RazorHosting.RazorBaseHostContainer`1.GetSafeClassName(System.Object)">
             <summary>
             Returns a unique ClassName for a template to execute
@@ -699,6 +724,13 @@
             Sets an error message consistently
             </summary>
             <param name="message"></param>
+        </member>
+        <member name="M:Westwind.RazorHosting.RazorBaseHostContainer`1.SetErrorException(Westwind.RazorHosting.RazorHostContainerException)">
+            <summary>
+            Sets the LastException of the host from an existing
+            RazorHostContainer exception
+            </summary>
+            <param name="ex"></param>
         </member>
         <member name="M:Westwind.RazorHosting.RazorBaseHostContainer`1.SetError">
             <summary>
@@ -758,6 +790,13 @@
             <param name="isLayoutPage"></param>
             <returns></returns>
         </member>
+        <member name="M:Westwind.RazorHosting.RazorFolderHostContainer`1.RenderHtmlErrorPage(System.Boolean)">
+            <summary>
+            Renders an HTML 
+            </summary>
+            <param name="noTemplateSourceCode"></param>
+            <returns></returns>
+        </member>
         <member name="M:Westwind.RazorHosting.RazorFolderHostContainer`1.GetAssemblyFromFileAndCache(System.String)">
             <summary>
             Internally checks if a cached assembly exists and if it does uses it
@@ -793,7 +832,7 @@
         </member>
         <member name="T:Westwind.RazorHosting.RazorHostContainerException">
             <summary>
-            Exception thrown when rendering or compiling of a folder host
+            LastException thrown when rendering or compiling of a folder host
             render or initialization occurs
             </summary>
         </member>
@@ -802,9 +841,20 @@
             Source code for the template if available
             </summary>
         </member>
+        <member name="P:Westwind.RazorHosting.RazorHostContainerException.ActiveTemplate">
+            <summary>
+            The active template that is being rendered when
+            rendering file templates
+            </summary>
+        </member>
         <member name="P:Westwind.RazorHosting.RazorHostContainerException.RequestConfigurationData">
             <summary>
             Template Engine Configuration Data
+            </summary>
+        </member>
+        <member name="P:Westwind.RazorHosting.RazorHostContainerException.CallStack">
+            <summary>
+            Call stack when an actual exception occurred  - not always available
             </summary>
         </member>
         <member name="T:Westwind.RazorHosting.RazorStringHostContainer">

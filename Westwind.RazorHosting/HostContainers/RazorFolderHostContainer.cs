@@ -105,6 +105,8 @@ namespace Westwind.RazorHosting
         /// <returns></returns>
         public string RenderTemplate(string relativePath, object model = null, TextWriter writer = null, bool isLayoutPage = false)
         {
+            LastException = null;
+
             CompiledAssemblyItem item = GetAssemblyFromFileAndCache(relativePath);
             if (item == null)
             {
@@ -134,7 +136,7 @@ namespace Westwind.RazorHosting
                 
                 if (result == null)
                 {
-                    Exception = new RazorHostContainerException($"Failed to render Page {relativePath}: " +
+                    LastException = new RazorHostContainerException($"Failed to render Page {relativePath}: " +
                                                                 Engine.ErrorMessage,
                         Engine.LastGeneratedCode,
                         Engine.LastException,
@@ -152,7 +154,7 @@ namespace Westwind.RazorHosting
                     string layout = RenderTemplate(layoutTemplate, model, writer,isLayoutPage: true);
                     if (layout == null)
                     {
-                        Exception = new RazorHostContainerException($"Failed to render Layout Page {layoutTemplate}: " +
+                        LastException = new RazorHostContainerException($"Failed to render Layout Page {layoutTemplate}: " +
                                                         Engine.ErrorMessage, 
                             Engine.LastGeneratedCode,
                             Engine.LastException, 
@@ -191,14 +193,16 @@ namespace Westwind.RazorHosting
         {
             string result = base.RenderHtmlErrorPage(noTemplateSourceCode);
 
-            var requestConfig = Exception.RequestConfigurationData as RazorFolderHostTemplateConfiguration;
+            if (LastException != null)
+            {
+                if (!string.IsNullOrEmpty(LastException.ActiveTemplate))
+                    result = result.Replace("</body></html>",
+                        "<hr />" +
+                        "<small>Source template: <b><a target='_newwindow' href='file:///" +
+                        LastException.ActiveTemplate + "'>" + LastException.ActiveTemplate + "</a></b>" +
+                        "</small></body></html>");
+            }
 
-            if (!string.IsNullOrEmpty(Exception.ActiveTemplate))
-                result = result.Replace("</body></html>",
-                "<hr />" +
-                "<small>Source template: <b><a target='_newwindow' href='file:///" + Exception.ActiveTemplate + "'>" + Exception.ActiveTemplate +"</b>" +
-                "</small></body></html>");
-                
             return result;
         }
 
@@ -214,13 +218,19 @@ namespace Westwind.RazorHosting
         /// <returns></returns>
         protected virtual CompiledAssemblyItem GetAssemblyFromFileAndCache(string relativePath)
         {
+            LastException = null;
+
             var path = relativePath.Replace("/", "\\").Replace("~\\", "");
 
-            string fileName = Path.Combine(TemplatePath,path).ToLower();
-            int fileNameHash = fileName.GetHashCode();
-            if (!File.Exists(fileName))
+            string filename = Path.Combine(TemplatePath,path).ToLower();
+            int fileNameHash = filename.GetHashCode();
+            if (!File.Exists(filename))
             {
-                SetError(Westwind.RazorHosting.Properties.Resources.TemplateFileDoesnTExist + fileName);
+                SetErrorException(new RazorHostContainerException(Westwind.RazorHosting.Properties.Resources.TemplateFileDoesnTExist + filename,
+                    null,
+                    null,
+                    filename,
+                    null));             
                 return null;
             }
 
@@ -233,7 +243,7 @@ namespace Westwind.RazorHosting
             if (item != null)
             {
                 // Check against file time - if file is newer we need to recompile the template
-                var fileTime = File.GetLastWriteTimeUtc(fileName);
+                var fileTime = File.GetLastWriteTimeUtc(filename);
                 if (fileTime <= item.CompileTimeUtc)
                     assemblyId = item.AssemblyId;   // no change, used cached
             }
@@ -243,16 +253,20 @@ namespace Westwind.RazorHosting
             // No cached instance - create assembly and cache
             if (assemblyId == null)
             {
-                string safeClassName = GetSafeClassName(fileName);
+                string safeClassName = GetSafeClassName(filename);
 
                 string template = null;
                 try
                 {
-                    template = File.ReadAllText(fileName);
+                    template = File.ReadAllText(filename);
                 }
                 catch
                 {
-                    SetError(Resources.ErrorReadingTemplateFile + fileName);
+                    this.SetErrorException(new RazorHostContainerException(Resources.ErrorReadingTemplateFile + filename,
+                        null,
+                        null,
+                        filename,
+                        null));                    
                     return null;
                 }
                 assemblyId = Engine.CompileTemplate(template);
@@ -263,7 +277,12 @@ namespace Westwind.RazorHosting
 
                 if (assemblyId == null)
                 {
-                    SetError(Engine.ErrorMessage);
+                    SetError();
+                    this.SetErrorException(new RazorHostContainerException(Engine.ErrorMessage,
+                        Engine.LastGeneratedCode,
+                        Engine.LastException,
+                        filename,
+                        null));
                     return null;
                 }
 
@@ -271,7 +290,7 @@ namespace Westwind.RazorHosting
 
                 item.AssemblyId = assemblyId;
                 item.CompileTimeUtc = DateTime.UtcNow;
-                item.FileName = fileName;
+                item.FileName = filename;
                 item.SafeClassName = safeClassName;
 
                 LoadedAssemblies[fileNameHash] = item;
