@@ -259,19 +259,8 @@ namespace RazorHostingTests
             if (result == null)
                 Assert.Fail(host.ErrorMessage);
 
-            // run again
-            person.Name = "Billy Bobb";
-            result = host.RenderTemplate("~/TestPartial.cshtml", person);
-
-            Console.WriteLine(result);
-            Console.WriteLine("---");
-            Console.WriteLine(host.Engine.LastGeneratedCode);
-
-            if (result == null)
-                Assert.Fail(host.ErrorMessage);
-
-
-            Assert.IsTrue(result.Contains("Billy Bobb"));
+            Assert.IsTrue(result.Contains("Rendering a header Partial"));
+            Assert.IsTrue(result.Contains("</footer>"));
 
             host.Stop();
         }
