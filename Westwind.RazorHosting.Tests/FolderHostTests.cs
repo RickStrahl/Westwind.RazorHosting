@@ -222,6 +222,62 @@ namespace RazorHostingTests
         }
 
         [TestMethod]
+        public void FolderWithPartialAndLayoutTest()
+        {
+            var host = new RazorFolderHostContainer();
+
+            host.TemplatePath = Path.GetFullPath(@"..\..\FileTemplates\");
+            host.BaseBinaryFolder = Environment.CurrentDirectory;
+
+            // add model assembly - ie. this assembly
+            host.AddAssemblyFromType(typeof(Person));
+
+            host.UseAppDomain = true;
+            //host.Configuration.CompileToMemory = true;
+            //host.Configuration.TempAssemblyPath = Environment.CurrentDirectory;
+
+            host.Start();
+
+            Person person = new Person()
+            {
+                Name = "John Doe",
+                Company = "Doeboy Incorporated",
+                Entered = DateTime.Now,
+                Address = new Address()
+                {
+                    Street = "32 Kaiea",
+                    City = "Paia"
+                }
+            };
+
+            string result = host.RenderTemplate("~/TestPartialAndLayout.cshtml", person);
+
+            Console.WriteLine(result);
+            Console.WriteLine("---");
+            Console.WriteLine(host.Engine.LastGeneratedCode);
+
+            if (result == null)
+                Assert.Fail(host.ErrorMessage);
+
+            // run again
+            person.Name = "Billy Bobb";
+            result = host.RenderTemplate("~/TestPartial.cshtml", person);
+
+            Console.WriteLine(result);
+            Console.WriteLine("---");
+            Console.WriteLine(host.Engine.LastGeneratedCode);
+
+            if (result == null)
+                Assert.Fail(host.ErrorMessage);
+
+
+            Assert.IsTrue(result.Contains("Billy Bobb"));
+
+            host.Stop();
+        }
+
+
+        [TestMethod]
         public void FolderHostWithLayoutPageTest()
         {
             using (var host = new RazorFolderHostContainer())
@@ -411,7 +467,6 @@ namespace RazorHostingTests
                     City = "Paia"
                 }
             };
-
             string result = host.RenderTemplate("~/RuntimeError.cshtml", person);
 
             Assert.IsNull(result, "result should be null on error");
@@ -425,7 +480,7 @@ namespace RazorHostingTests
             //Console.WriteLine(host.LastException.GeneratedSourceCode);
             Console.WriteLine("---");
 
-            // Render HTML output of the error with source code and line numbers for errros
+            // Render HTML output of the error with source code and line numbers for errors
             Console.WriteLine(host.RenderHtmlErrorPage());
 
             host.Stop();

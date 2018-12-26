@@ -115,6 +115,8 @@ namespace Westwind.RazorHosting
                 return null;
             }
 
+            var previousConfigurationData = Engine.TemplatePerRequestConfigurationData;
+
             // Set configuration data that is to be passed to the template (any object) 
             Engine.TemplatePerRequestConfigurationData = new RazorFolderHostTemplateConfiguration()
             {
@@ -176,8 +178,8 @@ namespace Westwind.RazorHosting
             {                
                 writer?.Close();
 
-                // Clear out the per request cache
-                Engine.TemplatePerRequestConfigurationData = null;
+                // reset per request cache
+                Engine.TemplatePerRequestConfigurationData = previousConfigurationData;
             }
 
             return result;

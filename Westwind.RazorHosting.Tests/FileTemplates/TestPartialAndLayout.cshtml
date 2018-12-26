@@ -1,0 +1,21 @@
+﻿@using System;
+@inherits Westwind.RazorHosting.RazorTemplateFolderHost<RazorHostingTests.Person>
+@{
+    var items = new int[3] { 1, 2, 3 };
+
+    // Note this is explicitly required!
+    Layout = "~/_Layout.cshtml";
+}
+<p>Rendering a header Partial:</p>
+
+@RenderPartial("~/Header_Partial.cshtml", Model)
+
+    @Model.Name @Model.Company @Model.Address.City @Model.Entered
+
+    @{for (int i = 0; i < 10; i++)
+        {
+            Response.WriteLine(i + ".");
+        }
+
+<div>Done</div>
+

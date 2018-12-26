@@ -2,7 +2,7 @@
 <package> 
   <metadata> 
     <id>Westwind.RazorHosting</id> 
-    <version>3.3.0.0</version>
+    <version>3.3.5.0</version>
     <authors>Rick Strahl, West Wind Technologies</authors>
     <title>West Wind RazorHosting Library (Westwind.RazorHosting)</title> 
     <summary>Hosting the Razor Runtime outside of ASP.NET MVC/WebPages</summary>
@@ -12,7 +12,7 @@
     <licenseUrl>https://github.com/RickStrahl/Westwind.RazorHosting#license</licenseUrl>
     <projectUrl>https://github.com/RickStrahl/Westwind.RazorHosting</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/RickStrahl/Westwind.RazorHosting/master/razorhosting.png</iconUrl>
-    <copyright>Rick Strahl, West Wind Technologies 2007-2018</copyright>
+    <copyright>Rick Strahl, West Wind Technologies 2007-2019</copyright>
     <tags>Razor,Templating,Scripting,Hosting,CSharp</tags>
     <releaseNotes></releaseNotes>
    	<dependencies>

@@ -114,7 +114,7 @@ namespace Westwind.RazorHosting
         /// <param name="relativePath"></param>
         /// <param name="model"></param>
         /// <returns>HtmlString that indicates this string should not be escaped</returns>
-        public RawString RenderPartial(string relativePath, object model)
+        public RawString RenderPartial(string relativePath, object model=null)
         {
             if (HostContainer == null)
                 return null;

@@ -90,14 +90,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="FileTemplates\Header_Partial.cshtml" />
     <None Include="FileTemplates\HelloWorldCSharpLatest.cshtml" />
+    <None Include="FileTemplates\TestPartialAndLayout.cshtml" />
     <None Include="FileTemplates\_Layout.cshtml" />
     <None Include="FileTemplates\LayoutPageExample.cshtml" />
     <None Include="FileTemplates\RuntimeError.cshtml" />
     <None Include="FileTemplates\TestRenderTemplate.cshtml" />
     <None Include="FileTemplates\HelloWorld.cshtml" />
     <None Include="FileTemplates\TestPartial.cshtml" />
-    <None Include="FileTemplates\Header_Partial.cshtml" />
+    <None Include="FileTemplates\Footer_Partial.cshtml" />
     <None Include="FileTemplates\HelloWorldWithModelSyntax.cshtml" />
     <None Include="packages.config" />
   </ItemGroup>
