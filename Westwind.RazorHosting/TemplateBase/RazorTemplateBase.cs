@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CS1591
+
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -35,13 +37,14 @@ namespace Westwind.RazorHosting
         /// 
         /// This method can then be overridden        
         /// </summary>
+        /// <param name="model"></param>
         /// <param name="configurationData"></param>
-        public override void InitializeTemplate(object model, object configurationData = null)
+        public override void InitializeTemplate(object model = null, object configurationData = null)
         {
             Html = new HtmlHelper();
 
             if (model is TModel)
-                Model = model as TModel;           
+                Model = model as TModel;
         }
     }
 
@@ -79,7 +82,7 @@ namespace Westwind.RazorHosting
         /// the caller.
         /// </summary>
         public dynamic ResultData { get; set; }
-        
+
         /// <summary>
         /// Class that generates output. Currently ultra simple
         /// with only Response.Write() implementation.
@@ -132,7 +135,8 @@ namespace Westwind.RazorHosting
         /// 
         /// This method can then be overridden        
         /// </summary>
-        /// <param name="configurationData"></param>
+        /// <param name="model">Model to to render with - optional</param>
+        /// <param name="configurationData">Configuration data you want to send to the template</param>
         public virtual void InitializeTemplate(object model = null, object configurationData = null)
         {
             Html = new HtmlHelper();
@@ -360,12 +364,12 @@ namespace Westwind.RazorHosting
         /// <param name="template"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public virtual string RenderTemplate(string template,object model)
-        {            
+        public virtual string RenderTemplate(string template, object model)
+        {
             if (template == null)
                 return string.Empty;
-            
-            if(!template.Contains("@"))
+
+            if (!template.Contains("@"))
                 return template;
 
             // use dynamic to get around generic type casting
@@ -373,10 +377,79 @@ namespace Westwind.RazorHosting
             string result = engine.RenderTemplate(template, model);
             if (result == null)
                 throw new ApplicationException("RenderTemplate failed: " + engine.ErrorMessage);
-                       
+
             return result;
         }
+        #region Path Helpers
 
+        /// <summary>
+        /// Resolves a ~ Url by removing ~ and using `/`
+        /// path.
+        ///
+        /// This is not recommended for direct linked files in
+        /// HTML (scripts, images, css etc.) as these links may
+        /// not work properly.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public virtual string ResolveUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+                return url;
+
+            if (url.StartsWith("~"))
+            {
+                // only makes sense for folder based containers
+                var host = this.HostContainer as RazorFolderHostContainer;
+                if (host != null)
+                {
+                    // create a full path for the URL, then create a relative URL to the current template
+                    url = url.Replace("~/", "").Replace("~", "");
+                    var fullPath = Path.Combine(host.TemplatePath, url);
+                    fullPath = GetRelativePath(fullPath, Path.GetDirectoryName(Request.TemplatePath));
+                    if (fullPath.Contains(":\\"))
+                        fullPath = "file:///" + fullPath;
+                    else
+                        fullPath = fullPath.Replace("\\", "/");
+
+                    return fullPath;
+                }
+            }
+
+            return url;
+        }
+
+
+        /// <summary>
+        /// Returns a relative path string from a full path based on a base path
+        /// provided.
+        /// </summary>
+        /// <param name="fullPath">The path to convert. Can be either a file or a directory</param>
+        /// <param name="basePath">The base path on which relative processing is based. Should be a directory.</param>
+        /// <returns>
+        /// String of the relative path.
+        /// 
+        /// Examples of returned values:
+        ///  test.txt, ..\test.txt, ..\..\..\test.txt, ., .., subdir\test.txt
+        /// </returns>
+        public static string GetRelativePath(string fullPath, string basePath)
+        {
+            // ForceBasePath to a path
+            if (!basePath.EndsWith(value: "\\"))
+                basePath += "\\";
+
+#pragma warning disable CS0618
+            Uri baseUri = new Uri(uriString: basePath, dontEscape: true);
+            Uri fullUri = new Uri(uriString: fullPath, dontEscape: true);
+#pragma warning restore CS0618
+
+            Uri relativeUri = baseUri.MakeRelativeUri(uri: fullUri);
+
+            // Uri's use forward slashes so convert back to backward slahes
+            return relativeUri.ToString().Replace(oldValue: "/", newValue: "\\");
+        }
+
+        #endregion
         /// <summary>
         /// Razor Parser overrides this method, but this method is effectively
         /// never called - it's just a placeholder in order to allow
@@ -406,7 +479,7 @@ namespace Westwind.RazorHosting
         }
 
         #region Old_WriteAttribute_Implementations 
-        #if false
+#if false
         /// <summary>
         /// This method is used to write out attribute values using
         /// some funky nested tuple storage.
@@ -477,7 +550,7 @@ namespace Westwind.RazorHosting
 
             Response.Write(output);
         }
-        #endif
+#endif
         #endregion
     }
 }
