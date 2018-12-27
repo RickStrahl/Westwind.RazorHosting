@@ -1,4 +1,6 @@
-﻿using System.Dynamic;
+﻿#pragma warning disable CS1591
+
+using System.Dynamic;
 using System.Reflection;
 
 namespace Westwind.RazorHosting

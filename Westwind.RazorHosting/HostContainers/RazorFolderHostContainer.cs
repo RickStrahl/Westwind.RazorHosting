@@ -1,4 +1,5 @@
-﻿#region License
+﻿#pragma warning disable CS1591
+#region License
 /*
  **************************************************************
  *  Author: Rick Strahl 
@@ -98,7 +99,6 @@ namespace Westwind.RazorHosting
         /// the Response object. Used for partial rendering.
         /// </summary>
         /// <param name="relativePath">Relative path to the file in the folder structure</param>
-        /// <param name="context">Optional context object or null</param>
         /// <param name="model">Optional parameter that is set as the Model property in generic versions</param>
         /// <param name="writer">The textwriter to write output into</param>
         /// <param name="isLayoutPage"></param>
@@ -120,7 +120,7 @@ namespace Westwind.RazorHosting
             // Set configuration data that is to be passed to the template (any object) 
             Engine.TemplatePerRequestConfigurationData = new RazorFolderHostTemplateConfiguration()
             {
-                TemplatePath = Path.Combine(TemplatePath, relativePath),
+                TemplatePath = Path.Combine(TemplatePath, relativePath.Replace("~/","").Replace("~","")),
                 TemplateRelativePath = relativePath,
                 LayoutPage = null,
                 IsLayoutPage = isLayoutPage
@@ -209,14 +209,12 @@ namespace Westwind.RazorHosting
         }
 
 
-
         /// <summary>
         /// Internally checks if a cached assembly exists and if it does uses it
         /// else creates and compiles one. Returns an assembly Id to be 
         /// used with the LoadedAssembly list.
         /// </summary>
         /// <param name="relativePath"></param>
-        /// <param name="context"></param>
         /// <returns></returns>
         protected virtual CompiledAssemblyItem GetAssemblyFromFileAndCache(string relativePath)
         {
@@ -342,7 +340,7 @@ namespace Westwind.RazorHosting
         /// <summary>
         /// Overridden to return a unique name based on the filename
         /// </summary>
-        /// <param name="fileName"></param>
+        /// <param name="objectId">Filename</param>
         /// <returns></returns>
         protected override string GetSafeClassName(object objectId)
         {

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CS1591
+
+using System;
 using System.Globalization;
 using System.IO;
 
@@ -62,6 +64,7 @@ namespace Westwind.RazorHosting
         /// Writes the output of the <see cref="HelperResult"/> to the provided <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">A <see cref="TextWriter"/> instance that the output should be written to.</param>
+        /// <param name="val"></param>
         public void WriteTo(TextWriter writer, object val)
         {
             writer.Write(val);

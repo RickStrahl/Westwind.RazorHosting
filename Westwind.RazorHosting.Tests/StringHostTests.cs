@@ -200,7 +200,6 @@ namespace RazorHostingTests
     @Model.Name.ToLower()
 <div>
 ";
-            bool isException = false;
             string result = null;
             try
             {
@@ -208,7 +207,6 @@ namespace RazorHostingTests
             }
             catch (RazorHostContainerException ex)
             {
-                isException = true;
                 Assert.IsNull(result, "Result should have failed with a runtime error.");
                 Console.WriteLine(ex.InnerException.Message);
                 Console.WriteLine(ex.InnerException.Source);

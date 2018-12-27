@@ -1,4 +1,6 @@
-﻿// From ASP.Net Web Stack [http://aspnetwebstack.codeplex.com/]
+﻿#pragma warning disable CS1591
+
+// From ASP.Net Web Stack [http://aspnetwebstack.codeplex.com/]
 // Used under the Apache License
 
 using System;

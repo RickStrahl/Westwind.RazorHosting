@@ -1,4 +1,5 @@
-﻿#region License
+﻿#pragma warning disable CS1591
+#region License
 /*
  **************************************************************
  *  Author: Rick Strahl 
@@ -38,7 +39,18 @@ namespace Westwind.RazorHosting
     /// </summary>
     public class RazorRequest
     {
+        /// <summary>
+        /// Full Path to the template.
+        /// Only applies to running with RazorFolderHost
+        /// </summary>
         public string TemplatePath { get; set; }
+
+        /// <summary>
+        /// RelativePath to the template as a virtual (~/) path
+        /// based on the root of the template host.
+        ///
+        /// Only applies to RazorFolderHost
+        /// </summary>
         public string TemplateRelativePath { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿#pragma warning disable CS1591
+
+using System.Net;
 using System.Text;
 
 namespace Westwind.RazorHosting

@@ -9,6 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Westwind.RazorHosting.Tests
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{697A2C49-DCF5-4857-AC8D-140C912D00C9}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		ChangeLog.md = ChangeLog.md
 		Readme.md = Readme.md
 	EndProjectSection
@@ -46,5 +47,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {11D23DAB-A802-4587-A849-239C1B22B578}
 	EndGlobalSection
 EndGlobal

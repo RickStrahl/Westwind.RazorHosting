@@ -1,8 +1,9 @@
+﻿#pragma warning disable CS1591
 #region License
 /*
  **************************************************************
  *  Author: Rick Strahl 
- *          � West Wind Technologies, 2010-2012
+ *          © West Wind Technologies, 2010-2012
  *          http://www.west-wind.com/
  * 
  * Created: 10/1/2012

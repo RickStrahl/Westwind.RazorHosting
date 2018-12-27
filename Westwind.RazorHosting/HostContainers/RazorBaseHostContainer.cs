@@ -1,8 +1,9 @@
+﻿#pragma warning disable CS1591
 #region License
 /*
  **************************************************************
  *  Author: Rick Strahl 
- *          � West Wind Technologies, 2010-2011
+ *          © West Wind Technologies, 2010-2011
  *          http://www.west-wind.com/
  * 
  * Created: 1/4/2010
@@ -147,12 +148,6 @@ namespace Westwind.RazorHosting
         public RazorEngine<TBaseTemplateType> Engine;
 
         /// <summary>
-        /// Cached instance of the Host Factory - so we can unload
-        /// the host and its associated AppDomain.
-        /// </summary>
-        //protected RazorEngineFactory<TBaseTemplateType> EngineFactory;
-
-        /// <summary>
         /// Keep track of each compiled assembly
         /// and when it was compiled.
         /// 
@@ -259,9 +254,7 @@ namespace Westwind.RazorHosting
         /// </summary>
         /// <param name="assemblyId">Id of a previously compiled assembly</param>
         /// <param name="model">Optional model data object</param>
-        /// <param name="writer">Output writer</param>
-        /// <param name="nameSpace">Namespace for compiled template to execute</param>
-        /// <param name="className">Class name for compiled template to execute</param>
+        /// <param name="writer">Output writer</param>     
         /// <returns></returns>
         protected virtual bool RenderTemplateFromAssembly(string assemblyId, object model, TextWriter writer)
         {

@@ -91,7 +91,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="FileTemplates\Header_Partial.cshtml" />
-    <None Include="FileTemplates\HelloWorldCSharpLatest.cshtml" />
+    <None Include="FileTemplates\SubFolder\HelloWorldCSharpLatest.cshtml" />
     <None Include="FileTemplates\TestPartialAndLayout.cshtml" />
     <None Include="FileTemplates\_Layout.cshtml" />
     <None Include="FileTemplates\LayoutPageExample.cshtml" />

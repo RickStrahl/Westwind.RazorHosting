@@ -1,4 +1,6 @@
-﻿namespace Westwind.RazorHosting
+﻿#pragma warning disable CS1591
+
+namespace Westwind.RazorHosting
 {
     public class HtmlHelper
     {

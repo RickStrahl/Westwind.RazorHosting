@@ -1,4 +1,5 @@
-﻿#region License
+﻿#pragma warning disable CS1591
+#region License
 /*
  **************************************************************
  *  Author: Rick Strahl 
@@ -128,7 +129,6 @@ namespace Westwind.RazorHosting
         /// This method requires that you keep the Factory around in
         /// order to keep the AppDomain alive and be able to unload it.
         /// </summary>
-        /// <param name="codeProvider"></param>
         /// <returns></returns>
         public RazorEngine<TBaseTemplateType> GetRazorHostInAppDomain()
         {                        
@@ -136,8 +136,8 @@ namespace Westwind.RazorHosting
             if (LocalAppDomain  == null)
                 return null;
             
-            /// Create the instance inside of the new AppDomain
-            /// Note: remote domain uses local EXE's AppBasePath!!!
+            // Create the instance inside of the new AppDomain
+            // Note: remote domain uses local EXE's AppBasePath!!!
             RazorEngine<TBaseTemplateType> host  = null;       
 
             try

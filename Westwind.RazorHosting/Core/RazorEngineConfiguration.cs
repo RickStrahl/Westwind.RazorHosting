@@ -41,8 +41,9 @@ namespace Westwind.RazorHosting
     /// Configuration for the Host class. These settings determine some of the
     /// operational parameters of the RazorHost class that can be changed at
     /// runtime.
-    /// </summary>        
-    public class RazorEngineConfiguration : MarshalByRefObject
+    /// </summary>
+    [Serializable]
+    public class RazorEngineConfiguration
     {
         /// <summary>
         /// Determines if assemblies are compiled to disk or to memory.
@@ -87,5 +88,8 @@ namespace Westwind.RazorHosting
         }
         private int _StreamBufferSize = 2048;
 
+
+      
     }
+
 }

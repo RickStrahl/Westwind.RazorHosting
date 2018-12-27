@@ -1,4 +1,5 @@
-﻿#region License
+﻿#pragma warning disable CS1591
+#region License
 /*
  **************************************************************
  *  Author: Rick Strahl 

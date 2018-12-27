@@ -96,14 +96,13 @@ namespace RazorHostingTests
                 }
             };
 
-            string result = host.RenderTemplate("~/HelloWorldCSharpLatest.cshtml", person);
+            string result = host.RenderTemplate("~/SubFolder/HelloWorldCSharpLatest.cshtml", person);
 
 
 
             Console.WriteLine(result);
             Console.WriteLine("---");
-            Console.WriteLine(host.ErrorMessage);
-            Console.WriteLine(host.Engine.LastGeneratedCode);
+            Console.WriteLine(host.RenderHtmlErrorPage());
 
             host.Stop();
 
