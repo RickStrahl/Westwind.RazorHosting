@@ -533,6 +533,14 @@
             <param name="maxLines">Optional - max number of lines to return</param>
             <returns>array of strings, or null if the string passed was a null</returns>
         </member>
+        <member name="M:Westwind.RazorHosting.Utilities.GetTextWithLineNumbers(System.String,System.String)">
+            <summary>
+            Returns the text with a prefix of line numbers
+            </summary>
+            <param name="text"></param>
+            <param name="lineFormat">Line format used to create the line. 0 is the line number, 1 is the text.</param>
+            <returns></returns>
+        </member>
         <member name="T:Westwind.RazorHosting.RazorBaseHostContainer`1">
             <summary>
             Based Host implementation for hosting the RazorEngine. This base

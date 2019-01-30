@@ -87,6 +87,7 @@
     <Compile Include="RawRazorTemplateHostingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BasicRazorEngineTests.cs" />
+    <Compile Include="UtilitiesTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

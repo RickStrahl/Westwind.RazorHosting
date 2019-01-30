@@ -81,15 +81,22 @@ namespace Westwind.RazorHosting
     public class RazorEngine<TBaseTemplateType> : MarshalByRefObject
         where TBaseTemplateType : RazorTemplateBase
     {
+        
         /// <summary>
         /// Any errors that occurred during template execution
         /// </summary>
         public string ErrorMessage {get; set; }
-        
+
         /// <summary>
         /// Last generated output
         /// </summary>
-        public string LastGeneratedCode { get; set; }
+        public string LastGeneratedCode
+        {
+            get => Utilities.GetTextWithLineNumbers(_LastGeneratedCode);
+            set => _LastGeneratedCode = value;
+        }
+
+        private string _LastGeneratedCode;
 
         /// <summary>
         /// Allows retrieval of the template's ResultData property

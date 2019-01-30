@@ -288,17 +288,7 @@ namespace Westwind.RazorHosting
         public virtual string RenderHtmlErrorPage(bool noTemplateSourceCode = false)
         {
             if (string.IsNullOrEmpty(ErrorMessage))
-                return null;
-
-            var code = new StringBuilder();
-            if (Engine?.LastGeneratedCode != null)
-            {
-                var lines = Utilities.GetLines(Engine.LastGeneratedCode);
-                for (var index = 1; index <= lines.Length; index++)
-                {
-                    code.AppendLine(index.ToString().PadLeft(4, ' ') + ".  " + lines[index - 1]);
-                }
-            }
+                return null;            
             
             StringBuilder result = new StringBuilder(200);
             result.AppendLine($@"<html><body>
@@ -307,7 +297,7 @@ namespace Westwind.RazorHosting
 <pre>{Utilities.HtmlEncode(ErrorMessage)}</pre>");
 
             if (!noTemplateSourceCode)
-                result.AppendLine($"<pre>{Utilities.HtmlEncode(code.ToString())}</pre>");
+                result.AppendLine($"<pre>{Utilities.HtmlEncode(Engine.LastGeneratedCode)}</pre>");
 
             result.AppendLine("</body></html>");
             
@@ -370,9 +360,10 @@ namespace Westwind.RazorHosting
                 LastException = null;
                 return;
             }
+            
 
             LastException = new RazorHostContainerException(message,
-                Engine?.LastGeneratedCode,
+                Utilities.GetTextWithLineNumbers(Engine?.LastGeneratedCode),
                 Engine?.LastException,
                 Engine?.TemplatePerRequestConfigurationData);
 

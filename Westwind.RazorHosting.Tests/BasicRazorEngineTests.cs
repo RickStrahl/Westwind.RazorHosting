@@ -45,7 +45,7 @@ namespace RazorHostingTests
         [TestMethod]
         public void SimplestRazorEngineTest()
         {
-            string template = @"Hello World @Model.Name. Time is: @DateTime.Now";
+            string template;
             template = Templates.BasicTemplateStringWithPersonModel;
 	        var host = new RazorEngine();
 
@@ -156,12 +156,12 @@ Hello World, @name. Time is: @($""{DateTime.Now}"").";
 
             // this will now reuse the same compile template           
             for (int i = 0; i < 10; i++)
-            {
-                
+            {                
                 result += host.RenderTemplateFromAssembly(assemblyId, new Person { Name = "Joe Doe" }) + "\r\n";
             }
 
-            Assert.IsNotNull(result, host.ErrorMessage);
+            Console.WriteLine(host.LastGeneratedCode);
+            Assert.IsNotNull(result, host.ErrorMessage );
             Assert.IsTrue(result.Contains("Joe Doe"),result);
 
             Console.WriteLine(result);
