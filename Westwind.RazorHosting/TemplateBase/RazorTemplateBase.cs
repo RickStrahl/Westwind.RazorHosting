@@ -189,7 +189,14 @@ namespace Westwind.RazorHosting
             if (value == null)
                 return;
 
-            writer.Write(HtmlEncode(value));
+            if (value is RawString | value is IHtmlString)
+            {
+                writer.Write(value);
+            }
+            else
+            {
+                writer.Write(HtmlEncode(value));
+            }
         }
 
         /// <summary>
