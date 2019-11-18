@@ -299,10 +299,10 @@ where the template might look like this:
 
 	@Model.Name @Model.Company @Model.Address.City @Model.Entered 
     
-	@{for (int i = 0; i < 10; i++)
-		{
-			Response.WriteLine(i + ".");
-		}  
+	@for (int i = 0; i < 10; i++)
+	{
+		Response.WriteLine(i + ".");
+	}  
 
 	You can also render nested templates from string
 	@RenderTemplate("Child Template rendered from String. Name: @Model.Name",Model) 

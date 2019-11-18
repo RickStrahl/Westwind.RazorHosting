@@ -6,12 +6,12 @@
     <meta charset="utf-8" />
     <title></title>
 </head>
-<body>    
-    @Model.Name @Model.Company @Model.Address.City @Model.Entered 
-    
-    @{for (int i = 0; i < 10; i++)
-      {
-          Response.WriteLine(i + ".");
-      }   
+<body>
+    @Model.Name @Model.Company @Model.Address.City @Model.Entered
+
+    @for (int i = 0; i < 10; i++)
+    {
+        Response.WriteLine(i + ".");
+    }
 </body>
 </html>
