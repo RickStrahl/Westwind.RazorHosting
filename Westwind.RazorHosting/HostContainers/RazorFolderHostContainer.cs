@@ -120,7 +120,7 @@ namespace Westwind.RazorHosting
             // Set configuration data that is to be passed to the template (any object) 
             Engine.TemplatePerRequestConfigurationData = new RazorFolderHostTemplateConfiguration()
             {
-                TemplatePath = Path.Combine(TemplatePath, relativePath.Replace("~/","").Replace("~","")),
+                TemplatePath = Path.Combine(TemplatePath, relativePath.Replace("~/", "").Replace("~", "")),
                 TemplateRelativePath = relativePath,
                 LayoutPage = null,
                 IsLayoutPage = isLayoutPage
@@ -135,33 +135,35 @@ namespace Westwind.RazorHosting
                 result = Engine.RenderTemplateFromAssembly(item.AssemblyId, model, writer);
 
                 var config = Engine.TemplatePerRequestConfigurationData as RazorFolderHostTemplateConfiguration;
-                
+
                 if (result == null)
                 {
-                    LastException = new RazorHostContainerException($"Failed to render Page {relativePath}: " +
-                                                                Engine.ErrorMessage,
+                    SetErrorException(new RazorHostContainerException($"Failed to render Page {relativePath}: " +
+                        Engine.ErrorMessage,
                         Engine.LastGeneratedCode,
                         Engine.LastException,
                         config.TemplatePath,
-                        config);
+                        config));
+
                     return null;
                 }
 
 
-                if (config != null && !config.IsLayoutPage  && !string.IsNullOrEmpty(config.LayoutPage))
+                if (config != null && !config.IsLayoutPage && !string.IsNullOrEmpty(config.LayoutPage))
                 {
-                    string layoutTemplate = config.LayoutPage;                    
+                    string layoutTemplate = config.LayoutPage;
                     config.IsLayoutPage = false;
-                    
-                    string layout = RenderTemplate(layoutTemplate, model, writer,isLayoutPage: true);
+
+                    string layout = RenderTemplate(layoutTemplate, model, writer, isLayoutPage: true);
                     if (layout == null)
                     {
-                        LastException = new RazorHostContainerException($"Failed to render Layout Page {layoutTemplate}: " +
-                                                        Engine.ErrorMessage, 
+                        SetErrorException(new RazorHostContainerException($"Failed to render Layout Page {layoutTemplate}: " +
+                            Engine.ErrorMessage,
                             Engine.LastGeneratedCode,
-                            Engine.LastException, 
-                            Path.Combine(TemplatePath,layoutTemplate),
-                            config);                        
+                            Engine.LastException,
+                            Path.Combine(TemplatePath, layoutTemplate),
+                            config));
+
                         result = null;
                     }
                     else
@@ -172,10 +174,10 @@ namespace Westwind.RazorHosting
             }
             catch (Exception ex)
             {
-                SetError(ex.Message);
+                this.SetError(ex.Message);
             }
             finally
-            {                
+            {
                 writer?.Close();
 
                 // reset per request cache
@@ -222,7 +224,7 @@ namespace Westwind.RazorHosting
 
             var path = relativePath.Replace("/", "\\").Replace("~\\", "");
 
-            string filename = Path.Combine(TemplatePath,path).ToLower();
+            string filename = Path.Combine(TemplatePath, path).ToLower();
             int fileNameHash = filename.GetHashCode();
             if (!File.Exists(filename))
             {
@@ -230,7 +232,7 @@ namespace Westwind.RazorHosting
                     null,
                     null,
                     filename,
-                    null));             
+                    null));
                 return null;
             }
 
@@ -266,7 +268,7 @@ namespace Westwind.RazorHosting
                         null,
                         null,
                         filename,
-                        null));                    
+                        null));
                     return null;
                 }
                 assemblyId = Engine.CompileTemplate(template);
@@ -364,6 +366,6 @@ namespace Westwind.RazorHosting
         public string SafeClassName { get; set; }
         public string Namespace { get; set; }
 
-        public string LayoutPage { get; set;  }
+        public string LayoutPage { get; set; }
     }
 }

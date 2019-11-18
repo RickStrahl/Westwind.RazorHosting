@@ -361,7 +361,6 @@ namespace Westwind.RazorHosting
                 return;
             }
             
-
             LastException = new RazorHostContainerException(message,
                 Utilities.GetTextWithLineNumbers(Engine?.LastGeneratedCode),
                 Engine?.LastException,
