@@ -489,13 +489,7 @@ namespace Westwind.RazorHosting
                 LastGeneratedCode = writer.ToString();
             }
 
-            var compilerParameters = new CompilerParameters(ReferencedAssemblies.ToArray());
-            //compilerParameters.IncludeDebugInformation = true;           
-            compilerParameters.GenerateInMemory = Configuration.CompileToMemory;
-            
-
-            if (!Configuration.CompileToMemory)
-                compilerParameters.OutputAssembly = Path.Combine(Configuration.TempAssemblyPath, "_" + Guid.NewGuid().ToString("n") + ".dll");
+            var compilerParameters = CreateCompilerParameters();
 
             CompilerResults compilerResults = codeProvider.CompileAssemblyFromDom(compilerParameters, razorResults.GeneratedCode);
             if (compilerResults.Errors.Count > 0)
@@ -735,6 +729,22 @@ namespace Westwind.RazorHosting
         }
 
         public Exception LastException { get; set; }
+
+
+        protected virtual CompilerParameters CreateCompilerParameters()
+        {
+            var compilerParameters = new CompilerParameters(ReferencedAssemblies.ToArray());
+            //compilerParameters.IncludeDebugInformation = true;           
+            compilerParameters.GenerateInMemory = Configuration.CompileToMemory;
+
+            if (!Configuration.CompileToMemory)
+                compilerParameters.OutputAssembly = Path.Combine(Configuration.TempAssemblyPath, "_" + Guid.NewGuid().ToString("n") + ".dll");
+
+            if (Configuration.TempFiles != null)
+                compilerParameters.TempFiles = Configuration.TempFiles;
+
+            return compilerParameters;
+        }
     }
 
     public enum CodeProvider

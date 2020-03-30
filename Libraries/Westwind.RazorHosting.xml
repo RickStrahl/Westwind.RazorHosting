@@ -394,6 +394,11 @@
             Buffer size for streamed template output when using filenames
             </summary>
         </member>
+        <member name="P:Westwind.RazorHosting.RazorEngineConfiguration.TempFiles">
+            <summary>
+            Specifies %Temp% folder for compiled files
+            </summary>
+        </member>
         <member name="T:Westwind.RazorHosting.RazorEngineFactory`1">
             <summary>
             Factory that creates a RazorHost instance in a remote 
