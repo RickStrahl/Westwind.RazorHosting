@@ -34,6 +34,7 @@
 using System;
 using System.Text;
 using System.IO;
+using System.CodeDom.Compiler;
 
 namespace Westwind.RazorHosting
 {
@@ -88,8 +89,10 @@ namespace Westwind.RazorHosting
         }
         private int _StreamBufferSize = 2048;
 
-
-      
+        /// <summary>
+        /// Specifies %Temp% folder for compiling files
+        /// </summary>
+        public TempFileCollection TempFiles { get; set; }
     }
 
 }
